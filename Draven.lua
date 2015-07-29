@@ -2,7 +2,7 @@ require('Inspired')
 require('IWalk')
 
 --GoS LUA API v0.0.5
---Version v0.2.0.1 Beta
+--Version v0.2.0.3 Beta
 --Inspired.lua v13
 --Created by MarCiii
 
