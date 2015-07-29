@@ -1,9 +1,9 @@
 require('Inspired')
---require('IWalk')
+require('IWalk')
 
 --GoS LUA API v0.0.5
---Version v0.1.0.0 Beta
---Inspired.lua v12
+--Version v0.2.0.0 Beta
+--Inspired.lua v13
 --Created by MarCiii
 
 Config = scriptConfig("Draven", "League of Draven")
@@ -12,8 +12,17 @@ Config.addParam("E", "Use E if killable", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("R", "Use R if killable", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
 
-PrintChat("<font color='#00aaff'>SSS = = League of Draven By MarCiii loaded!!</font>")
-PrintChat("<font color='#00aaff'>This Script is optimized for Inspired.lua v12 and GoS LUA API v0.0.5</font>")
+PrintChat("<font color='#00aaff'>League of Draven By MarCiii loaded!!</font>")
+PrintChat("<font color='#00aaff'>This Script is optimized for Inspired.lua v13 and GoS LUA API v0.0.5</font>")
+
+local myHero = GetMyHero()
+local MyheroRange = 550
+--local RCAST = (
+--GetCastRange(myHero, _R)
+--local CastRangeE = GetCastRange(myHero, _E)
+--local CastRangeR = GetCastRange(myHero, _R)
+--local aCheckCastRangeR = IsInDistance(target, 700)
+--local bCheckCastRangeR = aCheckCastRangeR => 700
 
 local myHero = GetMyHero()
 
@@ -22,7 +31,7 @@ OnLoop(function(myHero)
 	local target = GetCurrentTarget()
 	if Config.combo then 
 --	if not IWalkConfig.Combo then return end
-	    			if  CanUseSpell(myHero, _Q) == READY and IsInDistance(target, 550) and Config.Q then
+	    			if  CanUseSpell(myHero, _Q) == READY and IsInDistance(target, MyheroRange) and Config.Q then
                         CastTargetSpell(myHero,_Q)
                     end   
 	    	if CanUseSpell(myHero, _E) == READY and Config.E then
@@ -35,16 +44,17 @@ OnLoop(function(myHero)
 		end
 		
 		if CanUseSpell(myHero, _R) == READY and Config.R then
-			if target ~= nil then 
+			if ValidTarget(target, 750) then
+--			if target ~= nil then 
 				local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target), 2000, 1000, GetCastRange(myHero, _R), 160, false, true)			
-				if RPred.HitChance == 1 and rmdg() > GetCurrentHP(target) then
+				if RPred.HitChance == 1 and  rmdg() > GetCurrentHP(target) then
 					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
 				end
 			end
 		end
 	end	
 end)
-
+--and GetOrigin(myHero) > IsInDistance(target, 640)
 --function qmdg()--Q DMG
 --	if GetCastLevel(myHero, _Q) == 0 then
 --		return 0
