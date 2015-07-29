@@ -44,10 +44,10 @@ OnLoop(function(myHero)
 		end
 		
 		if CanUseSpell(myHero, _R) == READY and Config.R then
-			if ValidTarget(target, 750) then
+			if ValidTarget(target, GetCastRange(myHero, _R)) then
 --			if target ~= nil then 
 				local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target), 2000, 1000, GetCastRange(myHero, _R), 160, false, true)			
-				if RPred.HitChance == 1 and  rmdg() > GetCurrentHP(target) then
+				if RPred.HitChance == 1 and  rmdg() > GetCurrentHP(target) and ValidTarget(target, 800) then
 					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
 				end
 			end
