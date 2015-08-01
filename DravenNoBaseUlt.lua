@@ -1,14 +1,15 @@
-if GetObjectName(GetMyHero()) == "Leona" then 
+if GetObjectName(GetMyHero()) == "Draven" then 
 
 
 --require('Inspired')
 require('MonTour')
+--require('Baseult')
 
 
 ----MarCiiionTour Lib V1
 ----Voteup for Scripts please thanks :)
 ----GoS LUA API v0.0.7
-----Leona Version 1.0.0.1
+----Draven Version 0.2.0.4
 ----Inspired.lua v14
 ----IAC.lua v14
 ----created by MarCiii
