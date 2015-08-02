@@ -1,16 +1,20 @@
 require('Inspired')
 require('IAC')
 
+MonTourTable = {"Leona", "Draven"}
+minionTable = {}
+
 myHero = GetMyHero()
 myHeroName = GetObjectName(myHero)
 IWalkTarget = nil
 
+local HOTKEY = string.byte('N') --You can change the Key here "string.byte('????')"
 
-----MarCiiionTour Lib V1
+----MarCiiionTour Lib V1.1
 ----Voteup for Scripts please thanks :)
 ----GoS LUA API v0.0.7
 ----Leona Version 1.0.0.2
-----Draven Version 0.2.0.4
+----Draven Version 0.2.0.5
 ----Inspired.lua v14
 ----IAC.lua v14
 ----created by MarCiii
@@ -20,19 +24,11 @@ IWalkTarget = nil
 --Press the Combo Button for E+Q+W+R Combo
 --Press the Harass Button for E+Q+W Combo
 --Press N for SpecialAttack - Perfect R by Leona
---	You can Change the Knocking Back inRange Enemy Key with editing this use the Button Code instead of KeyIsDown(????)
---	You can find the Keypatterns here:
---	https://msdn.microsoft.com/de-de/library/windows/desktop/dd375731%28v=vs.85%29.aspx
--- 	e.g	if KeyIsDown(0x4E)in Line 339
 
 --Draven--
 --Press the Combo Button for E+Q+W+R Combo
 --Press the Harass Button for Q Combo
 --Press N for SpecialAttack - Knocking Back inRange Enemy by Draven
---	You can Change the Perfect R Key with editing this use the Button Code instead of KeyIsDown(????)
---	You can find the Keypatterns here:
---	https://msdn.microsoft.com/de-de/library/windows/desktop/dd375731%28v=vs.85%29.aspx
--- 	e.g	if KeyIsDown(0x4E)in Line 339
 
 
 function PrintInChat() --Print in Chat
@@ -99,43 +95,49 @@ DrawText(string.format("Combo ON - %s", GetObjectName(myHero)),24,750,50,0xff00f
 		
 	--Draven
 	elseif myHeroName == "Draven" then
-	for _, unit in pairs(GetEnemyHeroes()) do	
+	for _, target in pairs(GetEnemyHeroes()) do	
 		local MyheroRange = 550
 		GetEnemyHeroes()
+	if ValidTarget(target, MyheroRange) then 
 		if Config.Q then
 			if  CanUseSpell(myHero, _Q) == READY and IsInDistance(target, MyheroRange) then
             CastTargetSpell(myHero,_Q)
             end 
         end
+    end 
+    
+    if ValidTarget(target, 620) then   
         if Config.W then
---        local targetmove = GetMoveSpeed(target)
---        local myheromove = GetMoveSpeed(myHero)
---        if targetmove > myheromove and IsInDistance(target, 610) then 
+        local targetmove = GetMoveSpeed(target)
+        local myheromove = GetMoveSpeed(myHero)
+        if targetmove > myheromove and IsInDistance(target, 620) then 
 			if IsInDistance(target, 610) then
 			if  CanUseSpell(myHero, _W) == READY then
             CastTargetSpell(myHero,_W)
             end 
         end
-        end      
+        end
+        end
+    end     
+    if ValidTarget(target, GetCastRange(myHero, _E)) then     
         if Config.E then      
 	   	if GetDistance(myHero,target) > 700 then
 	    	if CanUseSpell(myHero, _E) == READY then
-			if ValidTarget(target, GetCastRange(myHero, _E)) then
 				local EPred = GetPredictionForPlayer(myPos, target, GetMoveSpeed(target), 1600, 250, GetCastRange(myHero, _E), 80, false, true)			
 				
---				if EPred.HitChance == 1 and Edmg() > GetCurrentHP(target) + GetHPRegen(target) then
 				if EPred.HitChance == 1 and  CalcDamage(myHero, target, Edmg()) > GetCurrentHP(target) + GetHPRegen(target) then
 				CastSkillShot(_E, EPred.PredPos.x, EPred.PredPos.y, EPred.PredPos.z)
 				end
 			end
 		 	end	
 		end
-		end
+	end
+	if ValidTarget(target, 20000) then
 		if Config.R then
 		if GetDistance(myHero,target) > 800 then
 			if CanUseSpell(myHero, _R) == READY then
 --			GetEnemyHeroes()
-			if ValidTarget(target, 20000) then
+			
 				local RPred = GetPredictionForPlayer(myPos, target, GetMoveSpeed(target), 2000, 1000, 20000, 160, false, true)			
 			
 --				if RPred.HitChance == 1 and  Rdmg() > GetCurrentHP(target) + GetHPRegen(target) then
@@ -143,10 +145,10 @@ DrawText(string.format("Combo ON - %s", GetObjectName(myHero)),24,750,50,0xff00f
 				CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
 				end		
 			end
-			end
-			end
 		end
 		end
+	end
+end
 			else
 	DrawText(string.format("%s not supported", GetObjectName(myHero)),24,750,50,0xffffff00)
 	target = nil
@@ -182,14 +184,17 @@ DrawText(string.format("Harass ON - %s", GetObjectName(myHero)),24,750,50,0xff00
 	
 	--Draven
 	elseif myHeroName == "Draven" then
-		for _, unit in pairs(GetEnemyHeroes()) do	
+		for _, target in pairs(GetEnemyHeroes()) do	
 		local MyheroRange = 550
 		GetEnemyHeroes()
+	if ValidTarget(target, MyheroRange) then 		
 		if Config.Q then
 			if  CanUseSpell(myHero, _Q) == READY and IsInDistance(target, MyheroRange) then
             CastTargetSpell(myHero,_Q)
             end 
         end
+    end 
+    end   
 	end	-- end of myHeroName
 end
 
@@ -205,37 +210,38 @@ DrawText(string.format("LastClearMode ON - %s", GetObjectName(myHero)),24,750,50
 	--Draven
 	elseif myHeroName == "Draven" then
 		local MyheroRange = 550
-	if Config.LCQ then	
-		if eminion then
+--	if ValidTarget(eminion, MyheroRange) then	
+		if Config.LCQ then
 --		if IsInDistance(eminion, MyheroRange)then		
 			if  CanUseSpell(myHero, _Q) == READY then
             CastTargetSpell(myHero,_Q)
             end 
         end
-    end    
+--    end    
 	end -- end of myHeroName
 end
 
 function DoMyHeroLastHit() --LastHit Cast config.LHQ
 local myPos = GetOrigin(myHero)
 local target = GetCurrentTarget()
-local eminion = GetAllMinions(MINION_ENEMY)
+-- local eminion = nil
 DrawText(string.format("LastHitMode ON - %s", GetObjectName(myHero)),24,750,50,0xff00ff00);	
-	
+--for _, eminion in pairs(GetAllMinions(MINION_ENEMY)) do	
+--if ValidTarget(minion, MyheroRange) and IsInDistance(minion, MyheroRange) then	
 	--Leona
 	if myHeroName == "Leona" then
 	--and IsInDistance((GetAllMinions(MINION_ENEMY)), MyheroRange)	
 	--Draven
 	elseif myHeroName == "Draven" then
 		local MyheroRange = 550
-	if Config.LHQ then	
-		if eminion then
+		if Config.LHQ then
+--		if IsInDistance(eminion, MyheroRange)then		
 			if  CanUseSpell(myHero, _Q) == READY then
             CastTargetSpell(myHero,_Q)
             end 
-        end
-    end        
+        end    
 	end -- end of myHeroName
+--else return end	
 end
 
 function SpecialAttack() --Leona Ultimate R... AT THE MOMENT
@@ -255,8 +261,8 @@ Move()
 			end --end of ValidTarget(target, 1250)
 	elseif myHeroName == "Draven" then
 			DrawText(string.format("Knocking Back inRange Enemy - %s", GetObjectName(myHero)),24,750,50,0xff00ff00);	
+			if ValidTarget(target, GetCastRange(myHero, _E)) then			
 			if CanUseSpell(myHero, _E) == READY then
-			if ValidTarget(target, GetCastRange(myHero, _E)) then
 			local EPred = GetPredictionForPlayer(myPos, target, GetMoveSpeed(target), 1600, 250, GetCastRange(myHero, _E), 80, false, true)			
 				
 				if EPred.HitChance == 1 then
@@ -319,8 +325,8 @@ end
 
 
 OnLoop(function(myHero)
---	local IOff = IWalkConfig.addParam("LaneClear", "LaneClear", SCRIPT_PARAM_KEYDOWN, string.byte("-"))
---	local IOn = IWalkConfig.addParam("LaneClear", "LaneClear", SCRIPT_PARAM_KEYDOWN, string.byte("V"))
+for _,k in pairs(MonTourTable) do
+  if k == myHeroName then
 	if IWalkConfig.Combo then
 	DoMyHeroCombo()
 	
@@ -332,16 +338,13 @@ OnLoop(function(myHero)
     
     elseif IWalkConfig.LastHit then 
     DoMyHeroLastHit()
-
---	elseif Config.U then --NOT WORKING HMMM IF ANYBODY KNOW HOW TO FIX PLEASE WRITE IT TO ME :)
---    SpecialAttack()
-
-    elseif KeyIsDown(0x4E) then 
+    
+    elseif KeyIsDown(HOTKEY) then 
     SpecialAttack()
     
 --    elseif KeyIsDown(0x02)then
 --    CastTargetSpell(myHero,ping-mia.troy)
-    
-    
-    end		
+end
+    end
+    end	 	
 end)
