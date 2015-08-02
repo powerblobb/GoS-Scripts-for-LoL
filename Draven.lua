@@ -9,7 +9,7 @@ require('Baseult')
 ----MarCiiionTour Lib V1
 ----Voteup for Scripts please thanks :)
 ----GoS LUA API v0.0.7
-----Draven Version 0.2.0.4
+----Draven Version 0.2.0.5
 ----Inspired.lua v14
 ----IAC.lua v14
 ----created by MarCiii
