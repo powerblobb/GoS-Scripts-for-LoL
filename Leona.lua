@@ -8,7 +8,7 @@ require('MonTour')
 ----MarCiiionTour Lib V1
 ----Voteup for Scripts please thanks :)
 ----GoS LUA API v0.0.7
-----Leona Version 1.0.0.1
+----Leona Version 1.0.0.3
 ----Inspired.lua v14
 ----IAC.lua v14
 ----created by MarCiii
