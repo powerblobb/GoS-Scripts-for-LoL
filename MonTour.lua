@@ -1,8 +1,4 @@
-require('Inspired')
-require('IAC')
-myIAC = IAC()
-
-local version = 2.1
+local version = 2
 require ("DLib")
 
 up=Updater.new("powerblobb/GoS-Scripts-for-LoL/master/MonTour.lua", "MonTour", version)
@@ -104,7 +100,7 @@ local myHero = GetMyHero()
 local myPos = GetOrigin(myHero)
 local target = GetCurrentTarget()
 local MyHeroMana = GetCurrentMana(myHero)
-local ManaCheck = MyHeroMana >= qcost() + wcost() + ecost() + rcost()
+local ManaCheckLeona = MyHeroMana >= qcost() + wcost() + ecost() + rcost()
 local MyheroRange = 550 --DRAVEN RANGE	
 	--Leona
 	
@@ -127,7 +123,7 @@ local MyheroRange = 550 --DRAVEN RANGE
         			CastTargetSpell(myHero,_W)
 					end --end off CanUseSpell(myHero, _W)
 				end	
-				if Config.R and Config.RR and ManaCheck and CanUseSpell(myHero, _E) ~= READY and CanUseSpell(myHero, _Q) ~= READY and CanUseSpell(myHero, _W) ~= READY and CanUseSpell(myHero, _R) ~= ONCOOLDOWN then	
+				if Config.R and Config.RR and ManaCheckLeona and CanUseSpell(myHero, _E) ~= READY and CanUseSpell(myHero, _Q) ~= READY and CanUseSpell(myHero, _W) ~= READY and CanUseSpell(myHero, _R) ~= ONCOOLDOWN then	
 				local RPred = GetPredictionForPlayer(myPos,target,GetMoveSpeed(target),1900,500,1200,70,true,true)
 					if CanUseSpell(myHero, _R) == READY and RPred.HitChance == 1 then
         			CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z) 
