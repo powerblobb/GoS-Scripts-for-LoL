@@ -1,4 +1,9 @@
+local version = 2
+require ("DLib")
 
+up=Updater.new("powerblobb/GoS-Scripts-for-LoL/master/MonTour.lua", "MonTour", version)
+if up.newVersion() then 
+	up.update() end
 
 --e.g If you want to use only Leona from my Script then MonTourStartChampion = {"Leona", "DravenOFF"}
 --e.g If you want to use only Draven from my Script then MonTourStartChampion = {"LeonaOFF", "Draven"}
@@ -6,7 +11,7 @@ MonTourStartChampion = {"Leona", "Draven"}
 
 local HOTKEY = string.byte('N') --You can change the Key here "string.byte('????')"
 
-----MarCiiionTour Lib V1.3
+----MarCiiionTour Lib V2
 ----Voteup for Scripts please thanks :)
 ----GoS LUA API v0.0.7
 ----Leona Version 1.0.0.3
@@ -25,6 +30,7 @@ local HOTKEY = string.byte('N') --You can change the Key here "string.byte('????
 --Press the Combo Button for E+Q+W+R Combo
 --Press the Harass Button for Q Combo
 --Press N for SpecialAttack - Knocking Back inRange Enemy by Draven
+
 myHero = GetMyHero()
 MonTourMyHeroName = GetObjectName(myHero)
 
@@ -65,6 +71,7 @@ function DoMyHeroConfigMenu() --Config Menu
 		Config.addParam("Q", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
 		Config.addParam("W", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
 		Config.addParam("R", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
+		Config.addParam("RR", "Use R only if EQW ready", SCRIPT_PARAM_ONOFF, true)
 		Config.addParam("U", "Perfect R", SCRIPT_PARAM_KEYDOWN, string.byte("n"))
 	elseif MonTourMyHeroName == "Draven" then
 		Config = scriptConfig("Draven", "League of Draven")
@@ -109,7 +116,13 @@ local MyheroRange = 550 --DRAVEN RANGE
         			CastTargetSpell(myHero,_W)
 					end --end off CanUseSpell(myHero, _W)
 				end	
-				if Config.R and CanUseSpell(myHero, _E) ~= READY and CanUseSpell(myHero, _Q) ~= READY and CanUseSpell(myHero, _W) ~= READY and CanUseSpell(myHero, _R) ~= ONCOOLDOWN then	
+				if Config.R and Config.RR and CanUseSpell(myHero, _E) ~= READY and CanUseSpell(myHero, _Q) ~= READY and CanUseSpell(myHero, _W) ~= READY and CanUseSpell(myHero, _R) ~= ONCOOLDOWN then	
+				local RPred = GetPredictionForPlayer(myPos,target,GetMoveSpeed(target),1900,500,1200,70,true,true)
+					if CanUseSpell(myHero, _R) == READY and RPred.HitChance == 1 then
+        			CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z) 
+					end --end of CanUseSpell(myHero, _R)
+				end
+				if Config.R and not Config.RR then	
 				local RPred = GetPredictionForPlayer(myPos,target,GetMoveSpeed(target),1900,500,1200,70,true,true)
 					if CanUseSpell(myHero, _R) == READY and RPred.HitChance == 1 then
         			CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z) 
