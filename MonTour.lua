@@ -1,4 +1,8 @@
-local version = 2
+require('Inspired')
+require('IAC')
+myIAC = IAC()
+
+local version = 3
 require ("DLib")
 
 up=Updater.new("powerblobb/GoS-Scripts-for-LoL/master/MonTour.lua", "MonTour", version)
@@ -36,14 +40,14 @@ MonTourMyHeroName = GetObjectName(myHero)
 
 for _,m in pairs(MonTourStartChampion) do
 	if m == MonTourMyHeroName then
-	PrintChat("<font color=\"#FFFFFF\"><b>League of "..myHeroName.." - </b></font> <font color=\"#FFFFFF\"><b>Loaded. by MarCiii</font><b>")
+	PrintChat("<font color=\"#FFFFFF\"><b>League of "..MonTourMyHeroName.." - </b></font> <font color=\"#FFFFFF\"><b>Loaded. by MarCiii</font><b>")
 	PrintChat("<font color='#FFFFFF\'>This Script is optimized for Inspired.lua V14 - IAC.lua V14 and GoS LUA API v0.0.7</font>")
 	
 myHeroName = GetObjectName(myHero)
 myHero = GetMyHero()
 MonTourTable = {"Leona", "Draven"}
-minionTable = {}
-orbTable = { lastAA = 0, windUp = 13.37, animation = 13.37 }
+--minionTable = {}
+--orbTable = { lastAA = 0, windUp = 13.37, animation = 13.37 }
 
 local myPos = GetOrigin(myHero)
 local target = GetCurrentTarget()
@@ -54,11 +58,13 @@ local MyheroRangeL = 125 --LEONA RANGE
 function HeroNameLoadLib() --Libs
 	if MonTourMyHeroName == "Leona" then
 		require('Inspired')
-		require('IAC')	
+		require('IAC')
+		myIAC = IAC()	
 		elseif MonTourMyHeroName == "Draven" then
 		require('Inspired')
 		require('IAC')
 		require('Baseult') 
+		myIAC = IAC()
 	end --end of myHeroName
 end
 
@@ -71,7 +77,7 @@ function DoMyHeroConfigMenu() --Config Menu
 		Config.addParam("Q", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
 		Config.addParam("W", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
 		Config.addParam("R", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
-		Config.addParam("RR", "Use R only if EQW ready", SCRIPT_PARAM_ONOFF, true)
+		Config.addParam("RR", "EQW/MANA READY", SCRIPT_PARAM_ONOFF, true)
 		Config.addParam("U", "Perfect R", SCRIPT_PARAM_KEYDOWN, string.byte("n"))
 	elseif MonTourMyHeroName == "Draven" then
 		Config = scriptConfig("Draven", "League of Draven")
@@ -94,12 +100,13 @@ local myHero = GetMyHero()
 local myPos = GetOrigin(myHero)
 local target = GetCurrentTarget()
 local MyHeroMana = GetCurrentMana(myHero)
+local ManaCheck = MyHeroMana >= qcost() + wcost() + ecost() + rcost()
 local MyheroRange = 550 --DRAVEN RANGE	
 	--Leona
 	
 	if MonTourMyHeroName == "Leona" then
 		for _,unit in pairs(GetEnemyHeroes()) do
-			if ValidTarget(unit, 1250) and MyHeroMana >= qcost() + wcost() + ecost() + rcost() then 	
+			if ValidTarget(unit, 1250) then 	
 			local EPred = GetPredictionForPlayer(myPos,target,GetMoveSpeed(target),1900,500,875,70,true,true)
         		if Config.E then           
 					if CanUseSpell(myHero, _E) == READY and EPred.HitChance == 1 then		
@@ -116,7 +123,7 @@ local MyheroRange = 550 --DRAVEN RANGE
         			CastTargetSpell(myHero,_W)
 					end --end off CanUseSpell(myHero, _W)
 				end	
-				if Config.R and Config.RR and CanUseSpell(myHero, _E) ~= READY and CanUseSpell(myHero, _Q) ~= READY and CanUseSpell(myHero, _W) ~= READY and CanUseSpell(myHero, _R) ~= ONCOOLDOWN then	
+				if Config.R and Config.RR and ManaCheck and CanUseSpell(myHero, _E) ~= READY and CanUseSpell(myHero, _Q) ~= READY and CanUseSpell(myHero, _W) ~= READY and CanUseSpell(myHero, _R) ~= ONCOOLDOWN then	
 				local RPred = GetPredictionForPlayer(myPos,target,GetMoveSpeed(target),1900,500,1200,70,true,true)
 					if CanUseSpell(myHero, _R) == READY and RPred.HitChance == 1 then
         			CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z) 
@@ -288,7 +295,7 @@ local myHero = GetMyHero()
 local myPos = GetOrigin(myHero)
 local target = GetCurrentTarget()
 local MyheroRange = 550 --DRAVEN RANGE
-		Move()
+		IAC:Move()
 		if MonTourMyHeroName == "Leona" then
 		  for _,unit in pairs(GetEnemyHeroes()) do 
 			DrawText(string.format("Ultimate Perfect R - %s", GetObjectName(myHero)),24,750,50,0xff00ff00);
