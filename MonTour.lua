@@ -2,7 +2,7 @@ require('Inspired')
 require('IAC')
 myIAC = IAC()
 
-local version = 3
+local version = 2.1
 require ("DLib")
 
 up=Updater.new("powerblobb/GoS-Scripts-for-LoL/master/MonTour.lua", "MonTour", version)
@@ -24,6 +24,10 @@ local HOTKEY = string.byte('N') --You can change the Key here "string.byte('????
 ----IAC.lua v14
 ----created by MarCiii
 ----credits to Inspired and Deftsu for some code that i used for learning
+
+--you can find my scripts here:
+--http://gamingonsteroids.com/topic/1380-league-of-draven-v14-beta-v0204-adc/
+--http://gamingonsteroids.com/topic/1408-leona-on-tour-v14-updated-to-1001-combo-harass-perfect-r/
 
 --Leona--
 --Press the Combo Button for E+Q+W+R Combo
