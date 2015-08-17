@@ -520,7 +520,7 @@ function Lux:CastPredQ(unit)
 		end
 end
 
-function Lux:CastPredQ(unit)
+function Lux:CastPredQkill(unit)
 		local QPred = GetPredictionForPlayer(myHeroPos, unit, GetMoveSpeed(unit), self.spellData[_Q].speed, self.spellData[_Q].delay, self.spellData[_Q].range, self.spellData[_Q].width, true, true)
 		if self.QREADY and QPred.HitChance == 1 then
 			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
@@ -2145,3 +2145,4 @@ PrintChat(textTable[2])
 PrintChat(textTable[3])
 PrintChat(textTable[4])	
 end
+
