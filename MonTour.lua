@@ -688,8 +688,8 @@ function Lux:Killsteal()
 	local Qmana = self.spellData[_Q].mana() 
 	local Emana = self.spellData[_E].mana()
 	local Rmana = self.spellData[_R].mana()				 				
-		local QPred = GetPredictionForPlayer(myHeroPos, enemy, GetMoveSpeed(enemy), self.spellData[_Q].speed, self.spellData[_Q].delay, self.spellData[_Q].range-10, self.spellData[_Q].width, true, true)	
-		if self.Config.KSQ and ValidTarget(enemy, self.spellData[_Q].range) and QPred.HitChance == 1 and enemyhp < CalcDamage(myHero, enemy, 0, QDmg) and igotmana >= Qmana then
+--		local QPred = GetPredictionForPlayer(myHeroPos, enemy, GetMoveSpeed(enemy), self.spellData[_Q].speed, self.spellData[_Q].delay, self.spellData[_Q].range-10, self.spellData[_Q].width, true, true)	
+		if self.Config.KSQ and ValidTarget(enemy, self.spellData[_Q].range) and enemyhp < CalcDamage(myHero, enemy, 0, QDmg) and igotmana >= Qmana then
 			self:CastPredQ(enemy)
 		elseif self.Config.KSE and ValidTarget(enemy, self.spellData[_E].range) and enemyhp < CalcDamage(myHero, enemy, 0, EDmg) and igotmana >= Emana  then
 			self:CastPredEkill(enemy)	
