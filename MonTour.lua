@@ -1,4 +1,4 @@
---MonTour - MarCiii on Tour V2.0.0.1
+--MonTour - MarCiii on Tour V2.0.0.2
 
 -- Worktime for Leona = 10 Std
 -- Worktime for Lux = 4 Days - It is much (just learning to code) but i want it perfect :) Lux has a much of Features
@@ -2137,7 +2137,7 @@ if _G[GetObjectName(myHero)] then
 end	
 local upv = "If you like UpVote!"
 local sig = "Made by MarCiii"
-local ver = "2.0.0.1"
+local ver = "2.0.0.2"
 local info = "MarCiii on Tour Loaded"
 textTable = {info,upv,sig,ver} 
 PrintChat(textTable[1])
