@@ -1,598 +1,2147 @@
-local version = 2
-require ("DLib")
+--MonTour - MarCiii on Tour V2.0.0.1
 
-up=Updater.new("powerblobb/GoS-Scripts-for-LoL/master/MonTour.lua", "MonTour", version)
-if up.newVersion() then 
-	up.update() end
+-- Worktime for Leona = 10 Std
+-- Worktime for Lux = 4 Days - It is much (just learning to code) but i want it perfect :) Lux has a much of Features
+-- Worktime for Draven 5 Hours
+-- Worktime for Aatrox 10 Hours
+-- Worktime for Amumu 5 Hours
 
---e.g If you want to use only Leona from my Script then MonTourStartChampion = {"Leona", "DravenOFF"}
---e.g If you want to use only Draven from my Script then MonTourStartChampion = {"LeonaOFF", "Draven"}
-MonTourStartChampion = {"Leona", "Draven"}
+--Credits to Inspired, Deftsu, Platypus, Snowbell, TheWelder and ilovesona
+--for some code ive used here for trying and learning :)
 
-local HOTKEY = string.byte('N') --You can change the Key here "string.byte('????')"
-
-----MarCiiionTour Lib V2
-----Voteup for Scripts please thanks :)
-----GoS LUA API v0.0.7
-----Leona Version 1.0.0.3
-----Draven Version 1.0.0.2
-----Inspired.lua v14
-----IAC.lua v14
-----created by MarCiii
-----credits to Inspired and Deftsu for some code that i used for learning
-
---you can find my scripts here:
---http://gamingonsteroids.com/topic/1380-league-of-draven-v14-beta-v0204-adc/
---http://gamingonsteroids.com/topic/1408-leona-on-tour-v14-updated-to-1001-combo-harass-perfect-r/
-
---Leona--
---Press the Combo Button for E+Q+W+R Combo
---Press the Harass Button for E+Q+W Combo
---Press N for SpecialAttack - Perfect R by Leona
-
---Draven--
---Press the Combo Button for E+Q+W+R Combo
---Press the Harass Button for Q Combo
---Press N for SpecialAttack - Knocking Back inRange Enemy by Draven
+supportedHero = {["Leona"] = true, ["Lux"] = true, ["Draven"] = true, ["Aatrox"] = true, ["Amumu"] = true}
 
 myHero = GetMyHero()
-MonTourMyHeroName = GetObjectName(myHero)
+myIAC = IAC()
 
-for _,m in pairs(MonTourStartChampion) do
-	if m == MonTourMyHeroName then
-	PrintChat("<font color=\"#FFFFFF\"><b>League of "..MonTourMyHeroName.." - </b></font> <font color=\"#FFFFFF\"><b>Loaded. by MarCiii</font><b>")
-	PrintChat("<font color='#FFFFFF\'>This Script is optimized for Inspired.lua V14 - IAC.lua V14 and GoS LUA API v0.0.7</font>")
-	
-myHeroName = GetObjectName(myHero)
-myHero = GetMyHero()
-MonTourTable = {"Leona", "Draven"}
---minionTable = {}
---orbTable = { lastAA = 0, windUp = 13.37, animation = 13.37 }
+minion = GetAllMinions(MINION_ENEMY)
+unit = GetCurrentTarget()
 
-local myPos = GetOrigin(myHero)
-local target = GetCurrentTarget()
-local MyHeroMana = GetCurrentMana(myHero)
-local MyheroRange = 550 --DRAVEN RANGE
-local MyheroRangeL = 125 --LEONA RANGE
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------- L E O N A ------------------------------------------------------------------------------------- L E O N A ------------------------------------------------------
+---------------------------------------------------------------------------- L E O N A ------------------------------------------------------------------------------------------------
+---------------------- L E O N A ------------------------------------------------------------------------------------- L E O N A ------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+class "Leona"
+function Leona:__init()
+	OnLoop(function(myHero) self:Loop(myHero) end)
+	self.spellData = 
+	{
+	[_Q] = {dmg = function () return 35 + 25*GetCastLevel(myHero,_Q) + 0.55*GetBonusAP(myHero) end,  
+			mana = function () return 40 + 5*GetCastLevel(myHero,_Q) end,
+			range = 400},  
+	[_W] = {dmg = function () return 10 + 50*GetCastLevel(myHero,_W) + 0.4*GetBonusAP(myHero) end,  
+			mana = 60,
+			range = 600},
+	[_E] = {dmg = function () return 20 + 40*GetCastLevel(myHero,_E) + 0.4*GetBonusAP(myHero) end, 
+			mana = 100,			
+			speed = 1900,
+			delay = 500,			 			
+			range = 875, 
+			width = 70},
+	[_R] = {dmg = function () return 50 + 100*GetCastLevel(myHero,_R) + 0.8*GetBonusAP(myHero) end, 
+			mana = 100,			
+			speed = 1900,
+			delay = 500,			 			
+			range = 1200, 
+			width = 70},					
+	}
 
-function HeroNameLoadLib() --Libs
-	if MonTourMyHeroName == "Leona" then
-		require('Inspired')
-		require('IAC')
-		myIAC = IAC()	
-		elseif MonTourMyHeroName == "Draven" then
-		require('Inspired')
-		require('IAC')
-		require('Baseult') 
-		myIAC = IAC()
-	end --end of myHeroName
+	self.Config = scriptConfig("MonTourLeona", "Leona on Tour")
+		self.Config.addParam("E", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("Q", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("W", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("LCW", "Use W LaneClear", SCRIPT_PARAM_ONOFF, true)		
+		self.Config.addParam("R", "Use R in combo", SCRIPT_PARAM_ONOFF, true)		
+		self.Config.addParam("Draw", "DMGoHPBARs", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("KS", "KillSteal QWER", SCRIPT_PARAM_ONOFF, true)				
+		self.Config.addParam("U", "Perfect R", SCRIPT_PARAM_KEYDOWN, string.byte("N"))
 end
 
-HeroNameLoadLib()
-
-function DoMyHeroConfigMenu() --Config Menu
-	if MonTourMyHeroName == "Leona" then
-		Config = scriptConfig("Leona", "Leona")
-		Config.addParam("E", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
-		Config.addParam("Q", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
-		Config.addParam("W", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
-		Config.addParam("R", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
-		Config.addParam("RR", "EQW/MANA READY", SCRIPT_PARAM_ONOFF, true)
-		Config.addParam("U", "Perfect R", SCRIPT_PARAM_KEYDOWN, string.byte("n"))
-	elseif MonTourMyHeroName == "Draven" then
-		Config = scriptConfig("Draven", "League of Draven")
-		Config.addParam("Q", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
-		Config.addParam("W", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
-		Config.addParam("LHQ", "Use Q Last Hit", SCRIPT_PARAM_ONOFF, true)
-		Config.addParam("LCQ", "Use Q Lane Clear", SCRIPT_PARAM_ONOFF, true)
-		Config.addParam("E", "Use E if killable", SCRIPT_PARAM_ONOFF, true)
-		Config.addParam("R", "Use R if killable", SCRIPT_PARAM_ONOFF, true)
-		Config.addParam("U", "KnockBack Enemy in Range", SCRIPT_PARAM_KEYDOWN, string.byte("n")) 
-	end --end of myHeroName
+function Leona:Loop(myHero)
+	self:Checks()
+	if self.Config.Draw then 
+		self:Draws()
+	end
+	if self.Config.KS then
+		self:Killsteal()
+		end
+	if _G.IWalkConfig.LaneClear then
+    	self:LaneClear(minion)
+    end	
+	if _G.IWalkConfig.Combo then
+		self:Combo()
+	end
+	if _G.IWalkConfig.Harass then
+		self:Harass()
+	end
+	
+	if self.Config.U then
+		self:Special()
+	end	
+  self:DoWalk()
 end
 
-DoMyHeroConfigMenu()
-
-function DoMyHeroCombo() --Combo Cast
-DrawText(string.format("Combo ON - %s", GetObjectName(myHero)),24,750,50,0xff00ff00);
-local MonTourMyHeroName = GetObjectName(myHero)	
-local myHero = GetMyHero()
-local myPos = GetOrigin(myHero)
-local target = GetCurrentTarget()
-local MyHeroMana = GetCurrentMana(myHero)
-local ManaCheckLeona = MyHeroMana >= qcost() + wcost() + ecost() + rcost()
-local MyheroRange = 550 --DRAVEN RANGE	
-	--Leona
-	
-	if MonTourMyHeroName == "Leona" then
-		for _,unit in pairs(GetEnemyHeroes()) do
-			if ValidTarget(unit, 1250) then 	
-			local EPred = GetPredictionForPlayer(myPos,target,GetMoveSpeed(target),1900,500,875,70,true,true)
-        		if Config.E then           
-					if CanUseSpell(myHero, _E) == READY and EPred.HitChance == 1 then		
-					CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)     
-					end --end of CanUseSpell(myHero, _E)         
- 	   			end	
- 	  			if Config.Q then             
-        			if CanUseSpell(myHero, _Q) == READY and IsInDistance(target, 400) then
-        			CastTargetSpell(myHero,_Q)
-					end --end of CanUseSpell(myHero, _Q)
-        		end
-        		if Config.W then      
-        			if CanUseSpell(myHero, _W) == READY and IsInDistance(target, 600) then
-        			CastTargetSpell(myHero,_W)
-					end --end off CanUseSpell(myHero, _W)
-				end	
-				if Config.R and Config.RR and ManaCheckLeona and CanUseSpell(myHero, _E) ~= READY and CanUseSpell(myHero, _Q) ~= READY and CanUseSpell(myHero, _W) ~= READY and CanUseSpell(myHero, _R) ~= ONCOOLDOWN then	
-				local RPred = GetPredictionForPlayer(myPos,target,GetMoveSpeed(target),1900,500,1200,70,true,true)
-					if CanUseSpell(myHero, _R) == READY and RPred.HitChance == 1 then
-        			CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z) 
-					end --end of CanUseSpell(myHero, _R)
-				end
-				if Config.R and not Config.RR then	
-				local RPred = GetPredictionForPlayer(myPos,target,GetMoveSpeed(target),1900,500,1200,70,true,true)
-					if CanUseSpell(myHero, _R) == READY and RPred.HitChance == 1 then
-        			CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z) 
-					end --end of CanUseSpell(myHero, _R)
-				end
-	  		end --end of ValidTarget(target, 1250)   	
-    	end --for _,unit in pairs(GetEnemyHeroes()) do
-  		
-	--Draven
-	elseif MonTourMyHeroName == "Draven" then
-	for _,unit in pairs(GetEnemyHeroes()) do	
-	if ValidTarget(unit, MyheroRange) then 
-		if Config.Q then
-			if  CanUseSpell(myHero, _Q) == READY and IsInDistance(target, MyheroRange) then
-            CastTargetSpell(myHero,_Q)
-            end 
+function Leona:DoWalk()
+      IWalkTarget = nil
+    myHero = GetMyHero()
+    myHeroName = GetObjectName(myHero)
+    waitTickCount = 0
+    self.move = true
+    self.aa = true
+    self.orbTable = { lastAA = 0, windUp = 13.37, animation = 13.37 }
+  
+    self.myRange = GetRange(myHero)+GetHitBox(myHero)+(IWalkTarget and GetHitBox(IWalkTarget) or GetHitBox(myHero))
+--    if IWalkConfig.C then Circle(myHero,self.myRange):draw() end
+--    local addRange = ((self.gapcloserTable[myHeroName] and CanUseSpell(myHero, gapcloserTable[myHeroName]) == READY) and 250 or 0) + (GetObjectName(myHero) == "Jinx" and (GetCastLevel(myHero, _Q)*25+50) or 0)
+    IWalkTarget = GetTarget(self.myRange, DAMAGE_PHYSICAL) --+ addRange
+    if _G.IWalkConfig.LaneClear then
+      IWalkTarget = GetHighestMinion(GetOrigin(myHero), self.myRange, MINION_ENEMY)
+    end
+    local unit = IWalkTarget
+    if (_G.IWalkConfig.Harass or _G.IWalkConfig.Combo) and ValidTarget(unit) then --self:DoChampionPlugins(unit) end
+    if ValidTarget(unit, self.myRange) and GetTickCount() > self.orbTable.lastAA + self.orbTable.animation and self.aa then
+      AttackUnit(unit)
+    elseif GetTickCount() > self.orbTable.lastAA + self.orbTable.windUp and self.move then
+      if GetRange(myHero) < 450 and unit and GetObjectType(unit) == GetObjectType(myHero) and ValidTarget(unit, self.myRange) then
+        local unitPos = GetOrigin(unit)
+        if GetDistance(unit) > self.myRange/2 then
+          MoveToXYZ(unitPos.x, unitPos.y, unitPos.z)
         end
-    end 
-    if MyHeroMana >= qcost() + wcost() then
-   		if ValidTarget(unit, 600) then   
-        	if Config.W then
---        	local targetmove = GetMoveSpeed(target)
---        	local myheromove = GetMoveSpeed(myHero)
---        		if targetmove > myheromove and IsInDistance(target, 620) then 
-					if IsInDistance(target, 600) then
-						if  CanUseSpell(myHero, _W) == READY then
-            			CastTargetSpell(myHero,_W)
-            			end 
-       				end
---        		end
-        	end
-    	end
-    end     
-    if ValidTarget(unit, 1150) then     
-        if Config.E then      
-	   		if GetDistance(myHero, unit) >= 600 then
-	    		if CanUseSpell(myHero, _E) == READY then
-	    		
-					local EPred = GetPredictionForPlayer(myPos, target, GetMoveSpeed(target), 1600, 250, 1150, 80, false, true) --GetCastRange(myHero, _E) = 1150							
-					if EPred.HitChance == 1 and  CalcDamage(myHero, target, Edmg()) > GetCurrentHP(target) + GetHPRegen(target) then
-					CastSkillShot(_E, EPred.PredPos.x, EPred.PredPos.y, EPred.PredPos.z)
-					end
-				end
-		 	end	
+        else
+          IAC:Move()
+       end 
+      end
+    end
+  end
+
+function Leona:Draws()
+local rangeofdraws = 20000
+	for _,unit in pairs(GetEnemyHeroes()) do
+	--Ready Q + W + E + R
+	if ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.WREADY and self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg() + self.spellData[_W].dmg() + self.spellData[_E].dmg() + self.spellData[_R].dmg()),0xffffffff)	
+	--Ready Q + W + E + (R)
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.WREADY and self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg() + self.spellData[_W].dmg() + self.spellData[_E].dmg()),0xffffffff)
+	--Ready Q + W + (E) + R
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.WREADY and not self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg() + self.spellData[_W].dmg() + self.spellData[_R].dmg()),0xffffffff)				
+	--Ready Q + W + (E) + (R)			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.WREADY and not self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg() + self.spellData[_W].dmg()),0xffffffff)		
+	--Ready Q + (W) + E + R			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and not self.WREADY and self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg() + self.spellData[_E].dmg() + self.spellData[_R].dmg()),0xffffffff)			
+	--Ready Q + (W) + E + (R)			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and not self.WREADY and self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg() + self.spellData[_E].dmg()),0xffffffff)
+	--Ready Q + (W) + (E) + R			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and not self.WREADY and not self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg() + self.spellData[_R].dmg()),0xffffffff)			
+	--Ready Q + (W) + (E) + (R)		
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and not self.WREADY and not self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg()),0xffffffff)
+	--Ready (Q) + W + E + R
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.WREADY and self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_W].dmg() + self.spellData[_E].dmg() + self.spellData[_R].dmg()),0xffffffff)			
+	--Ready (Q) + W + E + (R)
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.WREADY and self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_W].dmg() + self.spellData[_E].dmg()),0xffffffff)	
+	--Ready (Q) + W + (E) + R			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.WREADY and not self.EREADY and self.RREADY then		
+	DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_W].dmg() + self.spellData[_R].dmg()),0xffffffff)		
+	--Ready (Q) + W + (E) + (R)		
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.WREADY and not self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_W].dmg()),0xffffffff)
+	--Ready (Q) + (W) + E + R
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and not self.WREADY and self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_E].dmg() + self.spellData[_R].dmg()),0xffffffff)	
+	--Ready (Q) + (W) + E + (R)			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and not self.WREADY and self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_E].dmg()),0xffffffff)		
+	--Ready (Q) + (W) + (E) + R		
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and not self.WREADY and not self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_R].dmg()),0xffffffff)
+	end
+	end	
+end
+
+function Leona:Checks()
+	self.QREADY = CanUseSpell(myHero,_Q) == READY
+	self.WREADY = CanUseSpell(myHero,_W) == READY
+	self.EREADY = CanUseSpell(myHero,_E) == READY
+	self.RREADY = CanUseSpell(myHero,_R) == READY
+	self.target = GetTarget(1250, DAMAGE_MAGIC)
+	self.targetDRAW = GetTarget(20000, DAMAGE_MAGIC)	
+	self.targetPos = GetOrigin(self.target)
+	myHeroPos = GetOrigin(myHero)
+	self.Qstack = GotBuff(myHero,"LeonaShieldOfDaybreak")
+	self.Wstack = GotBuff(myHero,"LeonaSolarBarrier")
+end
+
+function Leona:CastPredE(unit)
+	local unitPos = GetOrigin(unit)
+		local EPred = GetPredictionForPlayer(myHeroPos, unit, GetMoveSpeed(unit), self.spellData[_E].speed, self.spellData[_E].delay, self.spellData[_E].range-25, self.spellData[_E].width, false, true)
+		if self.EREADY and self.Config.E and EPred.HitChance == 1 then
+			CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
+		end
+end
+
+function Leona:CastQ(unit)
+	if self.QREADY and self.Config.Q and IsInDistance(unit, 400) then 
+		CastTargetSpell(unit,_Q)
+	end
+end
+
+function Leona:CastW(unit)
+	if self.WREADY and self.Config.W and IsInDistance(unit, 600) then 
+		CastTargetSpell(unit,_W)
+	end
+end
+
+function Leona:CastPredR(unit)
+	local unitPos = GetOrigin(unit)
+	local RPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit), self.spellData[_R].speed, self.spellData[_R].delay, self.spellData[_R].range, self.spellData[_R].width, true, true)
+	if self.Config.R then --and self.Wstack
+		if self.RREADY and RPred.HitChance == 1 then
+			CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z)
+		end
+	end	
+end
+
+function Leona:LaneClear(minion)
+local eminion = CountMinions()
+		if self.WREADY and self.Config.LCW then 
+			for i,minion in pairs(GetAllMinions(MINION_ENEMY)) do		
+				if IsInDistance(minion, 675) and ValidTarget(minion, 675) then 
+					CastSpell(_W)
+				end		
+			end
+		end
+end
+			
+function Leona:Combo()
+	if ValidTarget(self.target, self.spellData[_R].range+50) and not self.Config.MC then
+		if self.EREADY then
+			self:CastPredE(self.target)
+		elseif self.QREADY then
+			self:CastQ(self.target)	 
+		elseif self.WREADY then
+			self:CastW(self.target)	 
+		elseif self.RREADY then
+			self:CastPredR(self.target)			
+		end	
+	end
+end
+
+function Leona:Harass()
+	if ValidTarget(self.target, self.spellData[_E].range+50) then
+		if self.EREADY then
+			self:CastPredE(self.target)
+		elseif self.QREADY then
+			self:CastQ(self.target)	 
+		elseif self.WREADY then
+			self:CastW(self.target)	 		
 		end
 	end
-	if ValidTarget(unit, 4500) then
-		if Config.R then
-			if GetDistance(myHero, unit) > 780 then 	--			if GetDistance(myHero,unit)
-				if CanUseSpell(myHero, _R) == READY then
-			
-					local RPred = GetPredictionForPlayer(myPos, target, GetMoveSpeed(target), 2000, 1000, 20000, 160, false, true)						
-					if RPred.HitChance == 1 and  CalcDamage(myHero, target, Rdmg()) > GetCurrentHP(target) + GetHPRegen(target) then
-					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
-					end		
+end
+
+function Leona:Special()
+ IAC:Move()
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	if ValidTarget(enemy, self.spellData[_R].range+50) then
+		if self.RREADY then
+			self:CastPredR(enemy)
+		end	
+	end
+	end
+end
+
+function Leona:Killsteal()
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	local enemyhp = GetCurrentHP(enemy) + GetHPRegen(enemy)
+		if ValidTarget(enemy, self.spellData[_W].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_W].dmg()) then
+			self:CastW(enemy)
+		elseif ValidTarget(enemy, self.spellData[_E].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_E].dmg()) then
+			self:CastPredE(enemy)
+		elseif ValidTarget(enemy, self.spellData[_Q].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_Q].dmg()) then
+			self:CastQ(enemy)		
+		elseif ValidTarget(enemy, self.spellData[_R].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_R].dmg()) then
+			self:CastPredR(enemy)
+		elseif ValidTarget(enemy, self.spellData[_E].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_E].dmg() + self.spellData[_W].dmg() + self.spellData[_Q].dmg()) then			
+			self:CastPredE(enemy) DelayAction(function() self:CastW(enemy) DelayAction(function() self:CastQ(enemy) end, 125) end, 250)
+		elseif ValidTarget(enemy, self.spellData[_R].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_Q].dmg() + self.spellData[_E].dmg() + self.spellData[_R].dmg()) then			
+			self:CastPredE(enemy) DelayAction(function() self:CastQ(enemy) DelayAction(function() self:CastPredR(enemy) end, 125) end, 250)			
+		elseif ValidTarget(enemy, self.spellData[_R].range+50) and enemyhp < CalcDamage(myHero, enemy, 0	, self.spellData[_Q].dmg() + self.spellData[_W].dmg() + self.spellData[_E].dmg() + self.spellData[_R].dmg()) then			
+			self:CastPredE(enemy) DelayAction(function() self:CastW(enemy) DelayAction(function() self:CastQ(enemy) DelayAction(function() self:CastPredR(enemy) end, 125) end, 250) end, 375)		
+		end
+	end	
+end
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------- L U X ------------------------------------------------------------------------------------- L U X --------------------------------------------------------------
+-------------------------------------------------------------------------- L U X ----------------------------------------------------------------------------------------------------
+-------------------- L U X ------------------------------------------------------------------------------------- L U X --------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+class "Lux"
+function Lux:__init()
+	OnLoop(function(myHero) self:Loop(myHero) end)
+	self.spellData = 
+	{
+	[_Q] = {dmg = function () return 10 + GetCastLevel(myHero,_Q) * 50 + GetBonusAP(myHero)*0.75 end,  
+			mana = function () return 40 + GetCastLevel(myHero,_Q) * 10 end,
+			speed = 1100,
+			delay = 250,			 			
+			range = 1175, 
+			width = 60},			  
+	[_W] = {dmg = function () return 10 + GetCastLevel(myHero,_Q)*0 end, 
+			shield = function () return 0 end,	 
+			mana = function () return 60 end,
+			speed = 1100,
+			delay = 250,			 			
+			range = 1000, 
+			width = 75},			
+	[_E] = {dmg = function () return 15 + GetCastLevel(myHero, _E) * 45 + GetBonusAP(myHero)*0.6 end, 
+			mana = function () return 55 + GetCastLevel(myHero,_E) * 15 end,			
+			speed = 1300,
+			delay = 250,			 			
+			range = 1100, 
+			width = 275},
+	[_R] = {dmg = function () return 200 + GetCastLevel(myHero,_R) * 100 + GetBonusAP(myHero) * 0.75 end, 
+			mana = function () return 100 end,		
+			speed = math.huge,
+			delay = 1000,			 			
+			range = 3340, 
+			width = 190},					
+	}
+
+	self.Config = scriptConfig("MonTourLux", "Lux on Tour")
+		self.Config.addParam("Q", "Q in combo", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("E", "E in combo", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("R", "R in combo", SCRIPT_PARAM_ONOFF, false)
+		self.Config.addParam("KSQ", "Auto Q for kill", SCRIPT_PARAM_ONOFF, false)
+		self.Config.addParam("KSE", "Auto E for kill", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("KSQE", "Auto QE for kill", SCRIPT_PARAM_ONOFF, false)
+		self.Config.addParam("KSER", "Auto ER for kill", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("KSQER", "Auto QER for kill", SCRIPT_PARAM_ONOFF, false)	
+		self.Config.addParam("W", "AutoShield Ally/Me", SCRIPT_PARAM_ONOFF, true)				
+		self.Config.addParam("LCW", "Use E LaneClear", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("KSR", "Auto R for kill", SCRIPT_PARAM_ONOFF, true)				
+		self.Config.addParam("Draw", "DMGBAR ON/OFF", SCRIPT_PARAM_ONOFF, true)						
+		self.Config.addParam("EAutoOFF", "Auto E Offcast", SCRIPT_PARAM_ONOFF, false)
+		self.Config.addParam("RN", "Ultimate Notifier", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("AL", "AutoLvLSkillsUp", SCRIPT_PARAM_ONOFF, true)										
+		self.Config.addParam("U", "Perfect R", SCRIPT_PARAM_KEYDOWN, string.byte("N"))
+end
+
+function Lux:Loop(myHero)		
+	self:Checks()
+	
+	if _G.IWalkConfig.Combo then
+		self:Combo()
+	end
+	if _G.IWalkConfig.Harass then
+		self:Harass()
+	end
+	
+	if self.Config.RN then
+		self:GLOBALULTNOTICE()
+	end
+
+	if self.Config.W then
+		self:CastPredWforShield()
+	end
+	
+	if self.Config.EAutoOFF then
+		self:CastPredEOFF(unit)
+	end
+	if self.Config.Draw then 
+		self:Draws()
+	end
+
+	if _G.IWalkConfig.LaneClear and self.Config.LCW then
+    	self:LaneClear(minion)
+    end	
+	
+	if self.Config.U then
+		self:Special()
+	end	
+	
+	if self.Config.AL then
+		self:AutoLvL()
+	end	
+	
+	self:Killsteal()
+  self:DoWalk()
+end
+
+function Lux:DoWalk()
+      IWalkTarget = nil
+    myHero = GetMyHero()
+    myHeroName = GetObjectName(myHero)
+    waitTickCount = 0
+    self.move = true
+    self.aa = true
+    self.orbTable = { lastAA = 0, windUp = 13.37, animation = 13.37 }
+  
+    self.myRange = GetRange(myHero)+GetHitBox(myHero)+(IWalkTarget and GetHitBox(IWalkTarget) or GetHitBox(myHero))
+--    if IWalkConfig.C then Circle(myHero,self.myRange):draw() end
+--    local addRange = ((self.gapcloserTable[myHeroName] and CanUseSpell(myHero, gapcloserTable[myHeroName]) == READY) and 250 or 0) + (GetObjectName(myHero) == "Jinx" and (GetCastLevel(myHero, _Q)*25+50) or 0)
+    IWalkTarget = GetTarget(self.myRange, DAMAGE_PHYSICAL) --+ addRange
+    if _G.IWalkConfig.LaneClear then
+      IWalkTarget = GetHighestMinion(GetOrigin(myHero), self.myRange, MINION_ENEMY)
+    end
+    local unit = IWalkTarget
+    if (_G.IWalkConfig.Harass or _G.IWalkConfig.Combo) and ValidTarget(unit) then --self:DoChampionPlugins(unit) end
+    if ValidTarget(unit, self.myRange) and GetTickCount() > self.orbTable.lastAA + self.orbTable.animation and self.aa then
+      AttackUnit(unit)
+    elseif GetTickCount() > self.orbTable.lastAA + self.orbTable.windUp and self.move then
+      if GetRange(myHero) < 450 and unit and GetObjectType(unit) == GetObjectType(myHero) and ValidTarget(unit, self.myRange) then
+        local unitPos = GetOrigin(unit)
+        if GetDistance(unit) > self.myRange/2 then
+          MoveToXYZ(unitPos.x, unitPos.y, unitPos.z)
+        end
+        else
+          self:Move()
+       end 
+      end
+    end
+  end
+
+function Lux:AutoLvL()
+if GetLevel(myHero) == 1 then
+	LevelSpell(_Q)
+end
+if GetLevel(myHero) == 2 then
+	LevelSpell(_E)
+end
+if GetLevel(myHero) == 3 then
+	LevelSpell(_W)
+end 
+if GetLevel(myHero) == 4 then
+	LevelSpell(_E)
+end
+ if GetLevel(myHero) == 5 then
+	LevelSpell(_E)
+end
+ if GetLevel(myHero) == 6 then
+	LevelSpell(_R)
+end
+ if GetLevel(myHero) == 7 then
+	LevelSpell(_E)
+end
+ if GetLevel(myHero) == 8 then
+	LevelSpell(_Q)
+end
+ if GetLevel(myHero) == 9 then
+	LevelSpell(_E)
+end
+ if GetLevel(myHero) == 10 then
+	LevelSpell(_Q)
+end
+ if GetLevel(myHero) == 11 then
+	LevelSpell(_R)
+end
+ if GetLevel(myHero) == 12 then
+	LevelSpell(_Q)
+end
+ if GetLevel(myHero) == 13 then
+	LevelSpell(_Q)
+end
+ if GetLevel(myHero) == 14 then
+	LevelSpell(_W)
+end
+ if GetLevel(myHero) == 15 then
+	LevelSpell(_W)
+end
+ if GetLevel(myHero) == 16 then
+	LevelSpell(_R)
+end
+ if GetLevel(myHero) == 17 then
+	LevelSpell(_W)
+end
+ if GetLevel(myHero) == 18 then
+	LevelSpell(_W)
+end
+end
+
+function Lux:Draws()
+local rangeofdraws = 20000
+	for _,unit in pairs(GetEnemyHeroes()) do		
+	--Ready Q + (W) + E + R			
+	if ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg() + self.spellData[_E].dmg() + self.spellData[_R].dmg()),0xffffffff)			
+	--Ready Q + (W) + E + (R)			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg() + self.spellData[_E].dmg()),0xffffffff)
+	--Ready Q + (W) + (E) + R			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and not self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg() + self.spellData[_R].dmg()),0xffffffff)			
+	--Ready Q + (W) + (E) + (R)		
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and not self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg()),0xffffffff)
+	--Ready (Q) + (W) + E + R
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_E].dmg() + self.spellData[_R].dmg()),0xffffffff)	
+	--Ready (Q) + (W) + E + (R)			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_E].dmg()),0xffffffff)		
+	--Ready (Q) + (W) + (E) + R		
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and not self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_R].dmg()),0xffffffff)
+	end
+	end	
+end
+
+function Lux:Checks()
+	self.QREADY = CanUseSpell(myHero,_Q) == READY
+	self.WREADY = CanUseSpell(myHero,_W) == READY
+	self.EREADY = CanUseSpell(myHero,_E) == READY
+	self.RREADY = CanUseSpell(myHero,_R) == READY
+	self.target = GetTarget(3450, DAMAGE_MAGIC)
+	self.targetDRAW = GetTarget(20000, DAMAGE_MAGIC)	
+	self.targetPos = GetOrigin(self.target)
+	myHeroPos = GetOrigin(myHero)
+	minionPos = GetOrigin(minion)	
+	self.Estack0 = GotBuff(myHero,"LuxLightStrikeKugel") == 0
+	self.Estack1 = GotBuff(myHero,"LuxLightStrikeKugel") == 1	
+	self.WbuffSelf = GotBuff(myHero,"luxprismaticwaveshieldself")
+	self.EnemyPassive = GotBuff(unit,"luxilluminatingfraulein") == 1	
+	self.EnemyQstack0 = GotBuff(unit,"LuxLightBindingMis") == 0
+	self.EnemyQstack1 = GotBuff(unit,"LuxLightBindingMis") == 1
+	
+end
+
+function Lux:CastPredQ(unit)
+		local QPred = GetPredictionForPlayer(myHeroPos, unit, GetMoveSpeed(unit), self.spellData[_Q].speed, self.spellData[_Q].delay, self.spellData[_Q].range, self.spellData[_Q].width, true, true)
+		if self.QREADY and self.Config.Q and QPred.HitChance == 1 then
+			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+		end
+end
+
+function Lux:CastPredQ(unit)
+		local QPred = GetPredictionForPlayer(myHeroPos, unit, GetMoveSpeed(unit), self.spellData[_Q].speed, self.spellData[_Q].delay, self.spellData[_Q].range, self.spellData[_Q].width, true, true)
+		if self.QREADY and QPred.HitChance == 1 then
+			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+		end
+end
+
+function Lux:CastPredE(unit)
+	local unitPos = GetOrigin(unit)
+		local EPred = GetPredictionForPlayer(myHeroPos, unit, GetMoveSpeed(unit), self.spellData[_E].speed, self.spellData[_E].delay, self.spellData[_E].range, self.spellData[_E].width, false, true)
+		if self.EREADY and self.Config.E and EPred.HitChance == 1 then
+			CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
+		elseif self.Estack1 then
+				CastSpell(_E)			
+		end
+end
+
+function Lux:CastPredEkill(unit)
+	local unitPos = GetOrigin(unit)
+		local EPred = GetPredictionForPlayer(myHeroPos, unit, GetMoveSpeed(unit), self.spellData[_E].speed, self.spellData[_E].delay, self.spellData[_E].range, self.spellData[_E].width, false, true)
+		if self.EREADY and EPred.HitChance == 1 then
+			CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
+		elseif self.Estack1 then
+				CastSpell(_E)			
+		end
+end
+
+function Lux:CastPredEkill2(unit)
+	local unitPos = GetOrigin(unit)
+		local EPred = GetPredictionForPlayer(myHeroPos, unit, GetMoveSpeed(unit), self.spellData[_E].speed, self.spellData[_E].delay, self.spellData[_E].range, self.spellData[_E].width, false, true)
+		if self.EREADY and EPred.HitChance == 1 and self.EnemyQstack1 and IsObjectAlive(unit) then
+			CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
+		elseif self.Estack1 then
+				CastSpell(_E)			
+		end
+end
+
+function Lux:CastPredEOFF()
+	local unitPos = GetOrigin()
+		if self.Estack1 then
+			CastSpell(_E)			
+		end
+end
+
+function Lux:CastPredR(unit)
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	local unitPos = GetOrigin(unit)
+	local RPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit), self.spellData[_R].speed, self.spellData[_R].delay, self.spellData[_R].range, self.spellData[_R].width, false, false)
+	if self.Config.R then --and self.Wstack
+		if self.RREADY and RPred.HitChance == 1 then
+      HoldPosition()
+			CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z)
+		end
+	end	
+	end		
+end
+
+function Lux:CastPredRkill(unit)
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	local unitPos = GetOrigin(unit)
+	local RPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit), self.spellData[_R].speed, self.spellData[_R].delay, self.spellData[_R].range, self.spellData[_R].width, false, false)
+		if self.RREADY and RPred.HitChance == 1 and IsObjectAlive(unit) then
+      HoldPosition()
+			CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z)
+		end	
+	end		
+end
+
+function Lux:CastPredRkill2(unit)
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	local unitPos = GetOrigin(unit)
+	local RPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit), self.spellData[_R].speed, self.spellData[_R].delay, self.spellData[_R].range, self.spellData[_R].width, false, false)
+		if self.RREADY and RPred.HitChance == 1 and self.EnemyQstack1 and IsObjectAlive(unit) then
+      HoldPosition()
+			CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z)
+		end	
+	end		
+end
+
+function Lux:CastPredRSpecial(unit)
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	local unitPos = GetOrigin(unit)
+	local RPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit), self.spellData[_R].speed, self.spellData[_R].delay, self.spellData[_R].range, self.spellData[_R].width, false, false)
+		if self.RREADY and RPred.HitChance == 1 then
+      HoldPosition()
+			CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z)
+		end	
+	end		
+end
+
+
+function Lux:CastPredWforShield()
+	for _, ally in pairs(GetAllyHeroes()) do
+	for i,unit in pairs(GetEnemyHeroes()) do	
+	local WPred = GetPredictionForPlayer(myHeroPos,ally,GetMoveSpeed(ally), self.spellData[_R].speed, self.spellData[_R].delay, self.spellData[_R].range, self.spellData[_R].width, false, false)	
+		if (GetCurrentHP(ally)/GetMaxHP(ally)) < 0.20 and self.WREADY and IsInDistance(ally, self.spellData[_W].range-5) and ValidTarget(unit, self.spellData[_W].range+700) then 
+			CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z)
+		end
+		if (GetCurrentHP(myHero)/GetMaxHP(myHero)) < 0.20 and self.WREADY and IsInDistance(unit, 650) then --and ValidTarget(unit, 650) and IsInDistance(unit, 650) then <0.3 
+			CastSpell(_W) --			CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z)			
+		end
+	end
+	end	
+end
+
+function Lux:LaneClear(minion)
+	local EPred = GetPredictionForPlayer(myHeroPos, minion, GetMoveSpeed(minion), self.spellData[_E].speed, self.spellData[_E].delay, self.spellData[_E].range, self.spellData[_E].width, false, true) 	
+		if self.WREADY then --and EPred.HitChance == 1 
+			for i,minion in pairs(GetAllMinions(MINION_ENEMY)) do
+				local EPred = GetPredictionForPlayer(myHeroPos, minion, GetMoveSpeed(minion), self.spellData[_E].speed, self.spellData[_E].delay, self.spellData[_E].range, self.spellData[_E].width, false, true)
+				local eminion = CountMinions(minion)
+				local minionPos = GetOrigin(minion) 
+				if self:MinionAround(myHeroPos, self.spellData[_E].range) > 4 then				
+					if IsInDistance(minion, self.spellData[_E].range) then--and ValidTarget(minion, self.spellData[_E].range-15) then 
+					CastSkillShot(_E,minionPos.x,minionPos.y,minionPos.z)
+					end
 				end
+				if self.Estack1 then
+				CastSpell(_E)					
+				end	
+			end
+		end
+end
+			
+function Lux:Combo()
+	if ValidTarget(self.target, self.spellData[_E].range) then
+		if self.QREADY then
+			self:CastPredQ(self.target)
+		elseif self.EREADY then
+			self:CastPredE(self.target)	 
+		elseif self.RREADY then
+			self:CastPredR(self.target)	 			
+		end	
+	end
+end
+
+function Lux:Harass()
+	if ValidTarget(self.target, self.spellData[_E].range) then
+		if self.QREADY then
+			self:CastPredQ(self.target)
+		elseif self.EREADY then
+			self:CastPredE(self.target)
+		end	
+	end
+end
+
+function Lux:Special()
+ IAC:Move()
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	if ValidTarget(enemy, self.spellData[_R].range) then
+		if self.RREADY then
+			self:CastPredRSpecial(enemy)
+		end	
+	end
+	end
+end
+
+function Lux:Killsteal()
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	local enemyhp = GetCurrentHP(enemy) + GetHPRegen(enemy)
+	local QDmg = self.QREADY and self.spellData[_Q].dmg() or 0
+    local WDmg = self.WREADY and self.spellData[_W].dmg() or 0
+    local EDmg = self.EREADY and self.Estack0 and self.spellData[_E].dmg() or 0
+    local RDmg = self.RREADY and self.spellData[_R].dmg() or 0
+	local igotmana = GetCurrentMana(myHero)
+	local Qmana = self.spellData[_Q].mana() 
+	local Emana = self.spellData[_E].mana()
+	local Rmana = self.spellData[_R].mana()				 				
+		local QPred = GetPredictionForPlayer(myHeroPos, enemy, GetMoveSpeed(enemy), self.spellData[_Q].speed, self.spellData[_Q].delay, self.spellData[_Q].range-10, self.spellData[_Q].width, true, true)	
+		if self.Config.KSQ and ValidTarget(enemy, self.spellData[_Q].range) and QPred.HitChance == 1 and enemyhp < CalcDamage(myHero, enemy, 0, QDmg) and igotmana >= Qmana then
+			self:CastPredQ(enemy)
+		elseif self.Config.KSE and ValidTarget(enemy, self.spellData[_E].range) and enemyhp < CalcDamage(myHero, enemy, 0, EDmg) and igotmana >= Emana  then
+			self:CastPredEkill(enemy)	
+		elseif self.Config.KSR and IsObjectAlive(enemy) and ValidTarget(enemy, self.spellData[_R].range) and enemyhp < CalcDamage(myHero, enemy, 0, RDmg) and igotmana >= Rmana then
+			self:CastPredRkill(enemy)
+		elseif self.Config.KSQE and ValidTarget(enemy, self.spellData[_Q].range)  and enemyhp < CalcDamage(myHero, enemy, 0, QDmg + EDmg) and igotmana >= Qmana + Emana then			
+			self:CastPredQkill(enemy) DelayAction(function() self:CastPredEkill2(enemy) end, 125)
+		elseif self.Config.KSQR and ValidTarget(enemy, self.spellData[_Q].range) and QPred.HitChance == 1 and enemyhp < CalcDamage(myHero, enemy, 0, QDmg + RDmg)  and igotmana >= Qmana + Rmana then			
+			self:CastPredQkill(enemy) DelayAction(function() self:CastPredRkill2(enemy) end, 125)
+		elseif self.Config.KSER and ValidTarget(enemy, self.spellData[_E].range) and enemyhp < CalcDamage(myHero, enemy, 0, EDmg + RDmg)  and igotmana >= Emana + Rmana then			
+			self:CastPredEkill(enemy) DelayAction(function() self:CastPredRkill(enemy) end, 125)						
+		elseif self.Config.KSQER and ValidTarget(enemy, self.spellData[_Q].range)and QPred.HitChance == 1 and enemyhp < CalcDamage(myHero, enemy, 0, QDmg + EDmg + RDmg) and igotmana >= Qmana + Emana + Rmana then			
+			self:CastPredQ(enemy) DelayAction(function() self:CastPredEkill2(enemy) DelayAction(function() self:CastPredRkill2(enemy) DelayAction(function() end, 125) end, 225) end, 550) --self:CastEOFF(enemy)					
+		end
+	end	
+end
+
+
+function Lux:GLOBALULTNOTICE()
+        if not self.RREADY then return end
+        info = ""
+        if self.RREADY then
+       		for _,unit in pairs(GetEnemyHeroes()) do
+                if  IsObjectAlive(unit) then
+                        realdmg = CalcDamage(myHero, unit, self.spellData[_R].dmg())
+                        hp =  GetCurrentHP(unit) + GetHPRegen(unit)
+                        if realdmg > hp then
+                                info = info..GetObjectName(unit)
+                                if not IsVisible(unit) then
+                                        info = info.." not Visible but maybe" 
+                                elseif not ValidTarget(unit, self.spellData[_R].range) then
+                                        info = info.." not in Range but"                                                                               
+                                end
+                                info = info.." killable\n"
+                        end
+        		 end               
+			end
+		end		 
+    DrawText(info,30,60,200,0xffff0000)                	
+end
+
+function Lux:MinionAround(pos, range)
+    local c = 0
+    if pos == nil then return 0 end
+    for k,v in pairs(GetAllMinions(MINION_ENEMY)) do 
+        if v and GetDistanceSqr(pos,GetOrigin(v)) < range*range then
+            c = c + 1
+        end
+    end
+    return c
+end
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------- D R A V E N ------------------------------------------------------------------------------------- D R A V E N --------------------------------------------------
+---------------------------------------------------------------------------- D R A V E N ----------------------------------------------------------------------------------------------
+---------------------- D R A V E N ------------------------------------------------------------------------------------- D R A V E N --------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+class "Draven"
+function Draven:__init()
+	OnLoop(function(myHero) self:Loop(myHero) end)
+	self.spellData = 
+	{
+	[_Q] = {dmg = function () return (GetBonusDmg(myHero)+GetBaseDamage(myHero))*(0.35 + GetCastLevel(myHero,_Q)*0.1) end,  
+			CDR = function () return GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q)) end,
+			mana = 45,
+			range = 600},  
+	[_W] = {dmg = function () return 0 end,  
+			mana = 40,
+			range = 600},
+	[_E] = {dmg = function () return 35 + 35*GetCastLevel(myHero,_E) + 0.5*GetBonusDmg(myHero) end, 
+			mana = 70,			
+			speed = 1600,
+			delay = 250,			 			
+			range = 1050, 
+			width = 70},
+	[_R] = {dmg = function () return 75 + 100*GetCastLevel(myHero,_R) + 1.1*GetBonusDmg(myHero) end, 
+			mana = 120,			
+			speed = 2000,
+			delay = 1000,			 			
+			range = 20000, 
+			width = 80},					
+	}
+
+	self.Config = scriptConfig("MonTourDraven", "Draven on Tour")
+		self.Config.addParam("E", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("Q", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("W", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("LCQ", "Use Q LaneClear", SCRIPT_PARAM_ONOFF, true)
+--		self.Config.addParam("LCJQ", "Use Q JungleClear", SCRIPT_PARAM_KEYDOWN, string.byte("F"))
+		self.Config.addParam("AL", "AutoLvLSkillsUp", SCRIPT_PARAM_ONOFF, true)			
+		self.Config.addParam("LHQ", "Use Q LastHit", SCRIPT_PARAM_ONOFF, true)				
+		self.Config.addParam("R", "KillSteal R", SCRIPT_PARAM_ONOFF, true)		
+		self.Config.addParam("Draw", "DMGoHPBARs", SCRIPT_PARAM_ONOFF, true)	
+		self.Config.addParam("KSER", "KillSteal ER", SCRIPT_PARAM_ONOFF, true)	
+		self.Config.addParam("RN", "Ultimate Notifier", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("QAA", "Draw QAA Text", SCRIPT_PARAM_ONOFF, true)									
+		self.Config.addParam("U", "Gapclose W", SCRIPT_PARAM_KEYDOWN, string.byte("N"))
+		
+end
+
+function Draven:Loop(myHero)
+	self:Checks()
+	if self.Config.Draw then 
+		self:Draws()
+	end
+	if _G.IWalkConfig.LastHit then
+    	self:LastHit(minion)
+    end	
+	if _G.IWalkConfig.LaneClear then
+    	self:LaneClear(minion)	
+    end	
+	if self.Config.LCJQ then
+    	self:JungleClear(jminion)    	
+    end    
+	if _G.IWalkConfig.Combo then
+		self:Combo()
+	end
+	if _G.IWalkConfig.Harass then
+		self:Harass()
+	end
+	if self.Config.U then
+		self:Special()
+	end	
+	if self.Config.RN then
+		self:GLOBALULTNOTICE()
+	end	
+	if self.Config.QAA then
+		self:QAA()
+	end	
+	if self.Config.KSER then
+		self:Killsteal()
+	end	
+	if self.Config.AL then
+		self:AutoLvL()
+	end	
+
+end
+
+
+
+function Draven:QAA()
+	for i,unit in pairs(GetEnemyHeroes()) do
+		local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
+		local unitPos = GetOrigin(unit)
+		local dmgE = self.spellData[_Q].dmg() + TotalDmg	
+		local dmg = CalcDamage(myHero, unit, dmgE)
+		local hp = GetCurrentHP(unit)
+		local hPos = GetHPBarPos(unit)
+    	local drawPos = WorldToScreen(1,unitPos.x,unitPos.y,unitPos.z)
+        if dmg > 0 then 
+          DrawText(math.ceil(hp/dmg).." QAA", 15, hPos.x+45, hPos.y+20, 0xffffffff)
+	 	end 	
+end
+end
+
+function Draven:Draws()
+local rangeofdraws = 20000
+local Alldmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
+	for _,unit in pairs(GetEnemyHeroes()) do			
+	--Ready Q + (W) + (E) + (R)		
+	if ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_Q].dmg() + Alldmg, 0),0xffffffff)
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QSpinn1 then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_Q].dmg() + Alldmg, 0),0xffffffff)
+	end		
+	end
+end
+
+function Draven:Checks()
+	self.QREADY = CanUseSpell(myHero,_Q) == READY
+	self.WREADY = CanUseSpell(myHero,_W) == READY
+	self.EREADY = CanUseSpell(myHero,_E) == READY
+	self.RREADY = CanUseSpell(myHero,_R) == READY
+	self.target = GetTarget(1250, DAMAGE_PHYSICAL)
+	self.targetDRAW = GetTarget(20000, DAMAGE_PHYSICAL)	
+	self.targetPos = GetOrigin(self.target)
+	myHeroPos = GetOrigin(myHero)
+	self.Q0 = GotBuff(myHero,"dravenspinningattack") == 0	
+	self.Q1 = GotBuff(myHero,"dravenspinningattack") == 1
+	self.Q2 = GotBuff(myHero,"dravenspinningattack") == 2
+	self.QL0 = GotBuff(myHero,"dravenspinningleft") == 0	
+	self.QL1 = GotBuff(myHero,"dravenspinningleft") == 1		
+	self.QSpinn0 = GotBuff(myHero,"DravenSpinning") == 0	
+	self.QSpinn1 = GotBuff(myHero,"DravenSpinning") == 1
+  self.enemygotbansheesveil = GotBuff(unit,"bansheesveil") == 1 
+end
+
+function Draven:PassiveGetGold()
+	if ValidTarget(self.target, self.spellData[_Q].range) then
+		if self.QREADY then
+			self:CastQ(self.target)					
+		end	
+	end
+end
+
+function Draven:LastHit(minion)
+local eminion = CountMinions()
+	for i,minion in pairs(GetAllMinions(MINION_ENEMY)) do
+		if self.QREADY and self.Config.LHQ then
+			if self.QSpinn0 and self.Q0 and IsInDistance(minion, self.spellData[_Q].range+100) and ValidTarget(minion, self.spellData[_Q].range+100) then			
+				CastSpell(_Q) 
+			end
+			if self.QSpinn1 and self.Q1 and self.Q2 and IsInDistance(minion, self.spellData[_Q].range+100) and ValidTarget(minion, self.spellData[_Q].range+100) then
+			end
+			if self.QSpinn1 and self.Q2 and self.QL0 and IsInDistance(minion, self.spellData[_Q].range+100) and ValidTarget(minion, self.spellData[_Q].range+100)then	
+			end
+			if self.QSpinn1 and self.Q2 and self.QL1 and IsInDistance(minion, self.spellData[_Q].range+100) and ValidTarget(minion, self.spellData[_Q].range+100)then	
 			end
 		end
 	end
 end
-	else
-	DrawText(string.format("%s not supported", GetObjectName(myHero)),24,750,50,0xffffff00)
-	end -- end of myHeroName
-end
 
-function DoMyHeroHarass() --Harass Cast
-local MonTourMyHeroName = GetObjectName(myHero)	
-local myHero = GetMyHero()
-local myPos = GetOrigin(myHero)
-local target = GetCurrentTarget()
-local MyheroRange = 550 --DRAVEN RANGE
-DrawText(string.format("Harass ON - %s", GetObjectName(myHero)),24,750,50,0xff00ff00);	
-	--Leona
-	if MonTourMyHeroName == "Leona" then
-		for _,unit in pairs(GetEnemyHeroes()) do	
-			if ValidTarget(unit, 1250) then 	
-			local EPred = GetPredictionForPlayer(myPos,target,GetMoveSpeed(target),1900,500,875,70,true,true)
-        		if Config.E then           
-					if CanUseSpell(myHero, _E) == READY and EPred.HitChance == 1 then		
-					CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)     
-					end --end of CanUseSpell(myHero, _E)         
-        		end	
-        		if Config.Q then                 
-        			if CanUseSpell(myHero, _Q) == READY and IsInDistance(target, 400) then
-        			CastTargetSpell(myHero,_Q)
-					end --end of CanUseSpell(myHero, _Q)
-        		end 
-        		if Config.W then       
-        			if CanUseSpell(myHero, _W) == READY and IsInDistance(target, 600) then
-        			CastTargetSpell(myHero,_W)
-					end --end off CanUseSpell(myHero, _W)
-				end	
-			end --end of ValidTarget(target, 1250)
-		end
-	--Draven
-	elseif MonTourMyHeroName == "Draven" then
-		for _,unit in pairs(GetEnemyHeroes()) do	
-			if ValidTarget(unit, MyheroRange) then 		
-				if Config.Q then
-					if  CanUseSpell(myHero, _Q) == READY and IsInDistance(target, MyheroRange) then
-            		CastTargetSpell(myHero,_Q)
-            		end 
-        		end
-    		end 
-    	end   
-	end	-- end of myHeroName
-end
-
-function DoMyHeroLaneClear() --LaneClear Cast config.LCQ
-DrawText(string.format("LastClearMode ON - %s", GetObjectName(myHero)),24,750,50,0xff00ff00);	
-   
-        --Leona  	
-		if MonTourMyHeroName == "Leona" then
-			for _,k in pairs(GetAllMinions(MINION_ENEMY)) do
-				if ValidTarget(k, MyheroRangeL) and IsInDistance(k, MyheroRangeL) then
-				end
-			end	
-		--Draven
-		elseif MonTourMyHeroName == "Draven" then
-			for _,k in pairs(GetAllMinions(MINION_ENEMY)) do
-				if Config.LCQ then	
-				    if ValidTarget(k, MyheroRange) and IsInDistance(k, MyheroRange) then
-						if  CanUseSpell(myHero, _Q) == READY then
-          				CastTargetSpell(myHero,_Q)
-       					end 
-      				end
-      			end
-      		end
-        end    
-    return
-end
-
-
-function DoMyHeroLastHit() --LastHit Cast config.LHQ
-DrawText(string.format("LastHitMode ON - %s", GetObjectName(myHero)),24,750,50,0xff00ff00);		
-local MyheroRangeL = 125 --LEONA RANGE
-local MyheroRangeL = 550 --DRAVEN RANGE   
-        --Leona  	
-		if MonTourMyHeroName == "Leona" then
-			for _,k in pairs(GetAllMinions(MINION_ENEMY)) do
-				if ValidTarget(k, MyheroRangeL) and IsInDistance(k, MyheroRangeL) then
-				end
-			end	
+function Draven:LaneClear(minion)
+local eminion = CountMinions()
+	for i,minion in pairs(GetAllMinions(MINION_ENEMY)) do
+		if self.QREADY and self.Config.LCQ then
+			if self.QSpinn0 and self.Q0 and IsInDistance(minion, self.spellData[_Q].range+100) and ValidTarget(minion, self.spellData[_Q].range+100) then			
+				CastSpell(_Q) 
+			end
+			if self.QSpinn1 and self.Q1 and self.Q2 and IsInDistance(minion, self.spellData[_Q].range+100) and ValidTarget(minion, self.spellData[_Q].range+100) then
 			
-		--Draven
-		elseif MonTourMyHeroName == "Draven" then
-			for _,k in pairs(GetAllMinions(MINION_ENEMY)) do
-				if Config.LHQ then	
-				    if ValidTarget(k, MyheroRange) and IsInDistance(k, MyheroRange) then
-						if  CanUseSpell(myHero, _Q) == READY then
-          				CastTargetSpell(myHero,_Q)
-       					end 
-      				end
-      			end
-      		end
-        end    
-    return
-end
-
-function SpecialAttack() --Leona Ultimate R... AT THE MOMENT
-local MonTourMyHeroName = GetObjectName(myHero)	
-local myHero = GetMyHero()
-local myPos = GetOrigin(myHero)
-local target = GetCurrentTarget()
-local MyheroRange = 550 --DRAVEN RANGE
-		IAC:Move()
-		if MonTourMyHeroName == "Leona" then
-		  for _,unit in pairs(GetEnemyHeroes()) do 
-			DrawText(string.format("Ultimate Perfect R - %s", GetObjectName(myHero)),24,750,50,0xff00ff00);
-        	if ValidTarget(unit, 1250) then
-			local RPred = GetPredictionForPlayer(myPos,target,GetMoveSpeed(target),1900,500,1200,70,true,true)
-			
-                if CanUseSpell(myHero, _R) == READY and RPred.HitChance == 1 then
-                CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z) 
-				end --end of CanUseSpell(myHero, _R)
-			end --end of ValidTarget(target, 1250)
-		 end	
-		elseif MonTourMyHeroName == "Draven" then
-		  for _,unit in pairs(GetEnemyHeroes()) do
-			DrawText(string.format("Knocking Back inRange Enemy - %s", GetObjectName(myHero)),24,750,50,0xff00ff00);	
-			if ValidTarget(target, GetCastRange(myHero, _E)) then
-			local EPred = GetPredictionForPlayer(myPos, target, GetMoveSpeed(target), 1600, 250, GetCastRange(myHero, _E), 80, false, true)	
-										
-				if CanUseSpell(myHero, _E) == READY and EPred.HitChance == 1 then	
-				CastSkillShot(_E, EPred.PredPos.x, EPred.PredPos.y, EPred.PredPos.z)
-				end
-			end	
-		  end	
-		end -- end of MonTourMyHeroName
-end	
-
-function Edmg()--E DMG
-local MonTourMyHeroName = GetObjectName(myHero)	
-local myHero = GetMyHero()
-local myPos = GetOrigin(myHero)
-local target = GetCurrentTarget()	
-	local useE = GetCastLevel(myHero, _E)
-	local Bperc50 = (GetBonusDmg(myHero)/100*50)
-	if MonTourMyHeroName == "Leona" then
-	
-	elseif MonTourMyHeroName == "Draven" then	
-		if useE == 0 then
-		return 0
-		end
-		if useE == 1 then
-		return 70 + Bperc50
-		end
-		if useE == 2 then
-		return 105 + Bperc50
-		end
-		if useE == 3 then
-		return 140 + Bperc50
-		end
-		if useE == 4 then
-		return 175 + Bperc50
-		end
-		if useE == 5 then
-		return 210 + Bperc50
-		end
-	end
-end
-
-
-function Rdmg()--R DMG
-local MonTourMyHeroName = GetObjectName(myHero)	
-local myHero = GetMyHero()
-local myPos = GetOrigin(myHero)
-local target = GetCurrentTarget()	
-	local useR = GetCastLevel(myHero, _R)
-	local Bperc110 = (GetBonusDmg(myHero)/100*110)
-	if MonTourMyHeroName == "Leona" then
-	
-	elseif MonTourMyHeroName == "Draven" then	
-		if useR == 0 then
-		return 0
-		end
-		if useR == 1 then
-		return 175 + Bperc110
-		end
-		if useR == 2 then
-		return 275 + Bperc110
-		end
-		if useR == 3 then
-		return 375 + Bperc110
-		end
-	end
-end
-
-function qcost()--Q COST
-local MonTourMyHeroName = GetObjectName(myHero)	
-local myHero = GetMyHero()
-local myPos = GetOrigin(myHero)
-local target = GetCurrentTarget()
-
-	if MonTourMyHeroName == "Leona" then
-		if GetCastLevel(myHero, _Q) == 0 then
-		return 0
-		end
-		if GetCastLevel(myHero, _Q) == 1 then
-		return 45
-		end
-		if GetCastLevel(myHero, _Q) == 2 then
-		return 50
-		end
-		if GetCastLevel(myHero, _Q) == 3 then
-		return 55
-		end
-		if GetCastLevel(myHero, _Q) == 4 then
-		return 60
-		end
-		if GetCastLevel(myHero, _Q) == 5 then
-		return 65
-		end	
-		
-	elseif MonTourMyHeroName == "Draven" then
-		if GetCastLevel(myHero, _Q) == 0 then
-		return 0
-		end
-		if GetCastLevel(myHero, _Q) == 1 then
-		return 45
-		end
-		if GetCastLevel(myHero, _Q) == 2 then
-		return 45
-		end
-		if GetCastLevel(myHero, _Q) == 3 then
-		return 45
-		end
-		if GetCastLevel(myHero, _Q) == 4 then
-		return 45
-		end
-		if GetCastLevel(myHero, _Q) == 5 then
-		return 45
-		end
-	end
-end
-
-function wcost()--W COST
-local MonTourMyHeroName = GetObjectName(myHero)	
-local myHero = GetMyHero()
-local myPos = GetOrigin(myHero)
-local target = GetCurrentTarget()
-
-	if MonTourMyHeroName == "Leona" then
-		if GetCastLevel(myHero, _W) == 0 then
-		return 0
-		end
-		if GetCastLevel(myHero, _W) == 1 then
-		return 40
-		end
-		if GetCastLevel(myHero, _W) == 2 then
-		return 40
-		end
-		if GetCastLevel(myHero, _W) == 3 then
-		return 40
-		end
-		if GetCastLevel(myHero, _W) == 4 then
-		return 40
-		end
-		if GetCastLevel(myHero, _W) == 5 then
-		return 40
-		end
-			
-	elseif MonTourMyHeroName == "Draven" then
-		if GetCastLevel(myHero, _W) == 0 then
-		return 0
-		end
-		if GetCastLevel(myHero, _W) == 1 then
-		return 60
-		end
-		if GetCastLevel(myHero, _W) == 2 then
-		return 60
-		end
-		if GetCastLevel(myHero, _W) == 3 then
-		return 60
-		end
-		if GetCastLevel(myHero, _W) == 4 then
-		return 60
-		end
-		if GetCastLevel(myHero, _W) == 5 then
-		return 60
-		end
-	end
-end
-
-function ecost()--E COST
-local MonTourMyHeroName = GetObjectName(myHero)	
-local myHero = GetMyHero()
-local myPos = GetOrigin(myHero)
-local target = GetCurrentTarget()
-
-	if MonTourMyHeroName == "Leona" then
-	if GetCastLevel(myHero, _E) == 0 then
-		return 0
-		end
-		if GetCastLevel(myHero, _E) == 1 then
-		return 70
-		end
-		if GetCastLevel(myHero, _E) == 2 then
-		return 70
-		end
-		if GetCastLevel(myHero, _E) == 3 then
-		return 70
-		end
-		if GetCastLevel(myHero, _E) == 4 then
-		return 70
-		end
-		if GetCastLevel(myHero, _E) == 5 then
-		return 70
-		end	
+			end
+			if self.QSpinn1 and self.Q2 and self.QL0 and IsInDistance(minion, self.spellData[_Q].range+100) and ValidTarget(minion, self.spellData[_Q].range+100)then	
 				
-	elseif MonTourMyHeroName == "Draven" then
-		if GetCastLevel(myHero, _E) == 0 then
-		return 0
-		end
-		if GetCastLevel(myHero, _E) == 1 then
-		return 60
-		end
-		if GetCastLevel(myHero, _E) == 2 then
-		return 60
-		end
-		if GetCastLevel(myHero, _E) == 3 then
-		return 60
-		end
-		if GetCastLevel(myHero, _E) == 4 then
-		return 60
-		end
-		if GetCastLevel(myHero, _E) == 5 then
-		return 60
+			end
+			if self.QSpinn1 and self.Q2 and self.QL1 and IsInDistance(minion, self.spellData[_Q].range+100) and ValidTarget(minion, self.spellData[_Q].range+100)then	
+		
+			end
 		end
 	end
 end
 
-function rcost()--R COST
-local MonTourMyHeroName = GetObjectName(myHero)	
-local myHero = GetMyHero()
-local myPos = GetOrigin(myHero)
-local target = GetCurrentTarget()
+function Draven:JungleClear(jminion)
+self:Move()
+		for i,jminion in pairs(GetAllMinions(MINION_JUNGLE)) do
+			if self.QREADY and self.QSpinn0 and self.Q0 and IsInDistance(jminion, self.spellData[_Q].range+100) and ValidTarget(jminion, self.spellData[_Q].range+100) then			
+				CastSpell(_Q)  DelayAction(function() AttackUnit(jminion) end, 100) 
 
-	if MonTourMyHeroName == "Leona" then
-		if GetCastLevel(myHero, _R) == 0 then
-		return 0
-		end			
-		if GetCastLevel(myHero, _R) == 1 then
-		return 100
-		end
-		if GetCastLevel(myHero, _R) == 2 then
-		return 100
-		end
-		if GetCastLevel(myHero, _R) == 3 then
-		return 100
-		end
-			
-	elseif MonTourMyHeroName == "Draven" then
-		if GetCastLevel(myHero, _R) == 0 then
-		return 0
-		end			
-		if GetCastLevel(myHero, _R) == 1 then
-		return 120
-		end
-		if GetCastLevel(myHero, _R) == 2 then
-		return 120
-		end
-		if GetCastLevel(myHero, _R) == 3 then
-		return 120
-		end
-	end
+			elseif self.QREADY and self.QSpinn1 and self.Q1 and self.Q2 and IsInDistance(jminion, self.spellData[_Q].range+100) and ValidTarget(jminion, self.spellData[_Q].range+100) then
+			 DelayAction(function() AttackUnit(jminion) end, 100) 
+
+			elseif self.QREADY and self.QSpinn1 and self.Q2 and self.QL0 and IsInDistance(jminion, self.spellData[_Q].range+100) and ValidTarget(jminion, self.spellData[_Q].range+100)then	
+			DelayAction(function() AttackUnit(jminion) end, 100) 
+
+			elseif self.QREADY and self.QSpinn1 and self.Q2 and self.QL1 and IsInDistance(jminion, self.spellData[_Q].range+100) and ValidTarget(jminion, self.spellData[_Q].range+100)then	
+				 DelayAction(function() AttackUnit(jminion) end, 100) 
+
+			elseif CanUseSpell(myHero,_Q) == ONCOOLDOWN and self.QSpinn0 and self.Q0 and IsInDistance(jminion, self.spellData[_Q].range+100) and ValidTarget(jminion, self.spellData[_Q].range+100) then			
+				 DelayAction(function() AttackUnit(jminion) end, 100) 
+
+			elseif CanUseSpell(myHero,_Q) == ONCOOLDOWN and self.QSpinn1 and self.Q1 and self.Q2 and IsInDistance(jminion, self.spellData[_Q].range+100) and ValidTarget(jminion, self.spellData[_Q].range+100) then
+			 DelayAction(function() AttackUnit(jminion) end, 100) 
+
+			elseif CanUseSpell(myHero,_Q) == ONCOOLDOWN and self.QSpinn1 and self.Q2 and self.QL0 and IsInDistance(jminion, self.spellData[_Q].range+100) and ValidTarget(jminion, self.spellData[_Q].range+100)then	
+				DelayAction(function() AttackUnit(jminion) end, 100) 
+
+			elseif CanUseSpell(myHero,_Q) == ONCOOLDOWN and self.QSpinn1 and self.Q2 and self.QL1 and IsInDistance(jminion, self.spellData[_Q].range+100) and ValidTarget(jminion, self.spellData[_Q].range+100)then	
+				 DelayAction(function() AttackUnit(jminion) end, 100) 
+			end
+		end		
 end
 
-
-OnLoop(function(myHero)
-local MonTourMyHeroName = GetObjectName(myHero)	
-local myHero = GetMyHero()
-local myPos = GetOrigin(myHero)
-local target = GetCurrentTarget()
-  for _,k in pairs(MonTourTable) do
-	if k == MonTourMyHeroName then
-		if IWalkConfig.Combo then
-		DoMyHeroCombo()
-	
-		elseif IWalkConfig.Harass then
-		DoMyHeroHarass()
-	 
-		elseif IWalkConfig.LaneClear then
-    	DoMyHeroLaneClear()
-    
-    	elseif IWalkConfig.LastHit then 
-    	DoMyHeroLastHit()
-    
-    	elseif KeyIsDown(HOTKEY) then 
-    	SpecialAttack()
-    	
---    	elseif IWalkConfig.Combo and KeyIsDown(HOTKEY) then 
---    	SpecialAttack()
-    	end
+  function Draven:Move()
+    local movePos = GenerateMovePos()
+    if GetDistance(GetMousePos()) > GetHitBox(myHero) then
+      MoveToXYZ(movePos.x, GetMyHeroPos().y, movePos.z)
     end
-  end	 	
-end)
-	
+  end
+
+
+function Draven:CastPredE(unit)
+	local unitPos = GetOrigin(unit)
+		local EPred = GetPredictionForPlayer(myHeroPos, unit, GetMoveSpeed(unit), self.spellData[_E].speed, self.spellData[_E].delay, self.spellData[_E].range-25, self.spellData[_E].width, false, true)
+		if self.EREADY and self.Config.E and EPred.HitChance == 1 then
+			if GetDistance(myHero, unit) > self.spellData[_Q].range and GetDistance(myHero, unit) <= self.spellData[_E].range then 			
+				CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
+			end
+		end		
+end
+
+function Draven:CastPredEBanshe(unit)
+  for _,unit in pairs(GetEnemyHeroes()) do 
+	local unitPos = GetOrigin(unit)
+		local EPred = GetPredictionForPlayer(myHeroPos, unit, GetMoveSpeed(unit), self.spellData[_E].speed, self.spellData[_E].delay, self.spellData[_E].range-25, self.spellData[_E].width, false, true)
+		if self.EREADY and self.Config.E and EPred.HitChance == 1 then
+			if GetDistance(myHero, unit) > self.spellData[_Q].range and GetDistance(myHero, unit) <= self.spellData[_E].range then 			
+				CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
+			end
+		end	
+    end
+end
+
+function Draven:CastQ(unit)
+       	for _,unit in pairs(GetEnemyHeroes()) do
+       	if self.QREADY and self.Config.Q then
+			if self.QSpinn0 and self.Q0 and IsInDistance(unit, self.spellData[_Q].range+100) and ValidTarget(unit, self.spellData[_Q].range+100) then			
+				CastSpell(_Q)
+			end
+			if self.QSpinn1 and self.Q1 and self.Q2 and IsInDistance(unit, self.spellData[_Q].range+100) and ValidTarget(unit, self.spellData[_Q].range+100) then
+			end
+			if self.QSpinn1 and self.Q2 and self.QL0 and IsInDistance(unit, self.spellData[_Q].range+100) and ValidTarget(unit, self.spellData[_Q].range+100)then			
+			end
+			if self.QSpinn1 and self.Q2 and self.QL1 and IsInDistance(unit, self.spellData[_Q].range+100) and ValidTarget(unit, self.spellData[_Q].range+100)then			
+			end
+		end				
+		end
+end
+
+function Draven:CastW(unit)
+	local igotmana = GetCurrentMana(myHero)
+	local Qmana = self.spellData[_Q].mana
+	local Wmana = self.spellData[_W].mana
+  for _,unit in pairs(GetEnemyHeroes()) do
+	if self.WREADY and self.Config.W and igotmana >= Qmana + Wmana then
+	 	if ValidTarget(self.target, self.spellData[_Q].range*1.7) and GetDistance(myHero, unit) > self.spellData[_Q].range+50 and  GetDistance(myHero, unit) < self.spellData[_Q].range*1.7 then 
+			CastSpell(_W)
+	 	end	
 	end
+  end
+end
+
+function Draven:CastWnoMana(unit)
+	local igotmana = GetCurrentMana(myHero)
+	local Qmana = self.spellData[_Q].mana
+	local Wmana = self.spellData[_W].mana
+	if self.WREADY and self.Config.W then
+	 	if ValidTarget(self.target, self.spellData[_Q].range*1.7) and GetDistance(myHero, unit) > self.spellData[_Q].range+50 and  GetDistance(myHero, unit) < self.spellData[_Q].range*1.7 then 
+			CastSpell(_W)
+	 	end	
+	end
+end
+
+function Draven:CastPredR(unit)
+	local unitPos = GetOrigin(unit)
+	local RPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit), self.spellData[_R].speed, self.spellData[_R].delay, self.spellData[_R].range, self.spellData[_R].width, false, true)
+		if self.Config.R then --and self.Wstack
+				if GetDistance(myHero, unit) > 750 and GetDistance(myHero, unit) < 3000 and IsObjectAlive(unit) then		
+			if self.RREADY and RPred.HitChance == 1 then
+				CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z)
+				end
+			end
+		end		
+end
+
+			
+function Draven:Combo()
+		if self.QREADY then
+		self:CastQ(self.target)					
+		elseif self.WREADY then
+		self:CastW(self.target)	 
+    elseif self.EREADY and self.enemygotbansheesveil then
+    self:CastPredEBanshe(unit)
+		end
+end	
+function Draven:Harass()
+		if self.QREADY then
+		self:CastQ(self.target)
+    elseif self.EREADY and self.enemygotbansheesveil then
+    self:CastPredEBanshe(unit)    
+		end
+end
+
+function Draven:Special()
+ IAC:Move()
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	if ValidTarget(enemy, self.spellData[_E].range) then
+		if self.EREADY then
+			self:CastPredE(enemy)
+		end	
+	end
+	end
+end
+
+function Draven:Killsteal()
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	local QDmg = self.QREADY and self.spellData[_Q].dmg() or 0
+	local QDmg2 = self.spellData[_Q].dmg() or 0	
+    local EDmg = self.EREADY and self.spellData[_E].dmg() or 0
+    local RDmg = self.RREADY and self.spellData[_R].dmg() or 0
+	local enemyhp = GetCurrentHP(enemy) + GetHPRegen(enemy)
+	local Alldmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
+	local unitPos = GetOrigin(enemy)
+--	local MoveToUnit = MoveToXYZ(unitPos.x, unitPos.y, unitPos.z)
+		if ValidTarget(enemy, self.spellData[_E].range) and enemyhp < CalcDamage(myHero, enemy, EDmg, 0) then
+			self:CastPredE(enemy)
+		elseif ValidTarget(enemy, self.spellData[_Q].range) and enemyhp < CalcDamage(myHero, enemy, QDmg + Alldmg, 0) then
+			self:CastQ(enemy)
+		elseif ValidTarget(enemy, self.spellData[_Q].range) and enemyhp < CalcDamage(myHero, enemy, QDmg2 + Alldmg, 0) and self.QSpinn1 then          
+		elseif ValidTarget(enemy, self.spellData[_R].range) and enemyhp < CalcDamage(myHero, enemy, RDmg, 0) then
+			self:CastPredR(enemy)
+		elseif ValidTarget(enemy, self.spellData[_E].range) and GetDistance(myHero, enemy) > 550 and GetDistance(myHero, enemy) < 700 and enemyhp < CalcDamage(myHero, enemy, QDmg + Alldmg + EDmg, 0) then		
+			self:CastPredE(enemy) DelayAction(function() self:CastWnoMana(enemy) DelayAction(function() self:CastPredE(enemy) DelayAction(function() self:AttackUnitKS(enemy) end, 100) end, 200) end, 300)
+		elseif ValidTarget(enemy, self.spellData[_E].range) and GetDistance(myHero, enemy) > 550 and GetDistance(myHero, enemy) < 700 and enemyhp < CalcDamage(myHero, enemy, QDmg2 + Alldmg + EDmg, 0) and self.QSpinn1 then			
+			self:CastPredE(enemy) DelayAction(function() self:CastWnoMana(enemy) DelayAction(function() self:CastPredE(enemy) DelayAction(function() self:AttackUnitKS(enemy) end, 100) end, 200) end, 300)				
+		end	
+	end	
+end
+
+function Draven:AttackUnitKS(unit)
+	for i,enemy in pairs(GetEnemyHeroes()) do  
+  if IsInDistance(enemy, GetRange(myHero)) and GetDistance(myHero, enemy) <= (GetRange(myHero)-10) and GetDistance(myHero, enemy) >= 10 then 
+    AttackUnit(enemy)
+  end
+  end
+end
+
+function Draven:GLOBALULTNOTICE()
+        if not self.RREADY then return end
+        info = ""
+        if self.RREADY then
+       		for _,unit in pairs(GetEnemyHeroes()) do
+                if  IsObjectAlive(unit) then
+                        realdmg = CalcDamage(myHero, unit, self.spellData[_R].dmg())
+                        hp =  GetCurrentHP(unit) + GetHPRegen(unit)
+                        if realdmg > hp then
+                                info = info..GetObjectName(unit)
+                                if not IsVisible(unit) then
+                                        info = info.." not Visible but maybe"                                                        
+                                end
+                                info = info.." killable\n"
+                        end
+        		 end               
+			end
+		end		 
+    DrawText(info,30,60,200,0xffff0000)                	
+end
+
+function Draven:AutoLvL()
+if GetLevel(myHero) == 1 then
+	LevelSpell(_Q)
+end
+if GetLevel(myHero) == 2 then
+	LevelSpell(_E)
+end
+if GetLevel(myHero) == 3 then
+	LevelSpell(_W)
+end 
+if GetLevel(myHero) == 4 then
+	LevelSpell(_Q)
+end
+ if GetLevel(myHero) == 5 then
+	LevelSpell(_Q)
+end
+ if GetLevel(myHero) == 6 then
+	LevelSpell(_R)
+end
+ if GetLevel(myHero) == 7 then
+	LevelSpell(_Q)
+end
+ if GetLevel(myHero) == 8 then
+	LevelSpell(_W)
+end
+ if GetLevel(myHero) == 9 then
+	LevelSpell(_Q)
+end
+ if GetLevel(myHero) == 10 then
+	LevelSpell(_W)
+end
+ if GetLevel(myHero) == 11 then
+	LevelSpell(_R)
+end
+ if GetLevel(myHero) == 12 then
+	LevelSpell(_W)
+end
+ if GetLevel(myHero) == 13 then
+	LevelSpell(_W)
+end
+ if GetLevel(myHero) == 14 then
+	LevelSpell(_E)
+end
+ if GetLevel(myHero) == 15 then
+	LevelSpell(_E)
+end
+ if GetLevel(myHero) == 16 then
+	LevelSpell(_R)
+end
+ if GetLevel(myHero) == 17 then
+	LevelSpell(_E)
+end
+ if GetLevel(myHero) == 18 then
+	LevelSpell(_E)
+end
+end
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------- A T R O X ------------------------------------------------------------------------------------- A T R O X ------------------------------------------------------
+-------------------------------------------------------------------------- A T R O X ------------------------------------------------------------------------------------------------
+-------------------- A T R O X ------------------------------------------------------------------------------------- A T R O X ------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+class "Aatrox"
+function Aatrox:__init()
+	OnLoop(function(myHero) self:Loop(myHero) end)
+	self.spellData = 
+	{
+	[_Q] = {dmg = function () return 25 + GetCastLevel(myHero,_Q) * 45 + GetBonusDmg(myHero)*0.60 end,  
+			costhealth = function () return GetMaxHP(myHero)/100*10 end, --GetCurrentHP(myHero)
+			speed = math.huge,
+			delay = 550,			 			
+			range = 650, 
+			width = 200},			  
+	[_W] = {dmg = function () return 25 + GetCastLevel(myHero,_W) * 35 + GetBonusDmg(myHero) end,  ---Bonus Schaden bei Aktiviert
+			costhealth = function () return 0.25 * GetBonusDmg(myHero) + 8.75 + GetCastLevel(myHero,_W) * 6.25 end,	 --Lebenskosten beim 3. Angriff bei Aktiviert
+			gethealth = function () return 5 + 15 * GetCastLevel(myHero,_W) + 0.25 * GetBonusDmg(myHero) end,    --Heilung bei Deaktiviert
+      gethealth50 = function () return 15 + 25 * GetCastLevel(myHero,_W) + 0.75 * GetBonusDmg(myHero) end, --Erweiterte Heilung bei Deaktiviert
+			speed = 1100,
+			delay = 250,			 			
+			range = 0, 
+			width = 0},			
+	[_E] = {dmg = function () return 35 + GetCastLevel(myHero, _E) * 40 + GetBonusDmg(myHero) * 0.6 + GetBonusAP(myHero) * 0.6 end, 
+			costhealth = function () return GetCurrentHP(myHero)/100*5 end,			
+			speed = 1100,
+			delay = 250,			 			
+			range = 1000, 
+			width = 80},
+	[_R] = {dmg = function () return 100 + GetCastLevel(myHero,_R) * 100 + GetBonusAP(myHero) end, 		
+			speed = math.huge,
+			delay = 250,			 			
+			range = 500, 
+			width = 500},					
+	}
+
+	self.Config = scriptConfig("MonTourAatrox", "Aatrox on Tour")
+		self.Config.addParam("Q", "Q in combo", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("E", "E in combo", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("R", "R in harass", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("KSQ", "Auto Q for kill", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("KSE", "Auto E for kill", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("KSW", "AutoHit WBuff for kill", SCRIPT_PARAM_ONOFF, true)    
+		self.Config.addParam("KSQE", "Auto QE for kill", SCRIPT_PARAM_ONOFF, true)
+--		self.Config.addParam("KSER", "Auto ER for kill", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("KSQER", "Auto QER for kill", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("KSQW", "Auto QW for kill", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("KSQWE", "Auto QWE for kill", SCRIPT_PARAM_ONOFF, true)  
+		self.Config.addParam("KSQRW", "Auto QRW for kill", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("KSQRWE", "Auto QRWE for kill", SCRIPT_PARAM_ONOFF, true)     
+		self.Config.addParam("W", "Auto W combo", SCRIPT_PARAM_ONOFF, true)				
+		self.Config.addParam("LCW", "Use W LaneClear", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("KSR", "Auto R for kill", SCRIPT_PARAM_ONOFF, false)				
+		self.Config.addParam("Draw", "DMGBAR ON/OFF", SCRIPT_PARAM_ONOFF, true)	
+		self.Config.addParam("DrawR", "DMGBAR R ON/OFF", SCRIPT_PARAM_ONOFF, true)	    
+		self.Config.addParam("RN", "Ultimate Notifier", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("AL", "AutoLvLSkillsUp", SCRIPT_PARAM_ONOFF, true)	
+ 		self.Config.addParam("WAA", "Show WAA", SCRIPT_PARAM_ONOFF, true)		   
+		self.Config.addParam("U", "E Poke", SCRIPT_PARAM_KEYDOWN, string.byte("N"))
+end
+
+function Aatrox:Loop(myHero)		
+	self:Checks()
+	
+--      info = GetObjectName(self.target)
+	 
+--    DrawText(info,30,60,250,0xffff0000)  
+  
+--        info2 = GetMaxMana(myHero)
+	 
+--    DrawText(info2,30,60,280,0xffff0000) 
+    
+--            info3 = GetCurrentMana(myHero)
+	 
+--    DrawText(info3,30,60,310  ,0xffff0000) 
+  
+	if _G.IWalkConfig.Combo then
+		self:Combo()
+	end
+  
+	if _G.IWalkConfig.Harass then
+		self:Harass()
+	end
+	
+	if self.Config.WAA then
+		self:WAA()
+	end
+
+	  
+	if self.Config.Draw then 
+		self:Draws()
+	end
+
+	if _G.IWalkConfig.LaneClear then
+    	self:LaneClear(minion)
+    end	
+	
+	if self.Config.U then
+		self:Special()
+	end	
+	
+	if self.Config.AL then
+		self:AutoLvL()
+	end	
+  
+  if self.Config.RN then
+    self:GLOBALULTNOTICE()
+  end 
+  
+	self:DoWalk()
+	self:Killsteal()
+
+end
+
+function Aatrox:DoWalk()
+      IWalkTarget = nil
+    myHero = GetMyHero()
+    myHeroName = GetObjectName(myHero)
+    waitTickCount = 0
+    self.move = true
+    self.aa = true
+    self.orbTable = { lastAA = 0, windUp = 13.37, animation = 13.37 }
+  
+    self.myRange = GetRange(myHero)+GetHitBox(myHero)+(IWalkTarget and GetHitBox(IWalkTarget) or GetHitBox(myHero))
+--    if IWalkConfig.C then Circle(myHero,self.myRange):draw() end
+--    local addRange = ((self.gapcloserTable[myHeroName] and CanUseSpell(myHero, gapcloserTable[myHeroName]) == READY) and 250 or 0) + (GetObjectName(myHero) == "Jinx" and (GetCastLevel(myHero, _Q)*25+50) or 0)
+    IWalkTarget = GetTarget(self.myRange, DAMAGE_PHYSICAL) --+ addRange
+    if _G.IWalkConfig.LaneClear then
+      IWalkTarget = GetHighestMinion(GetOrigin(myHero), self.myRange, MINION_ENEMY)
+    end
+    local unit = IWalkTarget
+    if (_G.IWalkConfig.Harass or _G.IWalkConfig.Combo) and ValidTarget(unit) then --self:DoChampionPlugins(unit) end
+    if ValidTarget(unit, self.myRange) and GetTickCount() > self.orbTable.lastAA + self.orbTable.animation and self.aa then
+      AttackUnit(unit)
+    elseif GetTickCount() > self.orbTable.lastAA + self.orbTable.windUp and self.move then
+      if GetRange(myHero) < 450 and unit and GetObjectType(unit) == GetObjectType(myHero) and ValidTarget(unit, self.myRange) then
+        local unitPos = GetOrigin(unit)
+        if GetDistance(unit) > self.myRange/2 then
+          MoveToXYZ(unitPos.x, unitPos.y, unitPos.z)
+        end
+        else
+          self:Move()
+       end 
+      end
+    end
+  end
+
+
+function Aatrox:Draws()
+local rangeofdraws = 20000
+local alldmg = GetBonusDmg(myHero) + GetBaseDamage(myHero)
+	for _,unit in pairs(GetEnemyHeroes()) do
+--	if Config.DrawR and Config.Draw then
+	--Ready Q + W + E + R
+	if ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.WcostHealth and self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_Q].dmg() + self.spellData[_W].dmg() + alldmg, self.spellData[_E].dmg() + self.spellData[_R].dmg()),0xffffffff)	
+	--Ready Q + W + E + (R)
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.WcostHealth and self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_Q].dmg() + self.spellData[_W].dmg() + alldmg, self.spellData[_E].dmg()),0xffffffff)
+	--Ready Q + W + (E) + R
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.WcostHealth and not self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_R].dmg(), self.spellData[_Q].dmg() + self.spellData[_W].dmg() + alldmg),0xffffffff)				
+	--Ready Q + W + (E) + (R)			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.WcostHealth and not self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_Q].dmg() + self.spellData[_W].dmg() + alldmg, 0),0xffffffff)		
+	--Ready (Q) + W + E + R
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.WcostHealth and self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_W].dmg() + alldmg, self.spellData[_E].dmg() + self.spellData[_R].dmg()),0xffffffff)			
+	--Ready (Q) + W + E + (R)
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.WcostHealth and self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_W].dmg() + alldmg, self.spellData[_E].dmg()),0xffffffff)	
+	--Ready (Q) + W + (E) + R			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.WcostHealth and not self.EREADY and self.RREADY then		
+	DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_W].dmg() + alldmg, self.spellData[_R].dmg()),0xffffffff)		
+	--Ready (Q) + W + (E) + (R)		
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.WcostHealth and not self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_W].dmg() + alldmg, 0),0xffffffff)
+	
+  
+  	--Ready Q + W + E + R
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.EREADY and not self.WcostHealth and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_Q].dmg() + alldmg, self.spellData[_E].dmg() + self.spellData[_R].dmg()),0xffffffff)	
+	--Ready Q + W + E + (R)
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.EREADY and not self.WcostHealth and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_Q].dmg() + alldmg, self.spellData[_E].dmg()),0xffffffff)
+	--Ready Q + W + (E) + R
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and not self.EREADY and not self.WcostHealth and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_Q].dmg() + alldmg, self.spellData[_R].dmg()),0xffffffff)				
+	--Ready Q + W + (E) + (R)			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and not self.EREADY and not self.WcostHealth and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_Q].dmg() + alldmg, 0),0xffffffff)		
+	--Ready (Q) + W + E + R
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.EREADY and not self.WcostHealth and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, alldmg, self.spellData[_E].dmg() + self.spellData[_R].dmg()),0xffffffff)			
+	--Ready (Q) + W + E + (R)
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.EREADY and not self.WcostHealth and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, alldmg, self.spellData[_E].dmg()),0xffffffff)	
+	--Ready (Q) + W + (E) + R			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and not self.EREADY and not self.WcostHealth and self.RREADY then		
+	DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, alldmg, self.spellData[_R].dmg()),0xffffffff)		
+	--Ready (Q) + W + (E) + (R)		
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and not self.EREADY and not self.WcostHealth and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, alldmg, 0),0xffffffff)   
+--	end
+end
+--	if Config.Draw and not Config.DrawR then
+--	--Ready Q + W + E 
+--	if ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.WcostHealth and self.EREADY then
+--		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_Q].dmg() + self.spellData[_W].dmg() + alldmg, self.spellData[_E].dmg()),0xffffffff)	
+--	--Ready Q + W + (E)
+--	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.WcostHealth and not self.EREADY then
+--		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_Q].dmg() + self.spellData[_W].dmg() + alldmg, 0),0xffffffff)							
+--	--Ready (Q) + W + E 
+--	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.WcostHealth and self.EREADY then
+--		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_W].dmg() + alldmg, self.spellData[_E].dmg()),0xffffffff)	
+--	--Ready (Q) + W + (E)		
+--	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.WcostHealth and not self.EREADY then		
+--	DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_W].dmg() + alldmg, 0),0xffffffff)		
+	
+  
+--  	--Ready Q + W + E 
+--	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.EREADY and not self.WcostHealth then
+--		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_Q].dmg() + alldmg, self.spellData[_E].dmg()),0xffffffff)	
+--	--Ready Q + W + (E) 
+--	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and not self.EREADY and not self.WcostHealth then
+--		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_Q].dmg() + alldmg, 0),0xffffffff)				
+--	--Ready (Q) + W + E 
+--	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.EREADY and not self.WcostHealth then
+--		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, alldmg, self.spellData[_E].dmg()),0xffffffff)			
+--	--Ready (Q) + W + (E) 		
+--	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and not self.EREADY and not self.WcostHealth then		
+--	DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, alldmg),0xffffffff)		
+--	end
+--end
+end
+
+end
+
+function Aatrox:Checks()
+	self.QREADY = CanUseSpell(myHero,_Q) == READY
+	self.WREADY = CanUseSpell(myHero,_W) == READY
+	self.EREADY = CanUseSpell(myHero,_E) == READY
+	self.RREADY = CanUseSpell(myHero,_R) == READY
+	self.target = GetTarget(1100, DAMAGE_PHYSICAL)
+	self.targetDRAW = GetTarget(20000, DAMAGE_PHYSICAL)	
+	self.targetPos = GetOrigin(self.target)
+	myHeroPos = GetOrigin(myHero)
+	minionPos = GetOrigin(minion)	
+	self.WisOn = GotBuff(myHero,"aatroxwpower") == 1
+	self.WisOff = GotBuff(myHero,"aatroxwlife") == 1
+	self.WisOff2 = GotBuff(myHero,"aatroxwparticle") == 1		
+	self.WgetHealth = GotBuff(myHero,"aatroxwonhlifebuff") == 1
+ 	self.WcostHealth = GotBuff(myHero,"aatroxwonhpowerbuff") == 1 
+ 	self.passivready = GotBuff(myHero,"aatroxpassiveready") == 1 
+ 	self.enemygotbansheesveil = GotBuff(unit,"bansheesveil") == 1  
+
+end
+
+function Aatrox:CastW()
+	for i,unit in pairs(GetEnemyHeroes()) do	
+		if (GetCurrentHP(myHero)/GetMaxHP(myHero)) < 0.35 and self.WREADY and IsInDistance(unit, 650) and ValidTarget(unit, 650) and GetCastName(myHero,_W) == "aatroxw2" then 
+			CastSpell(_W) 
+      
+    elseif (GetCurrentHP(myHero)/GetMaxHP(myHero)) > 0.35 and self.WREADY and IsInDistance(unit, 650) and ValidTarget(unit, 650) and GetCastName(myHero,_W) == "AatroxW" then
+			CastSpell(_W)
+      
+--		elseif (GetCurrentHP(myHero)/GetMaxHP(myHero)) < 0.20 and self.WREADY and IsInDistance(unit, 650) and ValidTarget(unit, 650) and self.WcostHealth then 
+--			CastSpell(_W) 
+      
+--    elseif (GetCurrentHP(myHero)/GetMaxHP(myHero)) > 0.60 and self.WREADY and IsInDistance(unit, 650) and ValidTarget(unit, 650) and self.WgetHealth then
+--			CastSpell(_W)
+      
+		end
+	end
+end
+
+function Aatrox:CastPredQ(unit)
+		local QPred = GetPredictionForPlayer(myHeroPos, unit, GetMoveSpeed(unit), self.spellData[_Q].speed, self.spellData[_Q].delay, self.spellData[_Q].range, self.spellData[_Q].width, false, true)
+		if self.QREADY and self.Config.Q and QPred.HitChance == 1 then
+			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+		end
+end
+
+
+function Aatrox:CastPredE(unit)
+	local unitPos = GetOrigin(unit)
+  local EPred = GetPredictionForPlayer(myHeroPos, unit, GetMoveSpeed(unit), self.spellData[_Q].speed, self.spellData[_Q].delay, self.spellData[_Q].range, self.spellData[_Q].width, false, true)
+		if self.EREADY and self.Config.E then
+			CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
+		end
+end
+
+function Aatrox:CastPredR(unit)
+	for i,unit in pairs(GetEnemyHeroes()) do
+	local unitPos = GetOrigin(unit)
+	if self.Config.KSR and GetDistance(myHero, unit) > 150 and GetDistance(myHero, unit) <= 540 then --and self.Wstack
+		if self.RREADY then
+			CastSpell(_R)
+		end
+	end	
+	end		
+end
+
+function Aatrox:CastPredRHarass(unit)
+	for i,unit in pairs(GetEnemyHeroes()) do
+	local unitPos = GetOrigin(unit)
+	if self.Config.R and GetDistance(myHero, unit) > 350 and GetDistance(myHero, unit) <= 540 then --and self.Wstack
+		if self.RREADY then
+			CastSpell(_R)
+		end
+	end	
+	end		
+end
+
+
+function Aatrox:CastPredQSpecial(unit)
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	local unitPos = GetOrigin(unit)
+		local QPred = GetPredictionForPlayer(myHeroPos, unit, GetMoveSpeed(unit), self.spellData[_Q].speed, self.spellData[_Q].delay, self.spellData[_Q].range, self.spellData[_Q].width, false, true)
+		if self.QREADY and self.Config.QR and QPred.HitChance == 1 then
+			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+		end
+end		
+end
+
+
+function Aatrox:LaneClear(minion)
+      for i,minion in pairs(GetAllMinions(MINION_ENEMY)) do
+        if self.WREADY and self.Config.LCW then --self:MinionAround(myHeroPos, 250) > 2 then 
+            local eminion = CountMinions(minion)
+            local minionPos = GetOrigin(minion)
+          	local igotmana = GetCurrentMana(myHero)
+            local mymaxmana = GetMaxMana(myHero) 
+            local mymaxhp = GetMaxHP(myHero)             
+            local igothealth = GetCurrentHP(myHero)
+            local lifesteal = GetLifeSteal(myHero)
+            if (igotmana/mymaxmana) < 1 and IsInDistance(minion, 350) and (igothealth/mymaxhp) > 0.70 and (igothealth/mymaxhp) < 0.90 and GetCastName(myHero,_W) == "AatroxW"  then 
+              CastSpell(_W) 
+            end
+            if (igotmana/mymaxmana) >= 1 and IsInDistance(minion, 350) and GetCastName(myHero,_W) == "aatroxw2" and (igothealth/mymaxhp) < 0.70 then           
+              CastSpell(_W) 
+            end
+            if (igotmana/mymaxmana) >= 1 and IsInDistance(minion, 350) and GetCastName(myHero,_W) == "AatroxW" and (igothealth/mymaxhp) >= 0.90 then            
+              CastSpell(_W) 
+            end  
+             if (igotmana/mymaxmana) >= 1 and IsInDistance(minion, 350) and GetCastName(myHero,_W) == "aatroxw2" and (igothealth/mymaxhp) <= 0.90 then          
+              CastSpell(_W) 
+            end               
+        end  
+      end
+end
+
+			
+function Aatrox:Combo()
+	if ValidTarget(self.target, self.spellData[_E].range) then
+    if self.EREADY and self.enemygotbansheesveil then
+			self:CastPredE(self.target)  
+		elseif self.QREADY then
+			self:CastPredQ(self.target)
+		elseif self.EREADY then
+			self:CastPredE(self.target)	 
+		elseif self.WREADY then
+			self:CastW(self.target)	       	 			
+		end	
+	end
+end
+
+function Aatrox:Harass()
+	if ValidTarget(self.target, self.spellData[_E].range) then	
+    if self.EREADY and self.enemygotbansheesveil then
+			self:CastPredE(self.target)  
+		elseif self.QREADY then
+			self:CastPredQ(self.target)
+    elseif self.RREADY then
+			self:CastPredRHarass(self.target)      
+		elseif self.EREADY then
+			self:CastPredE(self.target)	 
+		elseif self.WREADY then
+			self:CastW(self.target)	 
+    end
+  end 
+end
+
+function Aatrox:Special()
+ IAC:Move()
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	if ValidTarget(enemy, self.spellData[_E].range) then
+		if self.EREADY then
+			self:CastPredE(self.target)
+		end	
+	end
+	end
+end
+
+function Aatrox:Killsteal()
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	local enemyhp = GetCurrentHP(enemy) + GetHPRegen(enemy)
+	local QDmg = self.QREADY and self.spellData[_Q].dmg() or 0
+  local WDmg = self.WREADY and self.spellData[_W].dmg() or 0
+  local EDmg = self.EREADY and self.spellData[_E].dmg() or 0
+  local RDmg = self.RREADY and self.spellData[_R].dmg() or 0
+  local alldmg = GetBonusDmg(myHero) + GetBaseDamage(myHero)
+--	local igothealth = GetCurrentHP(myHero)
+--	local Qmana = self.spellData[_Q].costhealth() or 0
+--	local Wmana = self.spellData[_E].costhealth() or 0
+--	local Emana = self.spellData[_R].costhealth()	or 0			 					
+		if self.Config.KSQ and IsObjectAlive(enemy) and ValidTarget(enemy, self.spellData[_Q].range) and enemyhp < CalcDamage(myHero, enemy, 0, QDmg) then
+			self:CastPredQ(enemy) 
+ 		elseif self.Config.KSQW and self.WcostHealth and IsObjectAlive(enemy) and ValidTarget(enemy, self.spellData[_Q].range) and enemyhp < CalcDamage(myHero, enemy, 0, QDmg + WDmg + alldmg) then
+			self:CastPredQ(enemy) DelayAction(function() self:AttackUnitKS(enemy) end, 200)        
+		elseif self.Config.KSE and IsObjectAlive(enemy) and ValidTarget(enemy, self.spellData[_E].range) and enemyhp < CalcDamage(myHero, enemy, EDmg, 0) then
+			self:CastPredE(enemy)	
+		elseif self.Config.KSR and IsObjectAlive(enemy) and ValidTarget(enemy, self.spellData[_R].range) and enemyhp < CalcDamage(myHero, enemy, RDmg, 0) then
+			self:CastPredR(enemy)
+		elseif self.Config.KSW and self.WcostHealth and IsObjectAlive(enemy) and ValidTarget(enemy, GetRange(myHero)) and enemyhp < CalcDamage(myHero, enemy, 0, WDmg + alldmg) then
+			self:AttackUnitKS(unit)      
+		elseif self.Config.KSQE and IsObjectAlive(enemy) and ValidTarget(enemy, self.spellData[_Q].range)  and enemyhp < CalcDamage(myHero, enemy, EDmg, QDmg) then			
+			self:CastPredQ(enemy) DelayAction(function() self:CastPredE(enemy) end, 125)
+		elseif self.Config.KSQWE and self.WcostHealth and IsObjectAlive(enemy) and ValidTarget(enemy, self.spellData[_Q].range)  and enemyhp < CalcDamage(myHero, enemy, EDmg, QDmg + WDmg + alldmg) then			
+			self:CastPredQ(enemy) DelayAction(function() self:AttackUnitKS(enemy) DelayAction(function() self:CastPredE(enemy) end, 200) end, 300)     
+		elseif self.Config.KSQR and IsObjectAlive(enemy) and ValidTarget(enemy, self.spellData[_Q].range) and enemyhp < CalcDamage(myHero, enemy, RDmg, QDmg)  then			
+			self:CastPredQ(enemy) DelayAction(function() self:CastPredR(enemy) end, 125)
+		elseif self.Config.KSQRW and self.WcostHealth and IsObjectAlive(enemy) and ValidTarget(enemy, self.spellData[_Q].range) and enemyhp < CalcDamage(myHero, enemy, RDmg, QDmg + WDmg + alldmg)  then			
+			self:CastPredQ(enemy) DelayAction(function() self:CastPredR(enemy) DelayAction(function() self:AttackUnitKS(enemy) end, 125) end, 250)      
+--		elseif self.Config.KSER and IsObjectAlive(enemy) and ValidTarget(enemy, self.spellData[_E].range) and enemyhp < CalcDamage(myHero, enemy, EDmg, RDmg, 0) then			
+--			self:CastPredE(enemy) DelayAction(function() self:CastPredR(enemy) end, 125)						
+		elseif self.Config.KSQER and IsObjectAlive(enemy) and ValidTarget(enemy, self.spellData[_Q].range) and enemyhp < CalcDamage(myHero, enemy, EDmg + RDmg, QDmg) then			
+			self:CastPredQ(enemy) DelayAction(function() self:CastPredR(enemy) DelayAction(function() self:CastPredE(enemy) DelayAction(function() end, 125) end, 225) end, 550) --self:CastEOFF(enemy)
+		elseif self.Config.KSQRWE and self.WcostHealth and IsObjectAlive(enemy) and ValidTarget(enemy, self.spellData[_Q].range) and enemyhp < CalcDamage(myHero, enemy, EDmg + RDmg, QDmg) then			
+			self:CastPredQ(enemy) DelayAction(function() self:CastPredR(enemy) DelayAction(function() self:AttackUnitKS(enemy) DelayAction(function() self:CastPredE(enemy) DelayAction(function() end, 125) end, 225) end, 450) end, 800) --self:CastEOFF(enemy)      
+		end
+	end	
+end
+
+function Aatrox:AttackUnitKS(unit)
+	for i,enemy in pairs(GetEnemyHeroes()) do  
+  if IsInDistance(enemy, GetRange(myHero)) and GetDistance(myHero, enemy) <= (GetRange(myHero)-10) and GetDistance(myHero, enemy) >= 10 then 
+    AttackUnit(enemy)
+  end
+  end
+end
+
+function Aatrox:GLOBALULTNOTICE()
+        if not self.RREADY then return end
+        info = ""
+        if self.RREADY then
+       		for _,unit in pairs(GetEnemyHeroes()) do
+                if  IsObjectAlive(unit) then
+                        realdmg = CalcDamage(myHero, unit, self.spellData[_R].dmg())
+                        hp =  GetCurrentHP(unit) + GetHPRegen(unit)
+                        if realdmg > hp then
+                                info = info..GetObjectName(unit)
+                                if not IsVisible(unit) then
+                                        info = info.." not Visible but maybe" 
+                                elseif not ValidTarget(unit, self.spellData[_R].range) then
+                                        info = info.." not in Range but"                                                                               
+                                end
+                                info = info.." killable\n"
+                        end
+        		 end               
+			end
+		end		 
+    DrawText(info,30,60,200,0xffff0000)                	
+end
+
+--function Aatrox:MinionAround(pos, range)
+--    local c = 0
+--    if pos == nil then return 0 end
+--    for k,v in pairs(GetAllMinions(MINION_ENEMY)) do 
+--        if v and GetDistanceSqr(pos,GetOrigin(v)) < range*range then
+--            c = c + 1
+--        end
+--    end
+--    return c
+--end
+
+function Aatrox:WAA()
+	for i,unit in pairs(GetEnemyHeroes()) do
+		local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
+		local unitPos = GetOrigin(unit)
+		local dmgE = self.spellData[_W].dmg() + TotalDmg
+		local dmgE2 = TotalDmg    
+		local dmg = CalcDamage(myHero, unit, dmgE)    
+		local dmg2 = CalcDamage(myHero, unit, dmgE2)
+		local hp = GetCurrentHP(unit)
+		local hPos = GetHPBarPos(unit)
+    	local drawPos = WorldToScreen(1,unitPos.x,unitPos.y,unitPos.z)
+        if dmg > 0 and GetCastName(myHero,_W) == "aatroxw2" then --and self.WcostHealth
+          DrawText(math.ceil((hp/dmg+hp/dmg2+hp/dmg2)/3).." WAA", 15, hPos.x+45, hPos.y+20, 0xffffffff)
+--        elseif dmg > 0 and GetCastName(myHero,_W) == "AatroxW" then --and self.WcostHealth
+--          DrawText(math.ceil((hp/dmg2+hp/dmg2+hp/dmg2)/3).." AA", 15, hPos.x+45, hPos.y+20, 0xffffffff)
+        end 	
+  end
+end
+
+function Aatrox:AutoLvL()
+if GetLevel(myHero) == 1 then
+	LevelSpell(_E)
+end
+if GetLevel(myHero) == 2 then
+	LevelSpell(_Q)
+end
+if GetLevel(myHero) == 3 then
+	LevelSpell(_W)
+end 
+if GetLevel(myHero) == 4 then
+	LevelSpell(_E)
+end
+ if GetLevel(myHero) == 5 then
+	LevelSpell(_E)
+end
+ if GetLevel(myHero) == 6 then
+	LevelSpell(_R)
+end
+ if GetLevel(myHero) == 7 then
+	LevelSpell(_E)
+end
+ if GetLevel(myHero) == 8 then
+	LevelSpell(_W)
+end
+ if GetLevel(myHero) == 9 then
+	LevelSpell(_E)
+end
+ if GetLevel(myHero) == 10 then
+	LevelSpell(_W)
+end
+ if GetLevel(myHero) == 11 then
+	LevelSpell(_R)
+end
+ if GetLevel(myHero) == 12 then
+	LevelSpell(_W)
+end
+ if GetLevel(myHero) == 13 then
+	LevelSpell(_W)
+end
+ if GetLevel(myHero) == 14 then
+	LevelSpell(_Q)
+end
+ if GetLevel(myHero) == 15 then
+	LevelSpell(_Q)
+end
+ if GetLevel(myHero) == 16 then
+	LevelSpell(_R)
+end
+ if GetLevel(myHero) == 17 then
+	LevelSpell(_Q)
+end
+ if GetLevel(myHero) == 18 then
+	LevelSpell(_Q)
+end
+end
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------- A M U M U ------------------------------------------------------------------------------------ A M U M U ------------------------------------------------------
+---------------------------------------------------------------------------- A M U M U -----------------------------------------------------------------------------------------------
+---------------------- A M U M U------------------------------------------------------------------------------------- A M U M U ------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+class "Amumu"
+function Amumu:__init()
+	OnLoop(function(myHero) self:Loop(myHero) end)
+  self.spellData = 
+	{
+	[_Q] = {dmg = function () return 30 + 50*GetCastLevel(myHero,_Q) + 0.7*GetBonusAP(myHero) end,  
+			mana = function () return 70 + 10*GetCastLevel(myHero,_Q) end,
+      speed = math.huge,
+			delay = 250,			 			
+			range = 1100, 
+			width = 65},  
+	[_W] = {dmg = function () for _,unit in pairs(GetEnemyHeroes()) do return 4 + 4*GetCastLevel(myHero,_W) + GetMaxHP(unit)/100*(GetCastLevel(myHero,_W)*0.5+0.5) end end, 
+			mana = 8,   --per second
+			range = 300},
+	[_E] = {dmg = function () return 50 + 25*GetCastLevel(myHero,_E) + 0.5*GetBonusAP(myHero) end, 
+			mana = 35,						 			
+			range = 350}, 
+	[_R] = {dmg = function () return 50 + 100*GetCastLevel(myHero,_R) + 0.8*GetBonusAP(myHero) end, 
+			mana = function () return 50 + 50*GetCastLevel(myHero,_R) end,
+			delay = 250,			 			
+			range = 550, 
+			width = 550},					
+	}
+
+	self.Config = scriptConfig("MonTourAmumu", "Amumu on Tour")
+		self.Config.addParam("E", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("Q", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("W", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("LCW", "Use W LaneClear", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("LCE", "Use E LaneClear", SCRIPT_PARAM_ONOFF, true)			
+		self.Config.addParam("R", "Use R killsteal", SCRIPT_PARAM_ONOFF, true)		
+		self.Config.addParam("Draw", "DMGoHPBARs", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("WAA", "Show W seconds", SCRIPT_PARAM_ONOFF, true)    
+		self.Config.addParam("KS", "KillSteal QWER", SCRIPT_PARAM_ONOFF, true)				
+		self.Config.addParam("U", "Perfect R key", SCRIPT_PARAM_KEYDOWN, string.byte("N"))
+ 		self.Config.addParam("U3", "Perfect R 3Hit", SCRIPT_PARAM_ONOFF, true)  
+ 		self.Config.addParam("UH3", "Harass R 3Hit", SCRIPT_PARAM_ONOFF, true)     
+end
+
+function Amumu:Loop(myHero)
+  
+  self:Checks()
+  self:WAA()
+  self:GLOBALULTNOTICE()
+  self:GLOBALULTNOTICE2()
+  self:TargetCircle()
+	if self.Config.Draw then 
+		self:Draws()
+	end
+	if self.Config.KS then
+		self:Killsteal()
+		end
+	if _G.IWalkConfig.LaneClear then
+    	self:LaneClear(minion)
+    end	
+	if _G.IWalkConfig.Combo then
+		self:Combo()
+	end
+	if _G.IWalkConfig.Harass then
+		self:Harass()
+	end
+	
+	if self.Config.U then
+		self:Special()
+	end	
+  self:DoWalk()
+
+  end
+
+function Amumu:TargetCircle()
+  local infotarget = GetObjectName(self.target)
+  local unitPos = GetOrigin(self.target)
+  if ValidTarget(unit, 1500) and IsInDistance(unit, 1500) and IsObjectAlive(unit) then
+  DrawText(infotarget,30,600,5,0xffff0000) 
+  DrawCircle(unitPos.x,unitPos.y,unitPos.z,30,0,0,0xffffffff)
+  end
+  if unitPos ~=nil then
+  unitPos = GetOrigin(self.target) 
+  DrawText(infotarget,30,600,5,0xffff0000) 
+  DrawCircle(unitPos.x,unitPos.y,unitPos.z,30,0,0,0xffffffff)
+end
+end
+
+
+function Amumu:GLOBALULTNOTICE()
+        if not self.RREADY then return end
+        info1 = ""
+        if self.RREADY then
+       		for _,unit in pairs(GetEnemyHeroes()) do
+                if  IsObjectAlive(unit) then
+                        realdmg = CalcDamage(myHero, unit, self.spellData[_R].dmg())
+                        hp =  GetCurrentHP(unit) + GetHPRegen(unit)
+                        if realdmg > hp then
+                                info1 = info1..GetObjectName(unit)
+                                if not IsInDistance(unit, self.spellData[_R].range) then
+                                        info1 = info1.." not in Range but"                                                        
+                                end
+                                info1 = info1.." killable\n"
+                        end
+        		 end               
+			end
+		end		 
+    DrawText(info1,30,60,200,0xffff0000)                	
+end
+
+function Amumu:GLOBALULTNOTICE2()
+  if not self.RREADY then return end
+       info = ""
+        if self.RREADY then
+       		for _,unit in pairs(GetEnemyHeroes()) do
+                if  IsObjectAlive(unit) then
+                        if EnemiesAround(myHeroPos, self.spellData[_R].range) == 1  then
+                                info = "1 Enemy will be stunned"
+                        elseif EnemiesAround(myHeroPos, self.spellData[_R].range) == 2  then
+                                info = " 2 Enemys will be stunned"  
+                        elseif EnemiesAround(myHeroPos, self.spellData[_R].range) == 3  then
+                                info = " 3 Enemys will be stunned"  
+                        elseif EnemiesAround(myHeroPos, self.spellData[_R].range) == 4  then
+                                info = " 4 Enemys will be stunned" 
+                         elseif EnemiesAround(myHeroPos, self.spellData[_R].range) >= 5  then
+                                info = " 5 Enemys will be stunned"  
+                        end        
+ --                               info = info.." will be stunned \n"
+                        
+        		 end               
+			end
+		end		 
+    DrawText(info,25,700,785,0xffff0000)                	
+end
+
+
+function Amumu:dmgper100() 
+  for _,unit in pairs(GetEnemyHeroes()) do
+  if GetBonusAP(myHero) >= 0 and GetBonusAP(myHero) <= 50 then return GetMaxHP(unit)/100*0 end
+  if GetBonusAP(myHero) >= 50 and GetBonusAP(myHero) <= 100 then return GetMaxHP(unit)/100*1 end 
+  if GetBonusAP(myHero) >= 100 and GetBonusAP(myHero) <= 200 then return GetMaxHP(unit)/100*2 end 
+  if GetBonusAP(myHero) >= 200 and GetBonusAP(myHero) <= 300 then return GetMaxHP(unit)/100*3 end 
+  if GetBonusAP(myHero) >= 300 and GetBonusAP(myHero) <= 400 then return GetMaxHP(unit)/100*4 end 
+  if GetBonusAP(myHero) >= 400 and GetBonusAP(myHero) <= 500 then return GetMaxHP(unit)/100*5 end 
+  if GetBonusAP(myHero) >= 500 and GetBonusAP(myHero) <= 600 then return GetMaxHP(unit)/100*6 end 
+  if GetBonusAP(myHero) >= 600 and GetBonusAP(myHero) <= 700 then return GetMaxHP(unit)/100*7 end 
+  if GetBonusAP(myHero) >= 700 and GetBonusAP(myHero) <= 800 then return GetMaxHP(unit)/100*8 end 
+  if GetBonusAP(myHero) >= 800 and GetBonusAP(myHero) <= 900 then return GetMaxHP(unit)/100*9 end 
+  if GetBonusAP(myHero) >= 900 and GetBonusAP(myHero) <= 1000 then return GetMaxHP(unit)/100*10 end 
+  if GetBonusAP(myHero) >= 1000 and GetBonusAP(myHero) <= 1100 then return GetMaxHP(unit)/100*11 end 
+  end
+end
+
+function Amumu:DoWalk()
+      IWalkTarget = nil
+    myHero = GetMyHero()
+    myHeroName = GetObjectName(myHero)
+    waitTickCount = 0
+    self.move = true
+    self.aa = true
+    self.orbTable = { lastAA = 0, windUp = 13.37, animation = 13.37 }
+  
+    self.myRange = GetRange(myHero)+GetHitBox(myHero)+(IWalkTarget and GetHitBox(IWalkTarget) or GetHitBox(myHero))
+--    if IWalkConfig.C then Circle(myHero,self.myRange):draw() end
+--    local addRange = ((self.gapcloserTable[myHeroName] and CanUseSpell(myHero, gapcloserTable[myHeroName]) == READY) and 250 or 0) + (GetObjectName(myHero) == "Jinx" and (GetCastLevel(myHero, _Q)*25+50) or 0)
+    IWalkTarget = GetTarget(self.myRange, DAMAGE_PHYSICAL) --+ addRange
+    if _G.IWalkConfig.LaneClear then
+      IWalkTarget = GetHighestMinion(GetOrigin(myHero), self.myRange, MINION_ENEMY)
+    end
+    local unit = IWalkTarget
+    if (_G.IWalkConfig.Harass or _G.IWalkConfig.Combo) and ValidTarget(unit) then --self:DoChampionPlugins(unit) end
+    if ValidTarget(unit, self.myRange) and GetTickCount() > self.orbTable.lastAA + self.orbTable.animation and self.aa then
+      AttackUnit(unit)
+    elseif GetTickCount() > self.orbTable.lastAA + self.orbTable.windUp and self.move then
+      if GetRange(myHero) < 450 and unit and GetObjectType(unit) == GetObjectType(myHero) and ValidTarget(unit, self.myRange) then
+        local unitPos = GetOrigin(unit)
+        if GetDistance(unit) > self.myRange/2 then
+          MoveToXYZ(unitPos.x, unitPos.y, unitPos.z)
+        end
+        else
+          IAC:Move()
+       end 
+      end
+    end
+  end
+
+function Amumu:WAA()
+	for i,unit in pairs(GetEnemyHeroes()) do
+		local unitPos = GetOrigin(unit)
+		local dmgW = self.spellData[_W].dmg() + self:dmgper100()  
+		local dmg = CalcDamage(myHero, unit, 0, dmgW)    
+		local hp = GetCurrentHP(unit)
+		local hPos = GetHPBarPos(unit)
+    	local drawPos = WorldToScreen(1,unitPos.x,unitPos.y,unitPos.z)
+        if GetCastLevel(myHero,_W) >= 1 and dmg > 0 then --and self.WcostHealth
+          DrawText(math.ceil(hp/dmg).." Wsec", 15, hPos.x+45, hPos.y+20, 0xffffffff)
+--        elseif not IsObjectAlive(unit) and GetCastLevel(myHero,_W) >= 1 then --and self.WcostHealth
+--          DrawText(math.ceil((hp/dmg2+hp/dmg2+hp/dmg2)/3).." AA", 15, hPos.x+45, hPos.y+20, 0xffffffff)
+        end 	
+  end
+end
+
+function Amumu:Draws()
+local rangeofdraws = 20000
+	for _,unit in pairs(GetEnemyHeroes()) do
+	--Ready Q + W + E + R
+	if ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg() + self.spellData[_E].dmg() + self.spellData[_R].dmg()),0xffffffff)			
+	--Ready Q + (W) + E + (R)			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg() + self.spellData[_E].dmg()),0xffffffff)
+	--Ready Q + (W) + (E) + R			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and not self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg() + self.spellData[_R].dmg()),0xffffffff)			
+	--Ready Q + (W) + (E) + (R)		
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and not self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_Q].dmg()),0xffffffff)
+	--Ready (Q) + (W) + E + R
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_E].dmg() + self.spellData[_R].dmg()),0xffffffff)	
+	--Ready (Q) + (W) + E + (R)			
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and self.EREADY and not self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_E].dmg()),0xffffffff)		
+	--Ready (Q) + (W) + (E) + R		
+	elseif ValidTarget(self.targetDRAW,rangeofdraws) and not self.QREADY and not self.EREADY and self.RREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_R].dmg()),0xffffffff)
+	end
+	end	
+end
+
+function Amumu:Checks()
+ 
+	self.QREADY = CanUseSpell(myHero,_Q) == READY
+	self.WREADY = CanUseSpell(myHero,_W) == READY
+	self.EREADY = CanUseSpell(myHero,_E) == READY
+	self.EREADYONCOOLDOWN = CanUseSpell(myHero,_E) == ONCOOLDOWN
+	self.RREADY = CanUseSpell(myHero,_R) == READY  
+	self.target = GetTarget(1500, DAMAGE_MAGIC)
+	self.targetDRAW = GetTarget(20000, DAMAGE_MAGIC)	
+	self.targetPos = GetOrigin(self.target)
+	myHeroPos = GetOrigin(myHero)
+  self.AuraofDespairOff = GotBuff(myHero,"AuraofDespair") == 0
+  self.AuraofDespairOn = GotBuff(myHero,"AuraofDespair") == 1
+end
+
+
+function Amumu:MinionAround(pos, range)
+    local c = 0
+    if pos == nil then return 0 end
+    for k,v in pairs(GetAllMinions(MINION_ENEMY)) do 
+        if v and GetDistanceSqr(pos,GetOrigin(v)) < range*range then
+            c = c + 1
+        end
+    end
+    return c
+end
+
+function Amumu:CastPredE(unit)
+	local unitPos = GetOrigin(unit)
+	if self.EREADY and self.Config.E and EnemiesAround(myHeroPos, self.spellData[_E].range) >= 1 and IsInDistance(unit, self.spellData[_E].range+50) and GetDistance(myHero, unit) <= self.spellData[_E].range-10 then --GetDistance(myHero, unit) > 0 and 
+		CastTargetSpell(unit,_E) 
+	end
+end
+
+function Amumu:CastPredECombo(unit) ------------------------------------------------------------------- http://gamingonsteroids.com/topic/974-gos-lua-api-alpha-version-009/
+	for i,unit in pairs(GetEnemyHeroes()) do   
+	local unitPos = GetOrigin(unit)
+--	if self.EREADY and self.Config.E and IsInDistance(unit, self.spellData[_E].range+50) and GetDistance(myHero, unit) <= self.spellData[_E].range then --GetDistance(myHero, unit) > 0 and 
+--		CastTargetSpell(unit,_E)  
+--	end
+  	if self.Config.E and EnemiesAround(myHeroPos, self.spellData[_E].range) >= 1 and IsInDistance(unit, self.spellData[_E].range) and GetDistance(myHero, unit) <= self.spellData[_E].range-30 and GetDistance(myHero, unit) > 0 then 
+		CastTargetSpell(unit,_E)
+--     	elseif self.EREADYONCOOLDOWN and self.Config.E and EnemiesAround(myHeroPos, self.spellData[_E].range) >= 1 and IsInDistance(unit, self.spellData[_E].range-30) and GetDistance(myHero, unit) <= self.spellData[_E].range-30 then --GetDistance(myHero, unit) > 0 and 
+--		CastTargetSpell(unit,_E)
+	end
+  end
 end
 
 
 
+function Amumu:CastQ(unit)
+		local QPred = GetPredictionForPlayer(myHeroPos, unit, GetMoveSpeed(unit), self.spellData[_Q].speed, self.spellData[_Q].delay, self.spellData[_Q].range, self.spellData[_Q].width, true, true)
+		if self.QREADY and self.Config.Q and QPred.HitChance == 1 then
+			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+		end
+end
 
---    elseif KeyIsDown(0x02)then
---    CastTargetSpell(myHero,ping-mia.troy)
+function Amumu:CastW(unit)
+	for i,unit in pairs(GetEnemyHeroes()) do  
+        if self.WREADY and self.Config.LCW and EnemiesAround(myHeroPos, self.spellData[_W].range) >= 1 and self.Config.LCW and self.AuraofDespairOff and IsInDistance(unit, self.spellData[_W].range) and GetDistance(myHero, unit) > 50 and GetDistance(myHero, unit) <= self.spellData[_W].range then 
+        CastTargetSpell(unit,_W) 
+        elseif self.WREADY and self.Config.LCW and EnemiesAround(myHeroPos, self.spellData[_W].range+50) <= 0 and self.Config.LCW and self.AuraofDespairOn and not IsInDistance(unit, self.spellData[_W].range) and GetDistance(myHero, unit) > self.spellData[_W].range then 
+        CastTargetSpell(unit,_W) 
+end
+end
+end
+
+function Amumu:CastPredR(unit)
+	local unitPos = GetOrigin(unit)
+	if self.Config.R then 
+	if self.RREADY and self.Config.R and IsInDistance(unit, self.spellData[_R].range) and EnemiesAround(myHeroPos, self.spellData[_W].range-10) >= 1 then--GetDistance(myHero, unit) <= self.spellData[_R].range-5 then --and GetDistance(myHero, unit) > 0 and 
+		CastTargetSpell(unit,_R)
+	end
+	end	
+end
+
+function Amumu:LaneClear(minion)
+local eminion = CountMinions()
+			for i,minion in pairs(GetAllMinions(MINION_ENEMY)) do		
+        if self.WREADY and self.Config.LCW and self:MinionAround(myHeroPos, self.spellData[_W].range) > 2 and self.Config.LCW and self.AuraofDespairOff and IsInDistance(minion, self.spellData[_W].range) and GetDistance(myHero, minion) > 50 and GetDistance(myHero, minion) <= self.spellData[_W].range then 
+        CastTargetSpell(minion,_W) 
+        elseif self.WREADY and self.Config.LCW and self:MinionAround(myHeroPos, self.spellData[_W].range) <= 1 and self.Config.LCW and self.AuraofDespairOn and not IsInDistance(minion, self.spellData[_W].range) and GetDistance(myHero, minion) > self.spellData[_W].range then 
+        CastTargetSpell(minion,_W) 
+        elseif self.EREADY and self.Config.LCE and self:MinionAround(myHeroPos, self.spellData[_E].range) > 3 and self.Config.LCE and IsInDistance(minion, self.spellData[_E].range) and GetDistance(myHero, minion) >= 10 and GetDistance(myHero, minion) <= self.spellData[_E].range then 
+        CastTargetSpell(minion,_E) 
+				end		
+			end
+end
+			
+function Amumu:Combo()
+	if ValidTarget(self.target, self.spellData[_Q].range+50)  then
+    if self.QREADY then
+			self:CastQ(self.target)	
+		elseif self.WREADY then
+			self:CastW(self.target)	      
+    elseif self.EREADY then
+			self:CastPredECombo(unit) 
+--		elseif self.RREADY then
+--			self:CastPredR(self.target)			
+		end	
+	end
+end
+
+function Amumu:Harass()
+	if ValidTarget(self.target, self.spellData[_Q].range+50) then
+    if self.QREADY then
+			self:CastQ(self.target)	
+		elseif self.WREADY then
+			self:CastW(self.target)	      
+    elseif self.EREADY then
+			self:CastPredECombo(self.target)
+    elseif self.RREADY then
+			self:HarassR(self.target)      
+     end 
+	end
+end
+
+function Amumu:HarassR(unit)
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	if self.Config.UH3 and ValidTarget(enemy, self.spellData[_R].range+50) and EnemiesAround(myHeroPos, self.spellData[_R].range-10) >= 3 then
+		if self.RREADY then
+      CastTargetSpell(enemy,_R)
+		end	
+	end
+	if not self.Config.UH3 and ValidTarget(enemy, self.spellData[_R].range+50) and EnemiesAround(myHeroPos, self.spellData[_R].range-10) >= 1 then
+		if self.RREADY then
+      CastTargetSpell(enemy,_R)
+		end	
+	end  
+	end
+end
+
+function Amumu:Special()
+ IAC:Move()
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	if self.Config.U3 and ValidTarget(enemy, self.spellData[_R].range+50) and EnemiesAround(myHeroPos, self.spellData[_R].range-10) >= 3 then
+		if self.RREADY then
+			CastTargetSpell(enemy,_R)
+		end	
+	end
+	if not self.Config.U3 and ValidTarget(enemy, self.spellData[_R].range+50) and EnemiesAround(myHeroPos, self.spellData[_R].range-10) >= 1 then
+		if self.RREADY then
+			CastTargetSpell(enemy,_R)
+		end	
+	end  
+	end
+end
+
+function Amumu:Killsteal()
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	local enemyhp = GetCurrentHP(enemy) + GetHPRegen(enemy)
+  local QDmg = self.QREADY and self.spellData[_Q].dmg() or 0
+ -- local WDmg = self.WREADY and self.spellData[_W].dmg() or 0
+  local EDmg = self.EREADY and self.spellData[_E].dmg() or 0
+  local RDmg = self.RREADY and self.spellData[_R].dmg() or 0
+		if ValidTarget(enemy, self.spellData[_E].range) and enemyhp < CalcDamage(myHero, enemy, 0, EDmg) then
+			self:CastPredE(enemy)
+		elseif ValidTarget(enemy, self.spellData[_Q].range) and enemyhp < CalcDamage(myHero, enemy, 0, QDmg) then
+			self:CastQ(enemy)		
+		elseif self.Config.R and ValidTarget(enemy, self.spellData[_R].range) and enemyhp < CalcDamage(myHero, enemy, 0, RDmg) then
+			self:HarassR(enemy)
+		elseif ValidTarget(enemy, self.spellData[_Q].range) and enemyhp < CalcDamage(myHero, enemy, 0, EDmg + QDmg) then			
+			self:CastQ(enemy) DelayAction(function() self:CastW(enemy) DelayAction(function() self:CastPredE(enemy) end, 125) end, 250)
+		elseif self.Config.R and ValidTarget(enemy, self.spellData[_Q].range) and enemyhp < CalcDamage(myHero, enemy, 0, RDmg + QDmg) then			
+			self:CastQ(enemy) DelayAction(function() self:CastW(enemy) DelayAction(function() self:CastPredR(unit) end, 125) end, 250)      		
+		elseif self.Config.R and ValidTarget(enemy, self.spellData[_Q].range) and enemyhp < CalcDamage(myHero, enemy, 0	, QDmg  + EDmg + RDmg) then			
+			self:CastQ(enemy) DelayAction(function() self:CastW(enemy) DelayAction(function() self:CastPredE(enemy) DelayAction(function() self:CastPredR(unit) end, 125) end, 250) end, 375)		
+		end
+	end	
+end
+
+
+if supportedHero[GetObjectName(myHero)] == true then--.Leona or supportedHero.Lux or supportedHero.Draven then
+if _G[GetObjectName(myHero)] then
+	_G[GetObjectName(myHero)]()
+end	
+local upv = "If you like UpVote!"
+local sig = "Made by MarCiii"
+local ver = "1.0.0.4"
+local info = "MarCiii on Tour Loaded"
+textTable = {info,upv,sig,ver} 
+PrintChat(textTable[1])
+PrintChat(textTable[2])
+PrintChat(textTable[3])
+PrintChat(textTable[4])	
+end
