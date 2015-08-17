@@ -1779,7 +1779,7 @@ function Amumu:Loop(myHero)
   self:WAA()
   self:GLOBALULTNOTICE()
   self:GLOBALULTNOTICE2()
-  self:TargetCircle()
+ -- self:TargetCircle()
 	if self.Config.Draw then 
 		self:Draws()
 	end
@@ -2137,7 +2137,7 @@ if _G[GetObjectName(myHero)] then
 end	
 local upv = "If you like UpVote!"
 local sig = "Made by MarCiii"
-local ver = "1.0.0.4"
+local ver = "2.0.0.1"
 local info = "MarCiii on Tour Loaded"
 textTable = {info,upv,sig,ver} 
 PrintChat(textTable[1])
