@@ -1,4 +1,4 @@
---MonTour - MarCiii on Tour V2.0.0.2
+--MonTour - MarCiii on Tour V2.0.0.3
 
 -- Worktime for Leona = 10 Std
 -- Worktime for Lux = 4 Days - It is much (just learning to code) but i want it perfect :) Lux has a much of Features
@@ -9,14 +9,16 @@
 --Credits to Inspired, Deftsu, Platypus, Snowbell, TheWelder and ilovesona
 --for some code ive used here for trying and learning :)
 
-supportedHero = {["Leona"] = true, ["Lux"] = true, ["Draven"] = true, ["Aatrox"] = true, ["Amumu"] = true}
+supportedHero = {["Leona"] = true ,["Lux"] = true ,["Draven"] = true ,["Aatrox"] = true ,["Amumu"] = true}
 
 myHero = GetMyHero()
 myIAC = IAC()
 
 minion = GetAllMinions(MINION_ENEMY)
 unit = GetCurrentTarget()
+--require('DLib')
 
+if supportedHero[GetObjectName(myHero)] == true then
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ---------------------- L E O N A ------------------------------------------------------------------------------------- L E O N A ------------------------------------------------------
 ---------------------------------------------------------------------------- L E O N A ------------------------------------------------------------------------------------------------
@@ -46,24 +48,27 @@ function Leona:__init()
 			range = 1200, 
 			width = 70},					
 	}
-
+--if supportedHero[GetObjectName(myHero)] == true then
 	self.Config = scriptConfig("MonTourLeona", "Leona on Tour")
 		self.Config.addParam("E", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
 		self.Config.addParam("Q", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
 		self.Config.addParam("W", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
-		self.Config.addParam("LCW", "Use W LaneClear", SCRIPT_PARAM_ONOFF, true)		
-		self.Config.addParam("R", "Use R in combo", SCRIPT_PARAM_ONOFF, true)		
-		self.Config.addParam("Draw", "DMGoHPBARs", SCRIPT_PARAM_ONOFF, true)
-		self.Config.addParam("KS", "KillSteal QWER", SCRIPT_PARAM_ONOFF, true)				
-		self.Config.addParam("U", "Perfect R", SCRIPT_PARAM_KEYDOWN, string.byte("N"))
+		self.Config.addParam("R", "Use R in combo", SCRIPT_PARAM_ONOFF, true)	    
+  self.Config2 = scriptConfig("MonTourLeona2", "Leona MISC")
+		self.Config2.addParam("LCW", "Use W LaneClear", SCRIPT_PARAM_ONOFF, true)		
+		self.Config2.addParam("Draw", "DMGoHPBARs", SCRIPT_PARAM_ONOFF, true)
+		self.Config2.addParam("KS", "KillSteal QWER", SCRIPT_PARAM_ONOFF, true)				
+		self.Config2.addParam("U", "Perfect R", SCRIPT_PARAM_KEYDOWN, string.byte("N"))
+-- end   
 end
 
 function Leona:Loop(myHero)
+--if supportedHero[GetObjectName(myHero)] == true then--.Leona or supportedHero.Lux or supportedHero.Draven then
 	self:Checks()
-	if self.Config.Draw then 
+	if self.Config2.Draw then 
 		self:Draws()
 	end
-	if self.Config.KS then
+	if self.Config2.KS then
 		self:Killsteal()
 		end
 	if _G.IWalkConfig.LaneClear then
@@ -76,12 +81,12 @@ function Leona:Loop(myHero)
 		self:Harass()
 	end
 	
-	if self.Config.U then
+	if self.Config2.U then
 		self:Special()
 	end	
   self:DoWalk()
+--end
 end
-
 function Leona:DoWalk()
       IWalkTarget = nil
     myHero = GetMyHero()
@@ -212,7 +217,7 @@ end
 
 function Leona:LaneClear(minion)
 local eminion = CountMinions()
-		if self.WREADY and self.Config.LCW then 
+		if self.WREADY and self.Config2.LCW then 
 			for i,minion in pairs(GetAllMinions(MINION_ENEMY)) do		
 				if IsInDistance(minion, 675) and ValidTarget(minion, 675) then 
 					CastSpell(_W)
@@ -331,7 +336,7 @@ function Lux:__init()
 		self.Config.addParam("Draw", "DMGBAR ON/OFF", SCRIPT_PARAM_ONOFF, true)						
 		self.Config.addParam("EAutoOFF", "Auto E Offcast", SCRIPT_PARAM_ONOFF, false)
 		self.Config.addParam("RN", "Ultimate Notifier", SCRIPT_PARAM_ONOFF, true)
-		self.Config.addParam("AL", "AutoLvLSkillsUp", SCRIPT_PARAM_ONOFF, true)										
+		self.Config.addParam("AL", "AutoLvLSkillsUp", SCRIPT_PARAM_ONOFF, false)										
 		self.Config.addParam("U", "Perfect R", SCRIPT_PARAM_KEYDOWN, string.byte("N"))
 end
 
@@ -787,7 +792,7 @@ function Draven:__init()
 		self.Config.addParam("RN", "Ultimate Notifier", SCRIPT_PARAM_ONOFF, true)
 		self.Config.addParam("QAA", "Draw QAA Text", SCRIPT_PARAM_ONOFF, true)									
 		self.Config.addParam("U", "Gapclose W", SCRIPT_PARAM_KEYDOWN, string.byte("N"))
-		
+require('Baseult')		
 end
 
 function Draven:Loop(myHero)
@@ -1779,7 +1784,7 @@ function Amumu:Loop(myHero)
   self:WAA()
   self:GLOBALULTNOTICE()
   self:GLOBALULTNOTICE2()
- -- self:TargetCircle()
+  --self:TargetCircle()
 	if self.Config.Draw then 
 		self:Draws()
 	end
@@ -2137,7 +2142,7 @@ if _G[GetObjectName(myHero)] then
 end	
 local upv = "If you like UpVote!"
 local sig = "Made by MarCiii"
-local ver = "2.0.0.2"
+local ver = "2.0.0.3"
 local info = "MarCiii on Tour Loaded"
 textTable = {info,upv,sig,ver} 
 PrintChat(textTable[1])
@@ -2146,3 +2151,4 @@ PrintChat(textTable[3])
 PrintChat(textTable[4])	
 end
 
+end
