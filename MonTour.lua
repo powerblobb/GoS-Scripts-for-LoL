@@ -1,21 +1,23 @@
---MonTour - MarCiii on Tour V2.0.0.3
+--MonTour - MarCiii on Tour V2.0.0.4
 
 -- Worktime for Leona = 10 Std
 -- Worktime for Lux = 4 Days - It is much (just learning to code) but i want it perfect :) Lux has a much of Features
 -- Worktime for Draven 5 Hours
 -- Worktime for Aatrox 10 Hours
 -- Worktime for Amumu 5 Hours
+-- Worktime for Shaco 30 minutes
 
 --Credits to Inspired, Deftsu, Platypus, Snowbell, TheWelder and ilovesona
 --for some code ive used here for trying and learning :)
 
-supportedHero = {["Leona"] = true ,["Lux"] = true ,["Draven"] = true ,["Aatrox"] = true ,["Amumu"] = true}
+supportedHero = {["Leona"] = true ,["Lux"] = true ,["Draven"] = true ,["Aatrox"] = true ,["Amumu"] = true ,["Shaco"] = true}
 
 myHero = GetMyHero()
 myIAC = IAC()
 
 minion = GetAllMinions(MINION_ENEMY)
 unit = GetCurrentTarget()
+mymouse = GetMousePos()
 require('DLib')
 
 if supportedHero[GetObjectName(myHero)] == true then
@@ -2135,6 +2137,215 @@ function Amumu:Killsteal()
 	end	
 end
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------- S H A C O ------------------------------------------------------------------------------------- S H A C O ------------------------------------------------------
+---------------------------------------------------------------------------- S H A C O ------------------------------------------------------------------------------------------------
+---------------------- S H A C O ------------------------------------------------------------------------------------- S H A C O ------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+class "Shaco"
+function Shaco:__init()
+	OnLoop(function(myHero) self:Loop(myHero) end)
+	self.spellData = 
+	{
+	[_Q] = {dmg = function () return (GetBonusDmg(myHero)+GetBaseDamage(myHero)) / 100 * (120 + 20*GetCastLevel(myHero,_Q)) end,  
+			mana = function () return 100 - 10*GetCastLevel(myHero,_Q) end,
+			range = 400},  
+	[_W] = {dmg = function () return 10 + 50*GetCastLevel(myHero,_W) + 0.4*GetBonusAP(myHero) end,  
+			mana = function () return 45 + 5*GetCastLevel(myHero,_Q) end,
+			range = 425},
+	[_E] = {dmg = function () return 10 + 40*GetCastLevel(myHero,_E) + GetBonusAP(myHero) + GetBonusDmg(myHero) end, 
+			mana = function () return 45 + 5*GetCastLevel(myHero,_Q) end,			
+			delay = 500,			 			
+			range = 625}, 
+	[_R] = {dmg = function () return 150 + 150*GetCastLevel(myHero,_R) + GetBonusAP(myHero) end, 
+			mana = 100,			
+			delay = 500,			 			
+			range = 1125}, 				
+	}
+--if supportedHero[GetObjectName(myHero)] == true then
+	self.Config = scriptConfig("MonTourShaco", "Shaco on Tour")
+		self.Config.addParam("E", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
+		self.Config.addParam("Q", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)   	
+		self.Config.addParam("Draw", "DMGoHP E", SCRIPT_PARAM_ONOFF, true)	
+		self.Config.addParam("Ekillnote", "Global E KillNotice", SCRIPT_PARAM_ONOFF, true)	
+	self.Config2 = scriptConfig("MonTourShaco2", "Killsteal")    
+  		self.Config2.addParam("KS", "KS ON/OFF", SCRIPT_PARAM_ONOFF, true)
+   		self.Config2.addParam("KSQ", "KS Q", SCRIPT_PARAM_ONOFF, true)    
+      self.Config2.addParam("KSE", "KS E", SCRIPT_PARAM_ONOFF, true)   
+      self.Config2.addParam("KSE2", "KS E gapclose Q", SCRIPT_PARAM_ONOFF, true) 
+      self.Config2.addParam("KSQE", "KS EQ", SCRIPT_PARAM_ONOFF, true)         
+--		self.Config.addParam("U", "Perfect R", SCRIPT_PARAM_KEYDOWN, string.byte("N"))
+-- end   
+end
+
+function Shaco:Loop(myHero)
+--if supportedHero[GetObjectName(myHero)] == true then--.Leona or supportedHero.Lux or supportedHero.Draven then
+	self:Checks()
+	if self.Config.Draw then 
+		self:Draws()
+	end
+	if self.Config2.KS then
+		self:Killsteal()
+		end
+	if _G.IWalkConfig.Combo then
+		self:Combo()
+	end
+	if _G.IWalkConfig.Harass then
+		self:Harass()
+	end
+  if self.Config.Ekillnote then
+  self:Ekillnote
+  end
+  self:DoWalk()
+--end
+end
+function Shaco:DoWalk()
+      IWalkTarget = nil
+    myHero = GetMyHero()
+    myHeroName = GetObjectName(myHero)
+    waitTickCount = 0
+    self.move = true
+    self.aa = true
+    self.orbTable = { lastAA = 0, windUp = 13.37, animation = 13.37 }
+  
+    self.myRange = GetRange(myHero)+GetHitBox(myHero)+(IWalkTarget and GetHitBox(IWalkTarget) or GetHitBox(myHero))
+--    if IWalkConfig.C then Circle(myHero,self.myRange):draw() end
+--    local addRange = ((self.gapcloserTable[myHeroName] and CanUseSpell(myHero, gapcloserTable[myHeroName]) == READY) and 250 or 0) + (GetObjectName(myHero) == "Jinx" and (GetCastLevel(myHero, _Q)*25+50) or 0)
+    IWalkTarget = GetTarget(self.myRange, DAMAGE_PHYSICAL) --+ addRange
+    if _G.IWalkConfig.LaneClear then
+      IWalkTarget = GetHighestMinion(GetOrigin(myHero), self.myRange, MINION_ENEMY)
+    end
+    local unit = IWalkTarget
+    if (_G.IWalkConfig.Harass or _G.IWalkConfig.Combo) and ValidTarget(unit) then --self:DoChampionPlugins(unit) end
+    if ValidTarget(unit, self.myRange) and GetTickCount() > self.orbTable.lastAA + self.orbTable.animation and self.aa then
+      AttackUnit(unit)
+    elseif GetTickCount() > self.orbTable.lastAA + self.orbTable.windUp and self.move then
+      if GetRange(myHero) < 450 and unit and GetObjectType(unit) == GetObjectType(myHero) and ValidTarget(unit, self.myRange) then
+        local unitPos = GetOrigin(unit)
+        if GetDistance(unit) > self.myRange/2 then
+          MoveToXYZ(unitPos.x, unitPos.y, unitPos.z)
+        end
+        else
+          IAC:Move()
+       end 
+      end
+    end
+  end
+
+function Shaco:Draws()
+local rangeofdraws = 20000
+	for _,unit in pairs(GetEnemyHeroes()) do
+		
+	--Ready Q + (W) + E + (R)			
+--	if ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and self.EREADY then
+--		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_Q].dmg(), self.spellData[_E].dmg()),0xffffffff)		
+--	--Ready Q + (W) + (E) + (R)		
+--	elseif ValidTarget(self.targetDRAW,rangeofdraws) and self.QREADY and not self.EREADY then
+--		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, self.spellData[_Q].dmg(),0 ),0xffffffff)	
+	--Ready (Q) + (W) + E + (R)			
+	if ValidTarget(self.targetDRAW,rangeofdraws) and self.EREADY then --not self.QREADY and 
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, self.targetDRAW, 0, self.spellData[_E].dmg()),0xffffffff)		
+	end
+	end	
+end
+
+function Shaco:Checks()
+	self.QREADY = CanUseSpell(myHero,_Q) == READY
+	self.WREADY = CanUseSpell(myHero,_W) == READY
+	self.EREADY = CanUseSpell(myHero,_E) == READY
+	self.RREADY = CanUseSpell(myHero,_R) == READY
+	self.target = GetTarget(1250, DAMAGE_MAGIC)
+	self.targetDRAW = GetTarget(20000, DAMAGE_MAGIC)	
+	self.targetPos = GetOrigin(self.target)
+	myHeroPos = GetOrigin(myHero)
+	self.Qstack = GotBuff(myHero,"Deceive") == 1
+end
+
+function Shaco:CastPredE(unit)
+	local unitPos = GetOrigin(unit)
+	if self.EREADY and self.Config.E and IsInDistance(unit, self.spellData[_E].range) then 
+		CastTargetSpell(unit,_E)
+	end
+end
+
+function Shaco:CastQ(unit)
+  	local unitPos = GetOrigin(unit)
+	if self.QREADY and self.Config.Q and IsInDistance(unit, self.spellData[_Q].range+15) then 
+		CastSkillShot(_Q,unitPos)
+	end
+end
+
+function Shaco:CastQKS(unit)
+  	local unitPos = GetOrigin(unit)
+	if self.QREADY and self.Config.Q and IsInDistance(unit, self.spellData[_Q].range + self.spellData[_E].range) then 
+		CastSkillShot(_Q,unitPos)
+	end
+end
+			
+function Shaco:Combo()
+	if ValidTarget(self.target, self.spellData[_E].range + self.spellData[_Q].range) then
+		if self.EREADY then
+			self:CastPredE(self.target)
+		elseif self.QREADY then
+			self:CastQ(self.target)	 		
+		end	
+	end
+end
+
+function Shaco:Harass()
+	if ValidTarget(self.target, self.spellData[_E].range+50) then
+		if self.EREADY then
+			self:CastPredE(self.target) 		
+		end
+	end
+end
+
+
+function Shaco:Killsteal()
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	local enemyhp = GetCurrentHP(enemy) + GetHPRegen(enemy)
+		if self.Config2.KSE and ValidTarget(enemy, self.spellData[_E].range) and GetDistance(myHero, enemy) <= self.spellData[_E].range and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_E].dmg()) then
+			self:CastPredE(enemy)
+		elseif self.Config2.KSQ and ValidTarget(enemy, self.spellData[_Q].range) and GetDistance(myHero, enemy) <= self.spellData[_Q].range-5 and enemyhp < CalcDamage(myHero, enemy, self.spellData[_Q].dmg(), 0) then
+			self:CastQ(enemy)	DelayAction(function() self:AttackUnitKS(enemy) end, 125)  	
+		elseif self.Config2.KSQE andValidTarget(enemy, self.spellData[_E].range-10) and GetDistance(myHero, enemy) <= self.spellData[_E].range-10 and enemyhp < CalcDamage(myHero, enemy, self.spellData[_Q].dmg(), self.spellData[_E].dmg()) then			
+			self:CastPredE(enemy) DelayAction(function() self:CastQ(enemy) DelayAction(function() self:AttackUnitKS(enemy) end, 125) end, 250)
+		elseif self.Config2.KSE2 and ValidTarget(enemy, self.spellData[_E].range + self.spellData[_Q].range+10) and GetDistance(myHero, enemy) >= self.spellData[_E].range + self.spellData[_Q].range - 10 and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_E].dmg()) then			
+			self:CastQKS(enemy) DelayAction(function() self:CastPredE(enemy) end, 125)      
+		end
+	end	
+end
+
+function Shaco:AttackUnitKS(unit)
+	for i,enemy in pairs(GetEnemyHeroes()) do  
+  if IsInDistance(enemy, GetRange(myHero)) and GetDistance(myHero, enemy) <= (GetRange(myHero)-10) and GetDistance(myHero, enemy) >= 10 then 
+    AttackUnit(enemy)
+  end
+  end
+end
+
+function Shaco:Ekillnote()
+        if not self.EREADY then return end
+        info1 = ""
+        if self.EREADY then
+       		for _,unit in pairs(GetEnemyHeroes()) do
+                if  IsObjectAlive(unit) then
+                        realdmg = CalcDamage(myHero, unit, self.spellData[_E].dmg())
+                        hp =  GetCurrentHP(unit) + GetHPRegen(unit)
+                        if realdmg > hp then
+                                info1 = info1..GetObjectName(unit)
+                                if not IsInDistance(unit, self.spellData[_E].range+50) then
+                                        info1 = info1.." not in Range but"                                                        
+                                end
+                                info1 = info1.." killable\n"
+                        end
+        		 end               
+			end
+		end		 
+    DrawText(info1,30,60,200,0xffff0000)                	
+end
+
+
 
 if supportedHero[GetObjectName(myHero)] == true then--.Leona or supportedHero.Lux or supportedHero.Draven then
 if _G[GetObjectName(myHero)] then
@@ -2152,3 +2363,4 @@ PrintChat(textTable[4])
 end
 
 end
+
