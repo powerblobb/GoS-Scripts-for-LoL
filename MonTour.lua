@@ -1934,7 +1934,7 @@ function Amumu:WAA()
           DrawText(math.ceil(hp/dmg).." Wsec", 15, hPos.x+45, hPos.y+20, 0xffffffff)
 --        elseif not IsObjectAlive(unit) and GetCastLevel(myHero,_W) >= 1 then --and self.WcostHealth
 --          DrawText(math.ceil((hp/dmg2+hp/dmg2+hp/dmg2)/3).." AA", 15, hPos.x+45, hPos.y+20, 0xffffffff)
-        end 	
+        end 
   end
 end
 
@@ -2353,7 +2353,7 @@ if _G[GetObjectName(myHero)] then
 end	
 local upv = "If you like UpVote!"
 local sig = "Made by MarCiii"
-local ver = "2.0.0.3"
+local ver = "2.0.0.4"
 local info = "MarCiii on Tour Loaded"
 textTable = {info,upv,sig,ver} 
 PrintChat(textTable[1])
