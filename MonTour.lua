@@ -16,7 +16,7 @@ myIAC = IAC()
 
 minion = GetAllMinions(MINION_ENEMY)
 unit = GetCurrentTarget()
---require('DLib')
+require('DLib')
 
 if supportedHero[GetObjectName(myHero)] == true then
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
