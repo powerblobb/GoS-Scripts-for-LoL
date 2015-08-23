@@ -1,4 +1,4 @@
---MonTour - MarCiii on Tour V2.0.0.4
+--MonTour - MarCiii on Tour V2.0.0.4  
 
 -- Worktime for Leona = 10 Std
 -- Worktime for Lux = 4 Days - It is much (just learning to code) but i want it perfect :) Lux has a much of Features
@@ -790,7 +790,7 @@ function Draven:__init()
 		self.Config.addParam("LHQ", "Use Q LastHit", SCRIPT_PARAM_ONOFF, true)				
 		self.Config.addParam("R", "KillSteal R", SCRIPT_PARAM_ONOFF, true)		
 		self.Config.addParam("Draw", "DMGoHPBARs", SCRIPT_PARAM_ONOFF, true)	
-		self.Config.addParam("KSER", "KillSteal ER", SCRIPT_PARAM_ONOFF, true)	
+		self.Config.addParam("KSER", "KillSteal ON/OFF", SCRIPT_PARAM_ONOFF, true)	
 		self.Config.addParam("RN", "Ultimate Notifier", SCRIPT_PARAM_ONOFF, true)
 		self.Config.addParam("QAA", "Draw QAA Text", SCRIPT_PARAM_ONOFF, true)									
 		self.Config.addParam("U", "Gapclose W", SCRIPT_PARAM_KEYDOWN, string.byte("N"))
@@ -2199,6 +2199,7 @@ function Shaco:Loop(myHero)
   self:DoWalk()
 --end
 end
+
 function Shaco:DoWalk()
       IWalkTarget = nil
     myHero = GetMyHero()
@@ -2363,4 +2364,3 @@ PrintChat(textTable[4])
 end
 
 end
-
