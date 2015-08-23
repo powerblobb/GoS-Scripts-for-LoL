@@ -793,7 +793,7 @@ function Draven:__init()
 		self.Config.addParam("KSER", "KillSteal ON/OFF", SCRIPT_PARAM_ONOFF, true)	
 		self.Config.addParam("RN", "Ultimate Notifier", SCRIPT_PARAM_ONOFF, true)
 		self.Config.addParam("QAA", "Draw QAA Text", SCRIPT_PARAM_ONOFF, true)									
-		self.Config.addParam("U", "Gapclose W", SCRIPT_PARAM_KEYDOWN, string.byte("N"))
+		self.Config.addParam("U", "Gapclose E", SCRIPT_PARAM_KEYDOWN, string.byte("N"))
 require('Baseult')		
 end
 
