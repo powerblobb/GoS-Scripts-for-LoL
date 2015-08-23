@@ -2194,7 +2194,7 @@ function Shaco:Loop(myHero)
 		self:Harass()
 	end
   if self.Config.Ekillnote then
-  self:Ekillnote
+  self:Ekillnote()
   end
   self:DoWalk()
 --end
@@ -2308,7 +2308,7 @@ function Shaco:Killsteal()
 			self:CastPredE(enemy)
 		elseif self.Config2.KSQ and ValidTarget(enemy, self.spellData[_Q].range) and GetDistance(myHero, enemy) <= self.spellData[_Q].range-5 and enemyhp < CalcDamage(myHero, enemy, self.spellData[_Q].dmg(), 0) then
 			self:CastQ(enemy)	DelayAction(function() self:AttackUnitKS(enemy) end, 125)  	
-		elseif self.Config2.KSQE andValidTarget(enemy, self.spellData[_E].range-10) and GetDistance(myHero, enemy) <= self.spellData[_E].range-10 and enemyhp < CalcDamage(myHero, enemy, self.spellData[_Q].dmg(), self.spellData[_E].dmg()) then			
+		elseif self.Config2.KSQE and ValidTarget(enemy, self.spellData[_E].range-10) and GetDistance(myHero, enemy) <= self.spellData[_E].range-10 and enemyhp < CalcDamage(myHero, enemy, self.spellData[_Q].dmg(), self.spellData[_E].dmg()) then			
 			self:CastPredE(enemy) DelayAction(function() self:CastQ(enemy) DelayAction(function() self:AttackUnitKS(enemy) end, 125) end, 250)
 		elseif self.Config2.KSE2 and ValidTarget(enemy, self.spellData[_E].range + self.spellData[_Q].range+10) and GetDistance(myHero, enemy) >= self.spellData[_E].range + self.spellData[_Q].range - 10 and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_E].dmg()) then			
 			self:CastQKS(enemy) DelayAction(function() self:CastPredE(enemy) end, 125)      
