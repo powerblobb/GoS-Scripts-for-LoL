@@ -1,4 +1,4 @@
---MonTour - MarCiii on Tour V2.0.0.4  
+--MonTour - MarCiii on Tour V2.0.0.5
 
 -- Worktime for Leona = 10 Std
 -- Worktime for Lux = 4 Days - It is much (just learning to code) but i want it perfect :) Lux has a much of Features
@@ -12,15 +12,16 @@
 
 supportedHero = {["Leona"] = true ,["Lux"] = true ,["Draven"] = true ,["Aatrox"] = true ,["Amumu"] = true ,["Shaco"] = true}
 
+require('IAC')  
 myHero = GetMyHero()
 myIAC = IAC()
 
 minion = GetAllMinions(MINION_ENEMY)
 unit = GetCurrentTarget()
 mymouse = GetMousePos()
-require('DLib')
+require('DLib') 
 
-if supportedHero[GetObjectName(myHero)] == true then
+if supportedHero[GetObjectName(myHero)] == true then 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ---------------------- L E O N A ------------------------------------------------------------------------------------- L E O N A ------------------------------------------------------
 ---------------------------------------------------------------------------- L E O N A ------------------------------------------------------------------------------------------------
@@ -50,45 +51,96 @@ function Leona:__init()
 			range = 1200, 
 			width = 70},					
 	}
+  
+  local root = menu.addItem(SubMenu.new("Leona on Tour"))
+  local Combo = root.addItem(SubMenu.new("Combo"))
+CUseQ = Combo.addItem(MenuBool.new("Use Q",true))
+CUseW = Combo.addItem(MenuBool.new("Use W",true))
+CUseE = Combo.addItem(MenuBool.new("Use E",true))
+CUseR = Combo.addItem(MenuBool.new("Use R",true))
+ComboActive = Combo.addItem(MenuKeyBind.new("Combo", 32))
+  
+  local Harass= root.addItem(SubMenu.new("Harass"))
+HUseQ = Harass.addItem(MenuBool.new("Use Q",true))
+HUseW = Harass.addItem(MenuBool.new("Use W",true))
+HUseE = Harass.addItem(MenuBool.new("Use E",true))
+HUseR = Harass.addItem(MenuBool.new("Use R",false))
+HarassActive = Harass.addItem(MenuKeyBind.new("Harass", 67))  
+  
+  local KSmenu = root.addItem(SubMenu.new("Killsteal"))
+KSQ = KSmenu.addItem(MenuBool.new("Killsteal with Q", true))
+KSW = KSmenu.addItem(MenuBool.new("Killsteal with W", true))
+KSE = KSmenu.addItem(MenuBool.new("Killsteal with E", true))
+KSR = KSmenu.addItem(MenuBool.new("Killsteal with R", true))
+KSEWQ = KSmenu.addItem(MenuBool.new("Killsteal with E W Q", true))  
+KSEQR = KSmenu.addItem(MenuBool.new("Killsteal with E Q R", true))  
+KSEWQR = KSmenu.addItem(MenuBool.new("Killsteal with E W Q R", true))    
+  
+  local Drawings = root.addItem(SubMenu.new("Drawings"))
+DMGOVERHPBAR = Drawings.addItem(MenuBool.new("Draw DMG over HP", true))
+  
+  local Special = root.addItem(SubMenu.new("Special"))  
+SpecialUSE = Special.addItem(MenuKeyBind.new("Perfect R", 78))  
+    
+  local Farm = root.addItem(SubMenu.new("Farm"))
+LCW = Farm.addItem(MenuBool.new("Use W LaneClear",true))
+LCWMINION = Farm.addItem(MenuSlider.new("W if X Minion in Around", 3, 0, 10, 1))
+LaneClearActive = Farm.addItem(MenuKeyBind.new("LaneClear", 86))
+  
+--  local Misc= root.addItem(SubMenu.new("Misc"))
+--  local MDraw = Misc.addItem(MenuBool.new("Use W",true))
+--  local MKS = Misc.addItem(MenuBool.new("Use E",true))  
+  
 --if supportedHero[GetObjectName(myHero)] == true then
-	self.Config = scriptConfig("MonTourLeona", "Leona on Tour")
-		self.Config.addParam("E", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
-		self.Config.addParam("Q", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
-		self.Config.addParam("W", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
-		self.Config.addParam("R", "Use R in combo", SCRIPT_PARAM_ONOFF, true)	    
-  self.Config2 = scriptConfig("MonTourLeona2", "Leona MISC")
-		self.Config2.addParam("LCW", "Use W LaneClear", SCRIPT_PARAM_ONOFF, true)		
-		self.Config2.addParam("Draw", "DMGoHPBARs", SCRIPT_PARAM_ONOFF, true)
-		self.Config2.addParam("KS", "KillSteal QWER", SCRIPT_PARAM_ONOFF, true)				
-		self.Config2.addParam("U", "Perfect R", SCRIPT_PARAM_KEYDOWN, string.byte("N"))
+--	self.Config = scriptConfig("MonTourLeona", "Leona on Tour")
+--		self.Config.addParam("E", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
+--		self.Config.addParam("Q", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
+--		self.Config.addParam("W", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
+--		self.Config.addParam("R", "Use R in combo", SCRIPT_PARAM_ONOFF, true)	    
+--  self.Config2 = scriptConfig("MonTourLeona2", "Leona MISC")
+--		self.Config2.addParam("LCW", "Use W LaneClear", SCRIPT_PARAM_ONOFF, true)		
+--		self.Config2.addParam("Draw", "DMGoHPBARs", SCRIPT_PARAM_ONOFF, true)
+--		self.Config2.addParam("KS", "KillSteal QWER", SCRIPT_PARAM_ONOFF, true)				
+--		self.Config2.addParam("U", "Perfect R", SCRIPT_PARAM_KEYDOWN, string.byte("N"))
 -- end   
 end
 
 function Leona:Loop(myHero)
 --if supportedHero[GetObjectName(myHero)] == true then--.Leona or supportedHero.Lux or supportedHero.Draven then
 	self:Checks()
-	if self.Config2.Draw then 
+  self:Killsteal()
+	if DMGOVERHPBAR.getValue() then 
 		self:Draws()
 	end
-	if self.Config2.KS then
-		self:Killsteal()
-		end
-	if _G.IWalkConfig.LaneClear then
+	if LaneClearActive.getValue() then
     	self:LaneClear(minion)
     end	
-	if _G.IWalkConfig.Combo then
+	if ComboActive.getValue() then
 		self:Combo()
 	end
-	if _G.IWalkConfig.Harass then
+	if HarassActive.getValue() then
 		self:Harass()
 	end
 	
-	if self.Config2.U then
+	if SpecialUSE.getValue() then
 		self:Special()
 	end	
   self:DoWalk()
 --end
 end
+
+function Leona:MinionAround(pos, range)
+    local c = 0
+    if pos == nil then return 0 end
+    for k,v in pairs(GetAllMinions(MINION_ENEMY)) do 
+        if v and GetDistanceSqr(pos,GetOrigin(v)) < range*range then
+            c = c + 1
+        end
+    end
+    return c
+end
+
+
 function Leona:DoWalk()
       IWalkTarget = nil
     myHero = GetMyHero()
@@ -99,8 +151,6 @@ function Leona:DoWalk()
     self.orbTable = { lastAA = 0, windUp = 13.37, animation = 13.37 }
   
     self.myRange = GetRange(myHero)+GetHitBox(myHero)+(IWalkTarget and GetHitBox(IWalkTarget) or GetHitBox(myHero))
---    if IWalkConfig.C then Circle(myHero,self.myRange):draw() end
---    local addRange = ((self.gapcloserTable[myHeroName] and CanUseSpell(myHero, gapcloserTable[myHeroName]) == READY) and 250 or 0) + (GetObjectName(myHero) == "Jinx" and (GetCastLevel(myHero, _Q)*25+50) or 0)
     IWalkTarget = GetTarget(self.myRange, DAMAGE_PHYSICAL) --+ addRange
     if _G.IWalkConfig.LaneClear then
       IWalkTarget = GetHighestMinion(GetOrigin(myHero), self.myRange, MINION_ENEMY)
@@ -190,19 +240,19 @@ end
 function Leona:CastPredE(unit)
 	local unitPos = GetOrigin(unit)
 		local EPred = GetPredictionForPlayer(myHeroPos, unit, GetMoveSpeed(unit), self.spellData[_E].speed, self.spellData[_E].delay, self.spellData[_E].range-25, self.spellData[_E].width, false, true)
-		if self.EREADY and self.Config.E and EPred.HitChance == 1 then
+		if self.EREADY and EPred.HitChance == 1 then
 			CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
 		end
 end
 
 function Leona:CastQ(unit)
-	if self.QREADY and self.Config.Q and IsInDistance(unit, 400) then 
+	if self.QREADY and IsInDistance(unit, 400) then 
 		CastTargetSpell(unit,_Q)
 	end
 end
 
 function Leona:CastW(unit)
-	if self.WREADY and self.Config.W and IsInDistance(unit, 600) then 
+	if self.WREADY and IsInDistance(unit, 600) then 
 		CastTargetSpell(unit,_W)
 	end
 end
@@ -210,18 +260,16 @@ end
 function Leona:CastPredR(unit)
 	local unitPos = GetOrigin(unit)
 	local RPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit), self.spellData[_R].speed, self.spellData[_R].delay, self.spellData[_R].range, self.spellData[_R].width, true, true)
-	if self.Config.R then --and self.Wstack
 		if self.RREADY and RPred.HitChance == 1 then
 			CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z)
 		end
-	end	
 end
 
 function Leona:LaneClear(minion)
 local eminion = CountMinions()
-		if self.WREADY and self.Config2.LCW then 
+		if self.WREADY and LCW.getValue() then 
 			for i,minion in pairs(GetAllMinions(MINION_ENEMY)) do		
-				if IsInDistance(minion, 675) and ValidTarget(minion, 675) then 
+				if self:MinionAround(myHeroPos, self.spellData[_W].range) >= LCWMINION.getValue() and IsInDistance(minion, 675) and ValidTarget(minion, 675) then 
 					CastSpell(_W)
 				end		
 			end
@@ -229,28 +277,30 @@ local eminion = CountMinions()
 end
 			
 function Leona:Combo()
-	if ValidTarget(self.target, self.spellData[_R].range+50) and not self.Config.MC then
-		if self.EREADY then
+	if ValidTarget(self.target, self.spellData[_R].range+50) then
+		if self.EREADY and CUseE.getValue() then
 			self:CastPredE(self.target)
-		elseif self.QREADY then
+		elseif self.QREADY and CUseQ.getValue() then
 			self:CastQ(self.target)	 
-		elseif self.WREADY then
+		elseif self.WREADY and CUseW.getValue() then
 			self:CastW(self.target)	 
-		elseif self.RREADY then
+		elseif self.RREADY and CUseR.getValue() then
 			self:CastPredR(self.target)			
 		end	
 	end
 end
 
 function Leona:Harass()
-	if ValidTarget(self.target, self.spellData[_E].range+50) then
-		if self.EREADY then
+	if ValidTarget(self.target, self.spellData[_R].range+50) then
+		if self.EREADY and HUseE.getValue() then
 			self:CastPredE(self.target)
-		elseif self.QREADY then
+		elseif self.QREADY and HUseQ.getValue()  then
 			self:CastQ(self.target)	 
-		elseif self.WREADY then
-			self:CastW(self.target)	 		
-		end
+		elseif self.WREADY and HUseW.getValue() then
+			self:CastW(self.target)	 
+		elseif self.RREADY and HUseR.getValue() then
+			self:CastPredR(self.target)			
+		end	
 	end
 end
 
@@ -268,19 +318,19 @@ end
 function Leona:Killsteal()
 	for i,enemy in pairs(GetEnemyHeroes()) do
 	local enemyhp = GetCurrentHP(enemy) + GetHPRegen(enemy)
-		if ValidTarget(enemy, self.spellData[_W].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_W].dmg()) then
+		if KSW.getValue() and ValidTarget(enemy, self.spellData[_W].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_W].dmg()) then
 			self:CastW(enemy)
-		elseif ValidTarget(enemy, self.spellData[_E].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_E].dmg()) then
+		elseif KSE.getValue() and ValidTarget(enemy, self.spellData[_E].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_E].dmg()) then
 			self:CastPredE(enemy)
-		elseif ValidTarget(enemy, self.spellData[_Q].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_Q].dmg()) then
+		elseif KSQ.getValue() and ValidTarget(enemy, self.spellData[_Q].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_Q].dmg()) then
 			self:CastQ(enemy)		
-		elseif ValidTarget(enemy, self.spellData[_R].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_R].dmg()) then
+		elseif KSE.getValue() and ValidTarget(enemy, self.spellData[_R].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_R].dmg()) then
 			self:CastPredR(enemy)
-		elseif ValidTarget(enemy, self.spellData[_E].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_E].dmg() + self.spellData[_W].dmg() + self.spellData[_Q].dmg()) then			
+		elseif KSEWQ.getValue() and ValidTarget(enemy, self.spellData[_E].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_E].dmg() + self.spellData[_W].dmg() + self.spellData[_Q].dmg()) then			
 			self:CastPredE(enemy) DelayAction(function() self:CastW(enemy) DelayAction(function() self:CastQ(enemy) end, 125) end, 250)
-		elseif ValidTarget(enemy, self.spellData[_R].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_Q].dmg() + self.spellData[_E].dmg() + self.spellData[_R].dmg()) then			
+		elseif KSEQR.getValue() and ValidTarget(enemy, self.spellData[_R].range+50) and enemyhp < CalcDamage(myHero, enemy, 0, self.spellData[_Q].dmg() + self.spellData[_E].dmg() + self.spellData[_R].dmg()) then			
 			self:CastPredE(enemy) DelayAction(function() self:CastQ(enemy) DelayAction(function() self:CastPredR(enemy) end, 125) end, 250)			
-		elseif ValidTarget(enemy, self.spellData[_R].range+50) and enemyhp < CalcDamage(myHero, enemy, 0	, self.spellData[_Q].dmg() + self.spellData[_W].dmg() + self.spellData[_E].dmg() + self.spellData[_R].dmg()) then			
+		elseif KSEWQR.getValue() and ValidTarget(enemy, self.spellData[_R].range+50) and enemyhp < CalcDamage(myHero, enemy, 0	, self.spellData[_Q].dmg() + self.spellData[_W].dmg() + self.spellData[_E].dmg() + self.spellData[_R].dmg()) then			
 			self:CastPredE(enemy) DelayAction(function() self:CastW(enemy) DelayAction(function() self:CastQ(enemy) DelayAction(function() self:CastPredR(enemy) end, 125) end, 250) end, 375)		
 		end
 	end	
@@ -2354,7 +2404,7 @@ if _G[GetObjectName(myHero)] then
 end	
 local upv = "If you like UpVote!"
 local sig = "Made by MarCiii"
-local ver = "2.0.0.4"
+local ver = "2.0.0.5"
 local info = "MarCiii on Tour Loaded"
 textTable = {info,upv,sig,ver} 
 PrintChat(textTable[1])
@@ -2364,3 +2414,4 @@ PrintChat(textTable[4])
 end
 
 end
+
