@@ -251,7 +251,7 @@ end
       local health = GetCurrentHP(unit)
       if preds then
         for _, k in pairs(preds) do
-          if not k.source.dead and k.time < GetTickCount() + time then
+          if not IsDead(k.source) and k.time < GetTickCount() + time then
             health = health - k.dmg
           end
         end
