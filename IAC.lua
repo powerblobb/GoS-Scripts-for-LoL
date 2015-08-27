@@ -122,7 +122,7 @@ end
         local level = GetCastLevel(myHero, _W)
         dmg = dmg + CalcDamage(myHero, unit, 20+30*level+TotalDmg)+CalcDamage(myHero, unit, TotalDmg)+pdmg
       end
-      if (CanUseSpell(myHero, _R) == READY or GetCastName(myHero, _R) ~= "RivenFengShuiEngine") and (IWalkConfig.R or IWalkConfigR.getValue()) then
+      if (CanUseSpell(myHero, _R) == READY or GetCastName(myHero, _R) ~= "RivenFengShuiEngine") and (IWalkConfig.R or IWalkConfigR.getValue()) and IWalkConfigUSEIAC.getValue() then
         local level = GetCastLevel(myHero, _R)
         local rdmg = CalcDamage(myHero, unit, (40+40*level+0.6*addDamage)*(math.min(3,math.max(1,4*(mthp-cthp)/mthp))))
         if rdmg > cthp and ValidTarget(unit, 800) and GetCastName(myHero, _R) ~= "RivenFengShuiEngine" and IWalkConfig.Combo then 
