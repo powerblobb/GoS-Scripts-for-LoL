@@ -1,4 +1,4 @@
-local version = 2
+local version = 3
 --MonTour - MarCiii on Tour V2.0.0.6
 
 -- Worktime for Leona = 10 Std
@@ -385,6 +385,7 @@ KSKrug = JungleSteal.addItem(MenuBool.new("Use E Krug",false))
 KSWolf = JungleSteal.addItem(MenuBool.new("Use E Wolf",false))
 KSwraiths = JungleSteal.addItem(MenuBool.new("Use E Wraiths",false))
 KSgromp = JungleSteal.addItem(MenuBool.new("Use E Gromp",false))
+KScrab = JungleSteal.addItem(MenuBool.new("Use E Crab",false))
 
   local Misc = root.addItem(SubMenu.new("Misc"))  
 MGUN = Misc.addItem(MenuBool.new("Ultimate Notifier",true))
