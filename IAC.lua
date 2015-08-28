@@ -4,12 +4,12 @@ require('Inspired')
 --IAC Reworked for DLIB 
 --V1.0.0.2
 
-up=Updater.new("/powerblobb/GoS-Scripts-for-LoL/master/IAC.lua", "IAC", version)
+up=Updater.new("/powerblobb/GoS-Scripts-for-LoL/master/IAC.lua", "Common\\IAC", version)
 if up.newVersion() then 
 	up.update() end
 
     root = menu.addItem(SubMenu.new("Inspired's Auto Carry"))
-IWalkConfigUSEIACALL = root.addItem(MenuBool.new("IAC COMPLETE ON/OFF (2xF6)",true))    
+IWalkConfigUSEIACALL = root.addItem(MenuBool.new("Complete IAC Lib ON/OFF (2xF6)",true))    
 
 if IWalkConfigUSEIACALL.getValue() then
 DelayAction(function() 
