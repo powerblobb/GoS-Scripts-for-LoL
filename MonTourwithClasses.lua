@@ -1,4 +1,4 @@
-local version = 1
+local version = 2
 --MonTour - MarCiii on Tour V2.0.0.6
 
 -- Worktime for Leona = 10 Std
@@ -499,6 +499,8 @@ if GetLevel(myHero) == 2 then
 end
 if GetLevel(myHero) == 3 then
 	LevelSpell(_W)
+  LevelSpell(_Q)
+  LevelSpell(_E)
 end 
 if GetLevel(myHero) == 4 then
 	LevelSpell(_E)
