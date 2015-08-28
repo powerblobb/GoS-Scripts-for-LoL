@@ -1,4 +1,4 @@
-local version = 3
+local version = 4
 --MonTour - MarCiii on Tour V2.0.0.6
 
 -- Worktime for Leona = 10 Std
@@ -458,7 +458,7 @@ end
 	
 	self:OnProcessSpellJungle()
 	self:Killsteal()
-  --Globalfunc:DoWalk()
+  Globalfunc:DoWalk()
 
 end
 
@@ -754,7 +754,7 @@ function Lux:Combo()
 			self:CastPredE(self.target)	 
 		elseif self.RREADY and CUseR.getValue() then
 			self:CastPredR(self.target)	 
-    elseif self.RREADY and CUseRkill.getValue() and IsObjectAlive(enemy) and ValidTarget(enemy, self.spellData[_R].range) and enemyhp < CalcDamage(myHero, enemy, 0, RDmg) then
+    elseif self.RREADY and CUseRkill.getValue() and IsObjectAlive(enemy) and ValidTarget(enemy, self.spellData[_R].range) and IsObjectAlive(enemy) and enemyhp < CalcDamage(myHero, enemy, 0, RDmg) then
 			self:CastPredRkill(enemy)	
 		end	
     end
