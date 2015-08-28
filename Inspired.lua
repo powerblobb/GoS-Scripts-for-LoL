@@ -1,7 +1,7 @@
 local version = 2
 require('DLib') 
 
-up=Updater.new("/powerblobb/GoS-Scripts-for-LoL/master/Inspired.lua", "Inspired", version)
+up=Updater.new("/powerblobb/GoS-Scripts-for-LoL/master/Inspired.lua", "Common\\Inspired", version)
 if up.newVersion() then 
 	up.update() end
 
