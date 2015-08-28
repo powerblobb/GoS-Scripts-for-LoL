@@ -204,19 +204,19 @@ end
 function Leona:CastPredE(unit)
 	local unitPos = GetOrigin(unit)
 		local EPred = GetPredictionForPlayer(myHeroPos, unit, GetMoveSpeed(unit), self.spellData[_E].speed, self.spellData[_E].delay, self.spellData[_E].range-25, self.spellData[_E].width, false, true)
-		if self.EREADY and IsTargetable(unit) and EPred.HitChance == 1 then
+		if self.EREADY and EPred.HitChance == 1 then
 			CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
 		end
 end
 
 function Leona:CastQ(unit)
-	if self.QREADY and IsTargetable(unit) and IsInDistance(unit, 400) then 
+	if self.QREADY and IsInDistance(unit, 400) then 
 		CastTargetSpell(unit,_Q)
 	end
 end
 
 function Leona:CastW(unit)
-	if self.WREADY and IsTargetable(unit) and IsInDistance(unit, 600) then 
+	if self.WREADY and IsInDistance(unit, 600) then 
 		CastTargetSpell(unit,_W)
 	end
 end
@@ -224,7 +224,7 @@ end
 function Leona:CastPredR(unit)
 	local unitPos = GetOrigin(unit)
 	local RPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit), self.spellData[_R].speed, self.spellData[_R].delay, self.spellData[_R].range, self.spellData[_R].width, true, true)
-		if self.RREADY and IsTargetable(unit) and RPred.HitChance == 1 then
+		if self.RREADY and RPred.HitChance == 1 then
 			CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z)
 		end
 end
@@ -272,7 +272,7 @@ function Leona:Special()
  IAC:Move()
 	for i,enemy in pairs(GetEnemyHeroes()) do
 	if ValidTarget(enemy, self.spellData[_R].range+50) then
-		if self.RREADY and IsTargetable(unit) then
+		if self.RREADY then
 			self:CastPredR(enemy)
 		end	
 	end
