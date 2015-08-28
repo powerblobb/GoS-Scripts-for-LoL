@@ -1,4 +1,18 @@
+local version = 2
 require('DLib') 
+
+up=Updater.new("/powerblobb/GoS-Scripts-for-LoL/master/Inspired.lua", "Inspired", version)
+if up.newVersion() then 
+	up.update() end
+
+--Inspired Reworked for DLIB 
+--V1.0.0.2
+
+local root = menu.addItem(SubMenu.new("Inspired"))
+local InspiredMenuONOFF = root.addItem(MenuBool.new("Complete Inspired Lib On/Off (2xF6)",true))
+
+if InspiredMenuONOFF.getValue() then
+local InspiredMenu = root.addItem(MenuBool.new("Inspired Menu",true))
 menuTable = {}
 currentPos = {x = 150, y = 250}
 MINION_ALLY, MINION_ENEMY, MINION_JUNGLE = GetTeam(GetMyHero()), GetTeam(GetMyHero()) == 100 and 200 or 100, 300
@@ -12,8 +26,6 @@ delayedActions = {}
 delayedActionsExecuter = nil
 DAMAGE_MAGIC, DAMAGE_MAGICAL, DAMAGE_PHYSICAL = 1, 1, 2
 
-local root = menu.addItem(SubMenu.new("Inspired"))
-local InspiredMenu = root.addItem(MenuBool.new("Inspired Menu",true))
 
 gapcloserTable = {
   ["Aatrox"] = _Q, ["Akali"] = _R, ["Alistar"] = _W, ["Ahri"] = _R, ["Amumu"] = _Q, ["Corki"] = _W,
@@ -956,4 +968,5 @@ function IsWall(spot)
     end
   end
   return false
+end
 end
