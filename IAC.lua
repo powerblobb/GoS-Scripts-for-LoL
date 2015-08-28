@@ -316,10 +316,10 @@ end
     
     IWalkConfig.addParam("D", "Damage Calc", SCRIPT_PARAM_ONOFF, false)   
     IWalkConfig.addParam("C", "AA Range Circle", SCRIPT_PARAM_ONOFF, false)   
-    IWalkConfig.addParam("LastHit", "LastHit", SCRIPT_PARAM_KEYDOWN, string.byte("P"))
-    IWalkConfig.addParam("Harass", "Harass", SCRIPT_PARAM_KEYDOWN, string.byte("P"))
-    IWalkConfig.addParam("LaneClear", "LaneClear", SCRIPT_PARAM_KEYDOWN, string.byte("P"))     
-    IWalkConfig.addParam("Combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte("P"))
+    IWalkConfig.addParam("LastHit", "LastHit", SCRIPT_PARAM_KEYDOWN, string.byte("pp"))
+    IWalkConfig.addParam("Harass", "Harass", SCRIPT_PARAM_KEYDOWN, string.byte("pp"))
+    IWalkConfig.addParam("LaneClear", "LaneClear", SCRIPT_PARAM_KEYDOWN, string.byte("pp"))     
+    IWalkConfig.addParam("Combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte("pp"))
     IWalkConfig.addParam("I", "Cast Items", SCRIPT_PARAM_ONOFF, false)
 
 --    root = menu.addItem(SubMenu.new("Inspired's Auto Carry"))
@@ -397,13 +397,15 @@ end
       IWalkConfig.addParam("R", "Use R (execute)", SCRIPT_PARAM_ONOFF, false) 
       IWalkConfigR = root.addItem(MenuBool.new("Use R (execute)",true))  
     elseif myHeroName == "Graves" then
+      IWalkConfig.addParam("R", "Use R (execute)", SCRIPT_PARAM_ONOFF, false) 
+      IWalkConfigR = root.addItem(MenuBool.new("Use R (execute)",true)) 
     elseif myHeroName == "Jinx" then
       IWalkConfig.addParam("Q", "Use Q", SCRIPT_PARAM_ONOFF, false) 
       IWalkConfigQ = root.addItem(MenuBool.new("Use Q",true))       
       IWalkConfig.addParam("W", "Use W", SCRIPT_PARAM_ONOFF, false) 
       IWalkConfigW = root.addItem(MenuBool.new("Use W",true)) 
-      IWalkConfig.addParam("E", "Use E", SCRIPT_PARAM_ONOFF, false) 
-      IWalkConfigE = root.addItem(MenuBool.new("Use E",true))        
+--      IWalkConfig.addParam("E", "Use E", SCRIPT_PARAM_ONOFF, false) 
+--      IWalkConfigE = root.addItem(MenuBool.new("Use E",true))        
       IWalkConfig.addParam("R", "Use R (execute)", SCRIPT_PARAM_ONOFF, false) 
       IWalkConfigR = root.addItem(MenuBool.new("Use R (execute)",true))  
     elseif myHeroName == "Kalista" then
@@ -420,7 +422,11 @@ end
     IWalkConfigR = root.addItem(MenuBool.new("Use R if Kill",true)) 
     elseif myHeroName == "Sivir" then
     elseif myHeroName == "Teemo" then
-    elseif myHeroName == "Tristana" then
+  elseif myHeroName == "Tristana" then
+      IWalkConfig.addParam("Q", "Use Q", SCRIPT_PARAM_ONOFF, false) 
+      IWalkConfigQ = root.addItem(MenuBool.new("Use Q",true))       
+      IWalkConfig.addParam("E", "Use E", SCRIPT_PARAM_ONOFF, false) 
+      IWalkConfigE = root.addItem(MenuBool.new("Use E",true))  
   elseif myHeroName == "Twitch" then
         elseif myHeroName == "Yasuo" then  
     elseif myHeroName == "Varus" then
