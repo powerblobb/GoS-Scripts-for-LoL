@@ -1,5 +1,17 @@
+local version = 2
 require('Inspired')
 
+--IAC Reworked for DLIB 
+--V1.0.0.2
+
+up=Updater.new("/powerblobb/GoS-Scripts-for-LoL/master/IAC.lua", "IAC", version)
+if up.newVersion() then 
+	up.update() end
+
+    root = menu.addItem(SubMenu.new("Inspired's Auto Carry"))
+IWalkConfigUSEIACALL = root.addItem(MenuBool.new("IAC COMPLETE ON/OFF (2xF6)",true))    
+
+if IWalkConfigUSEIACALL.getValue() then
 DelayAction(function() 
     if IWalkConfig == nil then
       iac = IAC(true)
@@ -20,8 +32,8 @@ DelayAction(function()
 
 class 'IAC' -- {
 
-    root = menu.addItem(SubMenu.new("Inspired's Auto Carry"))
-    IWalkConfigUSEIAC = root.addItem(MenuBool.new("Use IAC Champion Plugins (2xF6)",true))  
+
+    IWalkConfigUSEIAC = root.addItem(MenuBool.new("Only IAC Champion Plugins (2xF6)",true))  
     IWalkConfigD = root.addItem(MenuBool.new("Damage Calc",true))     
     IWalkConfigC = root.addItem(MenuBool.new("AA Range Circle",true)) 
     IWalkConfigLastHit = root.addItem(MenuKeyBind.new("LastHit", 88))     
@@ -613,3 +625,5 @@ end
   end
 
 -- }
+
+end
