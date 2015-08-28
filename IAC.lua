@@ -316,10 +316,10 @@ end
     
     IWalkConfig.addParam("D", "Damage Calc", SCRIPT_PARAM_ONOFF, false)   
     IWalkConfig.addParam("C", "AA Range Circle", SCRIPT_PARAM_ONOFF, false)   
-    IWalkConfig.addParam("LastHit", "LastHit", SCRIPT_PARAM_KEYDOWN, string.byte("pp"))
-    IWalkConfig.addParam("Harass", "Harass", SCRIPT_PARAM_KEYDOWN, string.byte("pp"))
-    IWalkConfig.addParam("LaneClear", "LaneClear", SCRIPT_PARAM_KEYDOWN, string.byte("pp"))     
-    IWalkConfig.addParam("Combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte("pp"))
+    IWalkConfig.addParam("LastHit", "LastHit", SCRIPT_PARAM_KEYDOWN, string.byte("X"))
+    IWalkConfig.addParam("Harass", "Harass", SCRIPT_PARAM_KEYDOWN, string.byte("C"))
+    IWalkConfig.addParam("LaneClear", "LaneClear", SCRIPT_PARAM_KEYDOWN, string.byte("V"))     
+    IWalkConfig.addParam("Combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
     IWalkConfig.addParam("I", "Cast Items", SCRIPT_PARAM_ONOFF, false)
 
 --    root = menu.addItem(SubMenu.new("Inspired's Auto Carry"))
