@@ -11,7 +11,7 @@ local version = 4
 --Credits to Inspired, Deftsu, Platypus, Snowbell, TheWelder and ilovesona
 --for some code ive used here for trying and learning :)
 
-up=Updater.new("powerblobb/GoS-Scripts-for-LoL/master/MonTourwithClasses.lua", "Common\\MonTourwithClasses", version)
+up=Updater.new("powerblobb/GoS-Scripts-for-LoL/master/MonTour.lua", "Common\\MonTour", version)
 if up.newVersion() then 
 	up.update() end
 
