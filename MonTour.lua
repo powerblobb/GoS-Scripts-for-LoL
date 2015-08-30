@@ -1,4 +1,5 @@
-local version = 4
+require('DLib') 
+local version = 5
 --MonTour - MarCiii on Tour V2.0.0.7
 
 -- Worktime for Leona = 10 Std
@@ -11,12 +12,6 @@ local version = 4
 --Credits to Inspired, Deftsu, Platypus, Snowbell, TheWelder and ilovesona
 --for some code ive used here for trying and learning :)
 
-up=Updater.new("powerblobb/GoS-Scripts-for-LoL/master/MonTour.lua", "Common\\MonTour", version)
-if up.newVersion() then 
-	up.update() end
-
-supportedHero = {["Leona"] = true ,["Lux"] = true ,["Draven"] = true ,["Aatrox"] = true ,["Amumu"] = true ,["Shaco"] = true}
-
 require('IAC')  
 myHero = GetMyHero()
 myIAC = IAC()
@@ -24,7 +19,14 @@ myIAC = IAC()
 minion = GetAllMinions(MINION_ENEMY)
 unit = GetCurrentTarget()
 mymouse = GetMousePos()
-require('DLib') 
+
+
+up=Updater.new("powerblobb/GoS-Scripts-for-LoL/master/MonTour.lua", "Common\\MonTour", version)
+if up.newVersion() then 
+	up.update() end
+
+supportedHero = {["Leona"] = true ,["Lux"] = true ,["Draven"] = true ,["Aatrox"] = true ,["Amumu"] = true ,["Shaco"] = true}
+
 
 if supportedHero[GetObjectName(myHero)] == true then 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
