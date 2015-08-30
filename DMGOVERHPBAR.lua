@@ -9,7 +9,7 @@ myHero = GetMyHero()
 unit = GetCurrentTarget()
 Qcheck = nil
 Wcheck = nil
-EWcheck = nil
+Echeck = nil
 Rcheck = nil
 
 function DMGOVERHPDRAW(Q_AD_DMG, W_AD_DMG, E_AD_DMG, R_AD_DMG, Q_MAGIC_DMG, W_MAGIC_DMG, E_MAGIC_DMG, R_MAGIC_DMG, _Q_, _W_, _E_, _R_, Qcheck, Wcheck, Echeck, Rcheck, RangeOfDraws, HPCOLOR)
