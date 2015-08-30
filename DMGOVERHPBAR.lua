@@ -1,5 +1,5 @@
 --MarCiii on Tour´s Damage Over Hp Bar LIB one function all Spells 
---V1.0.0.0
+--V1.0.0.1
 
 --require('IAC')  
 require('Inspired')
@@ -17,7 +17,7 @@ rangeofdraws = RangeOfDraws
 targetDMG = GetTarget(rangeofdraws, DAMAGE_MAGIC)
 QREADY = Qcheck
 WREADY = Wcheck
-EREADY = EWcheck
+EREADY = Echeck
 RREADY = Rcheck
 QDMGAD = Q_AD_DMG
 WDMGAD = W_AD_DMG
@@ -27,13 +27,15 @@ QDMGMAGIC = Q_MAGIC_DMG
 WDMGMAGIC = W_MAGIC_DMG
 EDMGMAGIC = E_MAGIC_DMG
 RDMGMAGIC = R_MAGIC_DMG
+QWER_AD = QDMGAD + WDMGAD + EDMGAD + RDMGAD
+QWER_MAGIC = QDMGMAGIC + WDMGMAGIC + EDMGMAGIC + RDMGMAGIC
 --HPCOLOR = percentToRGBDRAW(percent)
 
 for _,unit in pairs(GetEnemyHeroes()) do
 if _Q_ == true and _W_ == true and _E_ == true and _R_ == true then --QWER
 	--Ready Q + W + E + R
 	if ValidTarget(targetDMG,rangeofdraws) and QREADY and WREADY and EREADY and RREADY then
-		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, targetDMG, QDMGAD + WDMGAD + EDMGAD + RDMGAD, QDMGMAGIC + WDMGMAGIC + EDMGMAGIC + RDMGMAGIC),HPCOLOR)	
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, targetDMG, QWER_AD, QWER_MAGIC),HPCOLOR)	
 	--Ready Q + W + E + (R)
 	elseif ValidTarget(targetDRAW,rangeofdraws) and QREADY and WREADY and EREADY and not RREADY then
 		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, targetDMG, QDMGAD + WDMGAD + EDMGAD, QDMGMAGIC + WDMGMAGIC + EDMGMAGIC),HPCOLOR)
