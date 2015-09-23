@@ -1,4 +1,6 @@
 if GetObjectName(myHero) ~= "Draven" then return end
+PrintChat(string.format("<font color='#80F5F5'>MonTour Draven:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.1</font>"))
 require('RecallUlt') 
 DravenMenu = Menu("Draven", "Draven")
 DravenMenu:SubMenu("Info", "Info about Auto Q Walk")
@@ -14,19 +16,38 @@ DravenMenu.Info:Info("Draven", "or Set your Own Key to Catch in COMBOMENU!!")
 DravenMenu.Info:Info("Draven", "You need to train, before jump into ranked!")
 DravenMenu:SubMenu("Combo", "Combo")
 DravenMenu.Combo:Key("CQ", "Catch Q AutoWalk", string.byte("A"))
+DravenMenu.Combo:Info("Draven", "Pickup Q if Range")
+DravenMenu.Combo:Slider("CQPR", " Axe/MyHero < X (def: 600)", 600, 50, 1000, 1)
+DravenMenu.Combo:Info("Draven", " ")
 DravenMenu.Combo:Boolean("Q", "Use Q", true)
-DravenMenu.Combo:Boolean("LCCAQ", "Use Q  Autowalk", false)
+DravenMenu.Combo:Boolean("LCCAQ", "Use Q Force Autowalk", false)
 DravenMenu.Combo:Boolean("W", "Use W", true)
 DravenMenu.Combo:Slider("WMANA", "Use W Only if Mana > x%", 60, 1, 90, 1)
 DravenMenu.Combo:Boolean("E", "Use E ", true)
 DravenMenu.Combo:Boolean("R", "Use R", false)
-DravenMenu.Combo:Boolean("Items", "Use Items", true)
-DravenMenu.Combo:Boolean("QSS", "Use QSS", true)
-DravenMenu.Combo:Slider("QSSHP", "if My Health % <", 75, 0, 100, 1)
+
+DravenMenu:SubMenu("Items", "Items")
+DravenMenu.Items:Info("Draven", "Only in Combo and Harass")
+DravenMenu.Items:Boolean("CutBlade", "Bilgewater Cutlass", true)  
+DravenMenu.Items:Slider("CutBlademyhp", "if My Health < x%", 50, 5, 100, 1)
+DravenMenu.Items:Slider("CutBladeehp", "if Enemy Health < x%", 20, 5, 100, 1)
+DravenMenu.Items:Info("Draven", " ")
+DravenMenu.Items:Boolean("bork", "Blade of the Ruined King", true)
+DravenMenu.Items:Slider("borkmyhp", "if My Health < x%", 50, 5, 100, 1)
+DravenMenu.Items:Slider("borkehp", "if Enemy Health < x%", 20, 5, 100, 1)
+DravenMenu.Items:Info("Draven", " ")
+DravenMenu.Items:Boolean("ghostblade", "Youmuu's Ghostblade", true)
+DravenMenu.Items:Slider("ghostbladeR", "If Enemy in Range (def: 600)", 600, 100, 2000, 1)
+DravenMenu.Items:Info("Draven", " ")
+DravenMenu.Items:Boolean("useRedPot", "Elixir of Wrath(REDPOT)", true)
+DravenMenu.Items:Slider("useRedPotR", "If Enemy in Range (def: 600)", 600, 100, 2000, 1)
+DravenMenu.Items:Info("Draven", " ")
+DravenMenu.Items:Boolean("QSS", "Always Use QSS", true)
+DravenMenu.Items:Slider("QSSHP", "if My Health < x%", 75, 0, 100, 1)
 
 DravenMenu:SubMenu("Harass", "Harass")
 DravenMenu.Harass:Boolean("QH", "Use Q", true)
-DravenMenu.Harass:Boolean("LCHAQ", "Use Q  Autowalk", false)
+DravenMenu.Harass:Boolean("LCHAQ", "Use Q Force Autowalk", false)
 DravenMenu.Harass:Boolean("WH", "Use W", true)
 DravenMenu.Harass:Slider("WMANA", "Use Only W if Mana > x%", 60, 1, 90, 1)
 DravenMenu.Harass:Boolean("EH", "Use E", true)
@@ -34,12 +55,12 @@ DravenMenu.Harass:Boolean("RH", "Use R", false)
 
 DravenMenu:SubMenu("Clear", "Farming/Jungle")
 DravenMenu.Clear:Boolean("LHQ", "Use Q LastHit", true)
-DravenMenu.Clear:Boolean("LHAQ", "Use Q LastHit Autowalk", true)
+DravenMenu.Clear:Boolean("LHAQ", "Use Q LastHit Force Autowalk", true)
 --DravenMenu.Clear:Boolean("LHQCircle", "Q LastHit Circle", true)
 DravenMenu.Clear:Boolean("LCQ", "Use Q LaneClear", true)
-DravenMenu.Clear:Boolean("LCAQ", "Use Q LaneClear Autowalk", false)
+DravenMenu.Clear:Boolean("LCAQ", "Use Q LaneClear Force Autowalk", false)
 DravenMenu.Clear:Boolean("LCJQ", "Use Q Jungle", true)
-DravenMenu.Clear:Boolean("LJAQ", "Use Q JungleClear Autowalk", false) 
+DravenMenu.Clear:Boolean("LJAQ", "Use Q JungleClear Force Autowalk", false) 
 
 DravenMenu:SubMenu("Steal", "JungleSteal")
 DravenMenu.Steal:Boolean("Dragon", "Use R Dragon", true)
@@ -53,6 +74,7 @@ DravenMenu:SubMenu("Misc", "Misc")
 DravenMenu.Misc:Boolean("AL","AutoLevelSkills", true)
 DravenMenu.Misc:Boolean("QAA","Draw QAA Text", true)
 DravenMenu.Misc:Boolean("DOHP","Draw DMG over HP", true)
+DravenMenu.Misc:Info("Draven", " ")
 DravenMenu.Misc:Boolean("MGUN","Ultimate Notifier", true)
 DravenMenu.Misc:Boolean("MGUNDEB","TEXT DEBUG", false)
 DravenMenu.Misc:Slider("MGUNSIZE", "UN Text Size", 25, 5, 60, 1)
@@ -376,7 +398,7 @@ function CatchQ()
       for i, reticle in pairs(reticles) do
         local Reticlepos = GetOrigin(reticle)
         local myHer0 = GetOrigin(myHero)
-          if GoS:GetDistance(Reticlepos, myHer0) < 600 then 
+          if GoS:GetDistance(Reticlepos, myHer0) < DravenMenu.Combo.CQPR:Value() then 
           IOW:DisableMovement() GoS:DelayAction(function() MoveToXYZ(Reticlepos.x, Reticlepos.y , Reticlepos.z) GoS:DelayAction(function() IOW:EnableMovement() end, 1) end, 100) 
           end
       end
@@ -602,7 +624,8 @@ function Killsteal()
 			CastPredE(enemy)
 		elseif GoS:ValidTarget(enemy, spellData[_Q].range) and enemyhp < GoS:CalcDamage(myHero, enemy, QDmg + Alldmg, 0) then
 			CastQ(enemy)
-		elseif DravenMenu.Killsteal.KSQE:Value() and GoS:ValidTarget(enemy, spellData[_Q].range) and enemyhp < GoS:CalcDamage(myHero, enemy, QDmg2 + Alldmg, 0) and QSpinn1 then          
+		elseif DravenMenu.Killsteal.KSQE:Value() and GoS:ValidTarget(enemy, spellData[_Q].range) and enemyhp < GoS:CalcDamage(myHero, enemy, QDmg2 + Alldmg, 0) and QSpinn1 then 
+      AttackUnitKS(enemy)
 		elseif DravenMenu.Killsteal.KSR:Value() and GoS:ValidTarget(enemy, spellData[_R].range) and enemyhp < GoS:CalcDamage(myHero, enemy, RDmg, 0) then
 			CastPredR(enemy)
 		elseif DravenMenu.Killsteal.KSQE:Value() and GoS:ValidTarget(enemy, spellData[_E].range) and GoS:GetDistance(myHero, enemy) > 550 and GoS:GetDistance(myHero, enemy) < 700 and enemyhp < GoS:CalcDamage(myHero, enemy, QDmg + Alldmg + EDmg, 0) then		
@@ -614,24 +637,32 @@ function Killsteal()
 end
 
 function ItemUse()
-  	if GetItemSlot(myHero,3153) > 0 and DravenMenu.Combo.Items:Value() and GoS:ValidTarget(target, 550) and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < 50 and 100*GetCurrentHP(target)/GetMaxHP(target) > 20 then
-        CastTargetSpell(target, GetItemSlot(myHero,3153))
+  for _,target in pairs(Gos:GetEnemyHeroes()) do
+  	if GetItemSlot(myHero,3153) > 0 and DravenMenu.Items.bork:Value() and GoS:ValidTarget(target, 550) and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GetCurrentHP(myHero)/GetMaxHP(myHero) < (DravenMenu.Items.borkmyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (DravenMenu.Items.borkehp:Value()/100) then
+        CastTargetSpell(target, GetItemSlot(myHero,3153)) --bork
         end
 
-        if GetItemSlot(myHero,3144) > 0 and DravenMenu.Combo.Items:Value() and GoS:ValidTarget(target, 550) and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < 50 and 100*GetCurrentHP(target)/GetMaxHP(target) > 20 then
-        CastTargetSpell(target, GetItemSlot(myHero,3144))
+        if GetItemSlot(myHero,3144) > 0 and DravenMenu.Items.CutBlade:Value() and GoS:ValidTarget(target, 550) and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GetCurrentHP(myHero)/GetMaxHP(myHero) < (DravenMenu.Items.CutBlademyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (DravenMenu.Items.CutBladeehp:Value()/100) then 
+        CastTargetSpell(target, GetItemSlot(myHero,3144)) --CutBlade
         end
 
-        if GetItemSlot(myHero,3142) > 0 and DravenMenu.Combo.Items:Value() and GoS:ValidTarget(target, 600) then
+        if GetItemSlot(myHero,3142) > 0 and DravenMenu.Items.ghostblade:Value() and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GoS:ValidTarget(target, DravenMenu.Items.ghostbladeR:Value()) then --ghostblade
         CastTargetSpell(myHero, GetItemSlot(myHero,3142))
         end
 		
-	if GetItemSlot(myHero,3140) > 0 and DravenMenu.Combo.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < DravenMenu.Combo.QSSHP:Value() then
+	if GetItemSlot(myHero,3140) > 0 and DravenMenu.Items.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < DravenMenu.Items.QSSHP:Value() then
         CastTargetSpell(myHero, GetItemSlot(myHero,3140))
         end
 
-        if GetItemSlot(myHero,3139) > 0 and DravenMenu.Combo.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < DravenMenu.Combo.QSSHP:Value() then
+        if GetItemSlot(myHero,3139) > 0 and DravenMenu.Items.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < DravenMenu.Items.QSSHP:Value() then
         CastTargetSpell(myHero, GetItemSlot(myHero,3139))
+      end
+   
+     if DravenMenu.Items.useRedPot:Value() and GetItemSlot(myHero,2140) >= 1 and GoS:ValidTarget(target,DravenMenu.Items.useRedPotR:Value()) and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") then --redpot
+        if CanUseSpell(myHero,GetItemSlot(myHero,2140)) == READY then
+          CastSpell(GetItemSlot(myHero,2140))
+        end
+      end
       end
 end      
 
@@ -639,6 +670,7 @@ function AttackUnitKS(target)
 	for i,enemy in pairs(Gos:GetEnemyHeroes()) do  
   if GoS:IsInDistance(enemy, GetRange(myHero)) and GoS:GetDistance(myHero, enemy) <= (GetRange(myHero)-10) and GoS:GetDistance(myHero, enemy) >= 10 then 
     AttackUnit(enemy)
+  else
   end
   end
 end
@@ -761,7 +793,7 @@ addInterrupterCallback(function(target, spellType, spell)
 --      CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z) 
     end  
 end) 
-PrintChat(string.format("<font color='#80F5F5'>MonTour Draven:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
+
 --AddGapcloseEvent(_E, 1000, true)
 
 --notification("MarCiii on Tour´s Draven loaded.", 10000)
