@@ -43,6 +43,9 @@ FioraMenu.Items:Slider("borkehp", "if Enemy Health < x%", 20, 5, 100, 1)
 FioraMenu.Items:Info("Fiora", " ")
 FioraMenu.Items:Boolean("useGhost", "Youmuu's Ghostblade", true)
 FioraMenu.Items:Boolean("useRedPot", "Elixir of Wrath(REDPOT)", true)
+FioraMenu:SubMenu("Drawings", "Drawings")
+FioraMenu.Drawings:Boolean("Q","Draw Q",true)
+FioraMenu.Drawings:Boolean("W","Draw W",true)
 FioraMenu:SubMenu("OP", "Auto Dodging")
 FioraMenu.OP:Boolean("W","Use W",true)
 
@@ -87,7 +90,13 @@ Combo()
 Harass()
 LaneClear()
 Items()
+Draws()
 end)
+
+function Draws()
+if FioraMenu.Drawings.Q:Value() and GetCastLevel(myHero,_Q) >=1 then DrawCircle(GoS:myHeroPos().x, GoS:myHeroPos().y, GoS:myHeroPos().z,GetCastRange(myHero,_Q),0.6,50,0xff0000ff) end
+if FioraMenu.Drawings.W:Value() and GetCastLevel(myHero,_W) >=1 then DrawCircle(GoS:myHeroPos().x, GoS:myHeroPos().y, GoS:myHeroPos().z,GetCastRange(myHero,_W),0.6,50,0xff0000ff) end
+end
 
 function Combo()
 unit = GetCurrentTarget()
