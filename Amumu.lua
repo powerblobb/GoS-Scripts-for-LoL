@@ -1,5 +1,5 @@
 if GetObjectName(myHero) ~= "Amumu" then return end
---MonTour Amumu:V1.0.0.0
+--MonTour Amumu:V1.0.0.1
 PrintChat(string.format("<font color='#80F5F5'>MonTour Amumu:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.0</font>"))
 local AmumuMenu = Menu("Amumu", "Amumu")
@@ -174,8 +174,10 @@ function Combo()
   	if AmumuMenu.Combo.E:Value() and EREADY and GoS:EnemiesAround(GoS:myHeroPos(), spellData[_E].range) >= 1 and GoS:IsInDistance(target, spellData[_E].range) and GoS:GetDistance(myHero, target) <= spellData[_E].range-30 and GoS:GetDistance(myHero, target) > 0 then 
         CastTargetSpell(target,_E)
     end
+    for _,target in pairs(GoS:GetEnemyHeroes()) do
     if AmumuMenu.Combo.R:Value() and RREADY and GoS:IsInDistance(unit, spellData[_R].range) and GoS:EnemiesAround(GoS:myHeroPos(), spellData[_R].range-10) >= AmumuMenu.Combo.RE:Value() then
         CastTargetSpell(target,_R)
+    end
     end
    end 
 end  
@@ -195,8 +197,10 @@ function Harass()
   	if AmumuMenu.Harass.E:Value() and EREADY and GoS:EnemiesAround(GoS:myHeroPos(), spellData[_E].range) >= 1 and GoS:IsInDistance(target, spellData[_E].range) and GoS:GetDistance(myHero, target) <= spellData[_E].range-30 and GoS:GetDistance(myHero, target) > 0 then 
         CastTargetSpell(target,_E)
     end
+    for _,target in pairs(GoS:GetEnemyHeroes()) do    
     if AmumuMenu.Harass.R:Value() and RREADY and GoS:IsInDistance(unit, spellData[_R].range) and GoS:EnemiesAround(GoS:myHeroPos(), spellData[_R].range-10) >= AmumuMenu.Harass.RE:Value() then
         CastTargetSpell(target,_R)
+    end
     end
   end  
 end 
@@ -330,7 +334,7 @@ end
         		 end               
 			end
 		end		 
-    DrawText(info,AmumuMenu.Misc.MGUNSIZE:Value(),AmumuMenu.Misc.MGUNX:Value(),AmumuMenu.Misc.MGUNY:Value(),0xffff0000)                	
+    DrawText(info1,AmumuMenu.Misc.MGUNSIZE:Value(),AmumuMenu.Misc.MGUNX:Value(),AmumuMenu.Misc.MGUNY:Value(),0xffff0000)                	
 end
 
 function GLOBALULTNOTICE2()
