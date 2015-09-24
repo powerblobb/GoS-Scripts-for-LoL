@@ -1,7 +1,7 @@
 if GetObjectName(myHero) ~= "Amumu" then return end
---MonTour Amumu:V1.0.0.1
+--MonTour Amumu:V1.0.0.2
 PrintChat(string.format("<font color='#80F5F5'>MonTour Amumu:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.0</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.2</font>"))
 local AmumuMenu = Menu("Amumu", "Amumu")
 AmumuMenu:SubMenu("Combo", "Combo")
 AmumuMenu.Combo:Boolean("Q","Use Q",true)
@@ -24,6 +24,10 @@ AmumuMenu.LaneClear:Slider("WC2", "Turn off if MinionAround <= X (Def. 1)", 1, 1
 AmumuMenu.LaneClear:Info("Amumu", " ")
 AmumuMenu.LaneClear:Boolean("E","Use E",true)
 AmumuMenu.LaneClear:Slider("EC", "Use E if MinionAround >= X (Def. 4)", 4, 1, 20, 1)
+AmumuMenu:SubMenu("JungleClear", "JungleClear")
+AmumuMenu.JungleClear:Boolean("Q","Use Q",true)
+AmumuMenu.JungleClear:Boolean("W","Use W",true)
+AmumuMenu.JungleClear:Boolean("E","Use E",true)
 AmumuMenu:SubMenu("KS", "KillSteal")
 AmumuMenu.KS:Boolean("Q","KS with Q",true)
 AmumuMenu.KS:Boolean("E","KS with E",true)
@@ -147,6 +151,7 @@ if IOW:Mode() == "Harass" then
 end 
 if IOW:Mode() == "LaneClear" then
   LaneClear(minion)
+  JungleClear(jminion)
 end
 if AmumuMenu.Misc.DMGoHP:Value() then
   Draws()
@@ -242,6 +247,24 @@ function LaneClear(minion)
         CastTargetSpell(minion,_W) 
         elseif AmumuMenu.LaneClear.E:Value() and EREADY and MinionAround(GoS:myHeroPos(), spellData[_E].range) >= AmumuMenu.LaneClear.EC:Value() and GoS:IsInDistance(minion, spellData[_E].range) and GoS:GetDistance(myHero, minion) >= 10 and GoS:GetDistance(myHero, minion) <= spellData[_E].range then 
         CastTargetSpell(minion,_E) 
+				end		
+			end
+  end    
+end
+
+function JungleClear(jminion)
+			for i,jminion in pairs(GoS:GetAllMinions(MINION_JUNGLE)) do
+        jminionpos = GetOrigin(jminion)
+  if GoS:ValidTarget(jminion, spellData[_Q].range+50) then 
+    		if AmumuMenu.JungleClear.Q:Value() and QREADY and GoS:IsInDistance(jminion, spellData[_Q].range) and GoS:GetDistance(myHero, jminion) > spellData[_Q].range-spellData[_W].range then --GetRange(myHero)
+        CastSkillShot(_Q,jminionpos.x,jminionpos.y,jminionpos.z)
+        end  
+        if AmumuMenu.JungleClear.W:Value() and WREADY and JMinionAround(GoS:myHeroPos(), spellData[_W].range) >= 1 and AuraofDespairOff and GoS:IsInDistance(jminion, spellData[_W].range) and GoS:GetDistance(myHero, jminion) > 50 and GoS:GetDistance(myHero, jminion) <= spellData[_W].range then 
+        CastTargetSpell(jminion,_W) 
+        elseif AmumuMenu.JungleClear.W:Value() and WREADY and JMinionAround(GoS:myHeroPos(), spellData[_W].range) <= 0 and AuraofDespairOn and not GoS:IsInDistance(jminion, spellData[_W].range) and GoS:GetDistance(myHero, jminion) > spellData[_W].range then 
+        CastTargetSpell(jminion,_W) 
+        elseif AmumuMenu.JungleClear.E:Value() and EREADY and JMinionAround(GoS:myHeroPos(), spellData[_E].range) >= 1 and GoS:IsInDistance(jminion, spellData[_E].range) and GoS:GetDistance(myHero, jminion) >= 10 and GoS:GetDistance(myHero, jminion) <= spellData[_E].range then 
+        CastTargetSpell(jminion,_E) 
 				end		
 			end
   end    
@@ -375,6 +398,17 @@ function MinionAround(pos, range)
   local c = 0
   if pos == nil then return 0 end
   for k,v in pairs(GoS:GetAllMinions(MINION_ENEMY)) do 
+    if v and GoS:ValidTarget(v) and GoS:GetDistanceSqr(pos,GetOrigin(v)) < range*range then
+      c = c + 1
+    end
+  end
+  return c
+end
+
+function JMinionAround(pos, range)
+  local c = 0
+  if pos == nil then return 0 end
+  for k,v in pairs(GoS:GetAllMinions(MINION_JUNGLE)) do 
     if v and GoS:ValidTarget(v) and GoS:GetDistanceSqr(pos,GetOrigin(v)) < range*range then
       c = c + 1
     end
