@@ -1,7 +1,7 @@
 if GetObjectName(GetMyHero()) ~= "Jayce" then return end
---MonTour Jayce:V1.0.0.0
+--MonTour Jayce:V1.0.0.1
 PrintChat(string.format("<font color='#80F5F5'>MonTour Jayce:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Reworked Version:</font> <font color='#EFF0F0'>1.0.0.0</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Reworked Version:</font> <font color='#EFF0F0'>1.0.0.1</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'>Platypus Jayce Version</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
   spellData = 
@@ -262,7 +262,7 @@ function ItemUse()
          CastTargetSpell(myHero, GetItemSlot(myHero, 3077))
         end 
         end
-    if Jayce.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GoS:ValidTarget(target, 550) and HammerTime then --hydra
+    if Jayce.Items.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GoS:ValidTarget(target, 550) and HammerTime then --hydra
       if GoS:GetDistance(target) < 385 then
         CastTargetSpell(myHero, GetItemSlot(myHero, 3074))
       end
