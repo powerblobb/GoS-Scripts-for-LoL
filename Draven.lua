@@ -1,6 +1,10 @@
 if GetObjectName(myHero) ~= "Draven" then return end
+--MonTour Draven:V1.0.0.1
 PrintChat(string.format("<font color='#80F5F5'>MonTour Draven:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.1</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Cloud for Axes Code</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> iLoveSona for Interrupter</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
 require('RecallUlt') 
 DravenMenu = Menu("Draven", "Draven")
 DravenMenu:SubMenu("Info", "Info about Auto Q Walk")
