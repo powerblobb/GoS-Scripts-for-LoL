@@ -64,6 +64,9 @@ AmumuMenu:SubMenu("Interrupt", "Interrupt")
 AmumuMenu.Interrupt:Boolean("InterruptQ", "Auto Interrupt Spells with Q", true)
 AmumuMenu.Interrupt:Info("Amumu", "Auto Interrupt Spells")
 AmumuMenu.Interrupt:Boolean("InterruptR", "with R if Q not Ready", true)
+AmumuMenu:SubMenu("Drawings", "Drawings")
+AmumuMenu.Drawings:Boolean("Q","Draw Q",true)
+AmumuMenu.Drawings:Boolean("R","Draw R",true)
 
 target = GetCurrentTarget()
 unit = GetCurrentTarget()
@@ -143,6 +146,7 @@ OnLoop(function(myHero)
   target = GetCurrentTarget()
   GLOBALULTNOTICEDEBUG()
 	Killsteal()
+  Drawings()
 if IOW:Mode() == "Combo" then
   Combo()
 end 
@@ -209,6 +213,11 @@ function Harass()
     end
   end  
 end 
+
+function Drawings()
+if AmumuMenu.Drawings.Q:Value() and GetCastLevel(myHero,_Q) >=1 then DrawCircle(GoS:myHeroPos().x, GoS:myHeroPos().y, GoS:myHeroPos().z,GetCastRange(myHero,_Q),0.6,50,0xff0000ff) end
+if AmumuMenu.Drawings.R:Value() and GetCastLevel(myHero,_R) >=1 then DrawCircle(GoS:myHeroPos().x, GoS:myHeroPos().y, GoS:myHeroPos().z,GetCastRange(myHero,_R),0.6,50,0xff0000ff) end
+end
 
 function Draws()
 local rangeofdraws = 20000
