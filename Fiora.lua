@@ -84,14 +84,6 @@ if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,myHero) or IsDead(unit
 if IOW:Mode() == "Combo" then
 if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
        
---        if FioraMenu.Combo.Q:Value() then
---        if GetCastName(myHero, _Q) == "FioraQ" then
---        local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1700,250,400,50,false,true)
---            if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 400) then
---            CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
---            end
---        end
---      end
       if FioraMenu.Combo.Q:Value() then
         if GetCastName(myHero, _Q) == "FioraQ" and (GetItemSlot(myHero, 3077) < 1 or GetItemSlot(myHero, 3074) < 1) then
         local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1700,250,400,50,false,true)
@@ -131,36 +123,6 @@ if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) an
             end
         end
     end
---       if FioraMenu.Items.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(unit, 550) then --tiamat
---        if GoS:GetDistance(unit) < 400 then
---         CastTargetSpell(myHero, GetItemSlot(myHero, 3077))
---        end
---        end
---    if FioraMenu.Items.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(unit, 550) then --hydra
---      if GoS:GetDistance(unit) < 385 then
---        CastTargetSpell(myHero, GetItemSlot(myHero, 3074))
---      end
---      end
---    if FioraMenu.Items.useCut:Value() and GetItemSlot(myHero,3144) >= 1 and GoS:ValidTarget(unit,550) then --CutBlade
---      if CanUseSpell(myHero,GetItemSlot(myHero,3144)) == READY then
---        CastTargetSpell(unit, GetItemSlot(myHero,3144))
---      end	
---      end
---    if FioraMenu.Items.useBork:Value() and GetItemSlot(myHero,3153) >= 1 and GoS:ValidTarget(unit,550) and (GetMaxHP(myHero) / GetCurrentHP(myHero)) >= 1.25 then 
---        if CanUseSpell(myHero,GetItemSlot(myHero,3153)) == READY then --bork
---          CastTargetSpell(unit,GetItemSlot(myHero,3153))
---        end
---        end
---     if FioraMenu.Items.useGhost:Value() and GetItemSlot(myHero,3142) >= 1 and GoS:ValidTarget(unit,500) then --ghost
---        if CanUseSpell(myHero,GetItemSlot(myHero,3142)) == READY then
---          CastSpell(GetItemSlot(myHero,3142))
---        end
---        end
---     if FioraMenu.Items.useRedPot:Value() and GetItemSlot(myHero,2140) >= 1 and GoS:ValidTarget(unit,500) then --redpot
---        if CanUseSpell(myHero,GetItemSlot(myHero,2140)) == READY then
---          CastSpell(GetItemSlot(myHero,2140))
---        end
---      end 
 end
 end
 end  
@@ -169,14 +131,6 @@ function Harass()
 if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) then return false end
 if IOW:Mode() == "Harass" then
 if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
---        if FioraMenu.Harass.Q:Value() then
---        if GetCastName(myHero, _Q) == "FioraQ" then
---        local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1700,250,400,50,false,true)
---            if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 400) then
---            CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
---            end
---        end
---      end 
       if FioraMenu.Harass.Q:Value() then
         if GetCastName(myHero, _Q) == "FioraQ" and (GetItemSlot(myHero, 3077) < 1 or GetItemSlot(myHero, 3074) < 1) then
         local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1700,250,400,50,false,true)
@@ -216,16 +170,6 @@ if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) an
             end
         end
     end
---           if FioraMenu.Items.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(unit, 550) then --tiamat
---        if GoS:GetDistance(unit) < 400 then
---         CastTargetSpell(myHero, GetItemSlot(myHero, 3077))
---        end
---        end
---    if FioraMenu.Items.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(unit, 550) then --hydra
---      if GoS:GetDistance(unit) < 385 then
---        CastTargetSpell(myHero, GetItemSlot(myHero, 3074))
---      end
---      end
 end
 end
 end  
