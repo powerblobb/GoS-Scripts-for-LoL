@@ -1,5 +1,5 @@
 if GetObjectName(myHero) ~= "Alistar" then return end
---MonTour Alistar:V1.0.0.0
+--MonTour Alistar:V1.0.0.1
 PrintChat(string.format("<font color='#80F5F5'>MonTour Alistar:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.0</font>"))
    local AlistarMenu = Menu("Alistar", "Alistar")
@@ -150,7 +150,7 @@ function Heal()
   if GotBuff(myHero,"recall") == 1 then return end
             for _, ally in pairs(GoS:GetAllyHeroes()) do
             if AlistarMenu.Healing.Eally:Value() then
-              if (GetCurrentHP(ally)/GetMaxHP(ally)) < (AlistarMenu.Healing.EallyHP:Value()/100) and GetCurrentMana(myHero)/GetMaxMana(myHero) > (AlistarMenu.Healing.EallyMana:Value():Value()/100) and CanUseSpell(myHero, _E) == READY and GoS:ValidTarget(unit, 700) and GoS:IsInDistance(ally, 575) and IsObjectAlive(ally) then
+              if (GetCurrentHP(ally)/GetMaxHP(ally)) < (AlistarMenu.Healing.EallyHP:Value()/100) and GetCurrentMana(myHero)/GetMaxMana(myHero) > (AlistarMenu.Healing.EallyMana:Value()/100) and CanUseSpell(myHero, _E) == READY and GoS:ValidTarget(unit, 700) and GoS:IsInDistance(ally, 575) and IsObjectAlive(ally) then
                     CastSpell(_E)
               end
             end
