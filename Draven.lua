@@ -1,5 +1,5 @@
 if GetObjectName(myHero) ~= "Draven" then return end
---MonTour Draven:V1.0.0.2
+--MonTour Draven:V1.0.0.1
 PrintChat(string.format("<font color='#80F5F5'>MonTour Draven:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.1</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Cloud for Axes Code</font>"))
@@ -84,12 +84,7 @@ DravenMenu.Misc:Boolean("MGUNDEB","TEXT DEBUG", false)
 DravenMenu.Misc:Slider("MGUNSIZE", "UN Text Size", 25, 5, 60, 1)
 DravenMenu.Misc:Slider("MGUNX", "UN X POS", 35, 0, 1600, 1)
 DravenMenu.Misc:Slider("MGUNY", "UN Y POS", 394, 0, 1055, 1)
- 
-minionManager = {}
-minionManager.maxObjects = 0
-minionManager.objects = {}
-minionManager.unsorted = {}
-minionManager.tick = 0
+    		
 mapID = GetMapID()
 spellData = 
 	{
