@@ -140,7 +140,7 @@ OnLoop(function(myHero)
 	EREADYONCOOLDOWN = CanUseSpell(myHero,_E) == ONCOOLDOWN
 	RREADY = CanUseSpell(myHero,_R) == READY 
 	targetPos = GetOrigin(target)
-	myHeroPos = GetOrigin(myHero)  
+	myHeroPos = GoS:myHeroPos() 
   AuraofDespairOff = GotBuff(myHero,"AuraofDespair") == 0
   AuraofDespairOn = GotBuff(myHero,"AuraofDespair") == 1    
   target = GetCurrentTarget()
@@ -184,7 +184,7 @@ function Combo()
         CastTargetSpell(target,_E)
     end
     for _,target in pairs(GoS:GetEnemyHeroes()) do
-    if AmumuMenu.Combo.R:Value() and RREADY and GoS:IsInDistance(unit, spellData[_R].range) and GoS:EnemiesAround(GoS:myHeroPos(), spellData[_R].range-10) >= AmumuMenu.Combo.RE:Value() then
+    if AmumuMenu.Combo.R:Value() and RREADY and GoS:IsInDistance(target, spellData[_R].range) and GoS:EnemiesAround(GoS:myHeroPos(), spellData[_R].range-10) >= AmumuMenu.Combo.RE:Value() then
         CastTargetSpell(target,_R)
     end
     end
@@ -207,7 +207,7 @@ function Harass()
         CastTargetSpell(target,_E)
     end
     for _,target in pairs(GoS:GetEnemyHeroes()) do    
-    if AmumuMenu.Harass.R:Value() and RREADY and GoS:IsInDistance(unit, spellData[_R].range) and GoS:EnemiesAround(GoS:myHeroPos(), spellData[_R].range-10) >= AmumuMenu.Harass.RE:Value() then
+    if AmumuMenu.Harass.R:Value() and RREADY and GoS:IsInDistance(target, spellData[_R].range) and GoS:EnemiesAround(GoS:myHeroPos(), spellData[_R].range-10) >= AmumuMenu.Harass.RE:Value() then
         CastTargetSpell(target,_R)
     end
     end
@@ -427,6 +427,7 @@ end
 
 addInterrupterCallback(function(unit, spellType)
     local unit = GetCurrentTarget()
+    for _,unit in pairs(GoS:GetEnemyHeroes()) do
     if spellType == CHANELLING_SPELLS and AmumuMenu.Interrupt.InterruptQ:Value() then
       local QPred = GetPredictionForPlayer(GoS:myHeroPos(), unit, GetMoveSpeed(unit), spellData[_Q].speed, spellData[_Q].delay, spellData[_Q].range, spellData[_Q].width, true, true)
       if CanUseSpell(myHero,_Q) == READY and QPred.HitChance == 1 then
@@ -436,5 +437,6 @@ addInterrupterCallback(function(unit, spellType)
       if CanUseSpell(myHero,_R) == READY and GoS:IsInDistance(unit, spellData[_R].range) and GoS:EnemiesAround(GoS:myHeroPos(), spellData[_R].range-10) >= 1 then
         CastTargetSpell(unit,_R)
       end
+    end
     end
 end)
