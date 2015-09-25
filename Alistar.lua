@@ -1,7 +1,7 @@
 if GetObjectName(myHero) ~= "Alistar" then return end
 --MonTour Alistar:V1.0.0.1
 PrintChat(string.format("<font color='#80F5F5'>MonTour Alistar:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.0</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.1</font>"))
    local AlistarMenu = Menu("Alistar", "Alistar")
     AlistarMenu:SubMenu("Combo", "Combo")
     AlistarMenu.Combo:Boolean("CQW", "Use QW Combo", false)
