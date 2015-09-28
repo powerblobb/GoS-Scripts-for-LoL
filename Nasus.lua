@@ -110,6 +110,8 @@ end)
 
 
 function Combo()
+    local unit = GetCurrentTarget()
+  local target = GetCurrentTarget()
 if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDead(target) or not IsVisible(target) or GetTeam(target) == GetTeam(myHero) then return false end
 if GoS:ValidTarget(target, 1000) then
   if NasusMenu.Combo.W:Value() then
@@ -137,6 +139,7 @@ end
 end
 
 function Harass()
+    local unit = GetCurrentTarget()
   local target = GetCurrentTarget()
 if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDead(target) or not IsVisible(target) or GetTeam(target) == GetTeam(myHero) then return false end
 if GoS:ValidTarget(target, 1000) then
