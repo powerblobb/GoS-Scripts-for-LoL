@@ -1,7 +1,7 @@
 if GetObjectName(myHero) ~= "Amumu" then return end
---MonTour Amumu:V1.0.0.2
+--MonTour Amumu:V1.0.0.3
 PrintChat(string.format("<font color='#80F5F5'>MonTour Amumu:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.2</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.3</font>"))
 local AmumuMenu = Menu("Amumu", "Amumu")
 AmumuMenu:SubMenu("Combo", "Combo")
 AmumuMenu.Combo:Boolean("Q","Use Q",true)
@@ -92,7 +92,6 @@ unit = GetCurrentTarget()
 			width = 550},					
 	}
 
-unit = GetCurrentTarget()
 
 CHANELLING_SPELLS = {
     ["Caitlyn"]                     = {_R},
@@ -169,6 +168,7 @@ end
 end)
 
 function Combo()
+  if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDead(target) or not IsVisible(target) or GetTeam(target) == GetTeam(myHero) then return false end
   if GoS:ValidTarget(target, spellData[_Q].range+50) then
  		local QPred = GetPredictionForPlayer(GoS:myHeroPos(), target, GetMoveSpeed(target), spellData[_Q].speed, spellData[_Q].delay, spellData[_Q].range, spellData[_Q].width, true, true)
 		if AmumuMenu.Combo.Q:Value() and QREADY and QPred.HitChance == 1 then
@@ -192,6 +192,7 @@ function Combo()
 end  
 
 function Harass()
+  if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDead(target) or not IsVisible(target) or GetTeam(target) == GetTeam(myHero) then return false end
   if GoS:ValidTarget(target, spellData[_Q].range+50) then
  		local QPred = GetPredictionForPlayer(GoS:myHeroPos(), target, GetMoveSpeed(target), spellData[_Q].speed, spellData[_Q].delay, spellData[_Q].range, spellData[_Q].width, true, true)
 		if AmumuMenu.Harass.Q:Value() and QREADY and QPred.HitChance == 1 then
