@@ -168,6 +168,8 @@ end
 end)
 
 function Combo()
+    local unit = GetCurrentTarget()
+  local target = GetCurrentTarget()
   if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDead(target) or not IsVisible(target) or GetTeam(target) == GetTeam(myHero) then return false end
   if GoS:ValidTarget(target, spellData[_Q].range+50) then
  		local QPred = GetPredictionForPlayer(GoS:myHeroPos(), target, GetMoveSpeed(target), spellData[_Q].speed, spellData[_Q].delay, spellData[_Q].range, spellData[_Q].width, true, true)
@@ -192,6 +194,8 @@ function Combo()
 end  
 
 function Harass()
+    local unit = GetCurrentTarget()
+  local target = GetCurrentTarget()
   if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDead(target) or not IsVisible(target) or GetTeam(target) == GetTeam(myHero) then return false end
   if GoS:ValidTarget(target, spellData[_Q].range+50) then
  		local QPred = GetPredictionForPlayer(GoS:myHeroPos(), target, GetMoveSpeed(target), spellData[_Q].speed, spellData[_Q].delay, spellData[_Q].range, spellData[_Q].width, true, true)
