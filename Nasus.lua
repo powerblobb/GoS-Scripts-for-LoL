@@ -1,11 +1,11 @@
 if GetObjectName(GetMyHero()) ~= "Nasus" then return end
---MonTour Nasus:V1.0.0.1
+--MonTour Nasus:V1.0.0.2
 PrintChat(string.format("<font color='#80F5F5'>MonTour Nasus:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.1</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Cloud for Q Stack</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.2</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Cloud for Old Q Stack Thank you</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Feretorix for everything and GetBuffData(myHero,"buffname");</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
 local QStack = 0 
-local QStackDMG = 0
 local NasusMenu = Menu("Nasus", "Nasus")
 NasusMenu:SubMenu("Combo", "Combo")
 NasusMenu.Combo:Boolean("Q","Use Q",true)
@@ -19,23 +19,13 @@ NasusMenu.Harass:Boolean("W","Use W",true)
 NasusMenu.Harass:Boolean("E","Use E",false)
 NasusMenu.Harass:Boolean("R","Use R",true)
 NasusMenu.Harass:Slider("RHP", "Use R if my HP < x%", 20, 5, 80, 1)
-NasusMenu:SubMenu("Stacks", "Stack Q/LastHit/LaneClear/Jungle")
-NasusMenu.Stacks:Info("Nasus", "Press Numpad + for Stacks + 3")
-NasusMenu.Stacks:Info("Nasus", "Press Numpad - for Stacks - 3")
-NasusMenu.Stacks:Info("Nasus", "Press Numpad 0 for Stacks = 0")
-NasusMenu.Stacks:Info("Nasus", "Press Numpad * for Stacks =")
-NasusMenu.Stacks:Info("Nasus", "Q Stack1 + Q Stack2 + Q Stack3")
-NasusMenu.Stacks:Slider("Q", "Q Stack1 +", 0, 0, 200, 1)
-NasusMenu.Stacks:Slider("Q2", "Q Stack2 +", 0, 0, 200, 1)
-NasusMenu.Stacks:Slider("Q3", "Q Stack3", 0, 0, 200, 1)
-NasusMenu.Stacks:Info("Nasus", "Current ")
-NasusMenu.Stacks:Info("Nasus", " ")
+NasusMenu:SubMenu("Stacks", "LastHit/LaneClear/Jungle")
 NasusMenu.Stacks:Boolean("Q","Use LastHit Q",true)
 NasusMenu.Stacks:Boolean("AQ","Auto LastHit Q if",true)
 NasusMenu.Stacks:Slider("AQR", "Minion Range < x (Def.250)", 250, 50, 1500, 1)
 NasusMenu.Stacks:Boolean("QLC","Use LaneClear Q",true)
 NasusMenu:SubMenu("Items", "Items & Ignite")
---NasusMenu.Items:Info("Nasus", "Only in Combo and Harass")
+NasusMenu.Items:Info("Nasus", "Only in Combo and Harass")
 NasusMenu.Items:Boolean("Ignite","AutoIgnite if OOR and W+E NotReady",true)
 NasusMenu.Items:Boolean("useTiamat", "Tiamat", true)
 NasusMenu.Items:Boolean("useHydra", "Hydra", true)
@@ -59,8 +49,8 @@ NasusMenu.Items:Slider("QSSHP", "if My Health < x%", 75, 0, 100, 1)
 NasusMenu:SubMenu("KS", "KillSteal")
 NasusMenu.KS:Boolean("Q","Use Q KS",true)
 NasusMenu.KS:Boolean("E","Use E KS",true)
-NasusMenu.KS:Boolean("WQ","Use W+Q KS",true)
-NasusMenu.KS:Boolean("WEQ","Use W+E+Q KS",true)
+NasusMenu.KS:Boolean("WQ","Use W+Q KS",false)
+NasusMenu.KS:Boolean("WEQ","Use W+E+Q KS",false)
 NasusMenu:SubMenu("Misc", "Misc")
 NasusMenu.Misc:Boolean("QAA","Draw QAA",true)
 NasusMenu.Misc:Boolean("DMG","Draw DMG over HP",true)
@@ -71,37 +61,18 @@ NasusMenu.Misc:Slider("MGUNSIZE", "UN Text Size", 25, 5, 60, 1)
 NasusMenu.Misc:Slider("MGUNX", "UN X POS", 35, 0, 1600, 1)
 NasusMenu.Misc:Slider("MGUNY", "UN Y POS", 394, 0, 1055, 1)
 
-
-OnCreateObj(function(Object)
-QStack = QStack
-if GetObjectBaseName(Object) == "DeathsCaress_nova.troy" then 
-  QStack = QStack + 3 
-end
-end)
-
 function Stacking()
-QStack = QStack
-if KeyIsDown(0x6B) then
-  QStack = QStack + 3
-end
-if KeyIsDown(0x6D) then
-  QStack = QStack - 3
-end
-if KeyIsDown(0x6A) then
-  QStack = NasusMenu.Stacks.Q:Value() + NasusMenu.Stacks.Q2:Value() + NasusMenu.Stacks.Q3:Value()
-end
-if KeyIsDown(0x60) then
-  QStack = 0
-end
+  nasusQstacks = GetBuffData(myHero,"nasusqstacks")
+  QStack = nasusQstacks.Stacks
 end
 
 OnLoop(function(myHero)
     target = GetCurrentTarget()
-    QStackDMG = QStack
     Stacking() 
     ItemUse()
     Ignite()
-    Killsteal()
+    Killsteal()    
+    
   if NasusMenu.Misc.DMG:Value() then     
     DMGOHP()
   end  
@@ -127,7 +98,7 @@ OnLoop(function(myHero)
       AutoJungleClear(jminion)
   end
   if KeyIsDown(0x10) then  
-      DrawText(string.format("QStack = %f", QStack),15,478,256,0xffffffff); 
+      DrawText(string.format("QStack = %f", QStack),20,100,300,0xffffffff); 
   end
   if NasusMenu.Misc.MGUNDEB:Value() then
   GLOBALULTNOTICEDEBUG()
@@ -137,28 +108,28 @@ GLOBALULTNOTICE()
 end
 end)
 
+
 function Combo()
-  local target = GetCurrentTarget()
-  if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDead(target) or not IsVisible(target) or GetTeam(target) == GetTeam(myHero) then return false end
+if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDead(target) or not IsVisible(target) or GetTeam(target) == GetTeam(myHero) then return false end
 if GoS:ValidTarget(target, 1000) then
   if NasusMenu.Combo.W:Value() then
-    if CanUseSpell(myHero, _W) == READY and IsObjectAlive(target) and GoS:IsInDistance(target, 600) then
+    if CanUseSpell(myHero, _W) == READY and GoS:IsInDistance(target, 600) then --and IsObjectAlive(target) 
       CastTargetSpell(target, _W)
     end
   end  
   if NasusMenu.Combo.E:Value() then           
     local EPred = GetPredictionForPlayer(GoS:myHeroPos(),target,GetMoveSpeed(target),1700,250,650,70,true,false)
-    if CanUseSpell(myHero, _E) == READY and IsObjectAlive(target) and GoS:IsInDistance(target, 650) then
+    if CanUseSpell(myHero, _E) == READY  and GoS:IsInDistance(target, 650) then --and IsObjectAlive(target)
       CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
     end
   end  
   if NasusMenu.Combo.Q:Value() then
-    if CanUseSpell(myHero, _Q) == READY and IsObjectAlive(target) and GoS:IsInDistance(target, 300) then
+    if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(target, 300) then --and IsObjectAlive(target) 
       CastSpell(_Q)
     end  
   end
   if NasusMenu.Combo.R:Value() then
-    if CanUseSpell(myHero, _R) == READY and IsObjectAlive(target) and (GetCurrentHP(myHero)/GetMaxHP(myHero)) < (NasusMenu.Combo.RHP:Value()/100) then
+    if CanUseSpell(myHero, _R) == READY  and (GetCurrentHP(myHero)/GetMaxHP(myHero)) < (NasusMenu.Combo.RHP:Value()/100) then --and IsObjectAlive(target)
       CastSpell(_R)
     end  
   end
@@ -167,21 +138,21 @@ end
 
 function Harass()
   local target = GetCurrentTarget()
-    if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDead(target) or not IsVisible(target) or GetTeam(target) == GetTeam(myHero) then return false end
+if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDead(target) or not IsVisible(target) or GetTeam(target) == GetTeam(myHero) then return false end
 if GoS:ValidTarget(target, 1000) then
   if NasusMenu.Harass.W:Value() then
-    if CanUseSpell(myHero, _W) == READY and IsObjectAlive(target) and GoS:IsInDistance(target, 600) then
+    if CanUseSpell(myHero, _W) == READY and GoS:IsInDistance(target, 600) then --and IsObjectAlive(target) 
       CastTargetSpell(target, _W)
     end
   end  
   if NasusMenu.Harass.E:Value() then           
     local EPred = GetPredictionForPlayer(GoS:myHeroPos(),target,GetMoveSpeed(target),1700,250,650,70,true,false)
-    if CanUseSpell(myHero, _E) == READY and IsObjectAlive(target) and GoS:IsInDistance(target, 650) then
+    if CanUseSpell(myHero, _E) == READY  and GoS:IsInDistance(target, 650) then --and IsObjectAlive(target)
       CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
     end
   end  
   if NasusMenu.Harass.Q:Value() then
-    if CanUseSpell(myHero, _Q) == READY and IsObjectAlive(target) and GoS:IsInDistance(target, 300) then
+    if CanUseSpell(myHero, _Q) == READY  and GoS:IsInDistance(target, 300) then --and IsObjectAlive(target)
       CastSpell(_Q)
     end  
   end
@@ -195,7 +166,7 @@ end
 
 function Ignite()
       local Ignite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerdot") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerdot") and SUMMONER_2 or nil))
-    if GoS:ValidTarget(unit, 700) and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) and Ignite and NasusMenu.Items.Ignite:Value() and CanUseSpell(myHero,_E) ~= READY and CanUseSpell(myHero,_W) ~= READY and  GoS:GetDistance(unit) > 460 then
+    if GoS:ValidTarget(unit, 700) and Ignite and NasusMenu.Items.Ignite:Value() and CanUseSpell(myHero,_E) ~= READY and CanUseSpell(myHero,_W) ~= READY and  GoS:GetDistance(unit) > 460 then --and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) and
         for _, k in pairs(GoS:GetEnemyHeroes()) do
             if CanUseSpell(GetMyHero(), Ignite) == READY and (20*GetLevel(GetMyHero())+50) > GetCurrentHP(k)+GetHPRegen(k)*2.5 and GoS:GetDistanceSqr(GetOrigin(k)) < 600*600 then
                 CastTargetSpell(k, Ignite)
