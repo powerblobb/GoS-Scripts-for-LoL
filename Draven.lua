@@ -1,7 +1,7 @@
 if GetObjectName(myHero) ~= "Draven" then return end
 --MonTour Draven:V1.0.0.2
 PrintChat(string.format("<font color='#80F5F5'>MonTour Draven:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.1</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.2</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Cloud for Axes Code</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> iLoveSona for Interrupter</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
@@ -365,6 +365,29 @@ function Checks()
 	QSpinn0 = GotBuff(myHero,"DravenSpinning") == 0	
 	QSpinn1 = GotBuff(myHero,"DravenSpinning") == 1
   enemygotbansheesveil = GotBuff(target,"bansheesveil") == 1 
+  
+  
+--buffdatas2 = GetBuffData(myHero,"dravenpassive");
+--DrawText(string.format("[dravenpassive INFO]", buffdatas2.Type),12,200,20,0xff00ff00);
+--DrawText(string.format("Type = %d", buffdatas2.Type),12,200,30,0xff00ff00);
+--DrawText(string.format("Name = %s", buffdatas2.Name),12,200,40,0xff00ff00);
+--DrawText(string.format("Count = %d", buffdatas2.Count),12,200,50,0xff00ff00);
+--DrawText(string.format("Stacks = %f", buffdatas2.Stacks),12,200,60,0xff00ff00);
+--DrawText(string.format("StartTime = %f", buffdatas2.StartTime),12,200,70,0xff00ff00);
+--DrawText(string.format("ExpireTime = %f", buffdatas2.ExpireTime),12,200,80,0xff00ff00);
+--DrawText(string.format("[GameTime] = %f", GetGameTimer()),12,200,90,0xff00ff00);
+--DrawText(string.format("GetBuffTypeToString = [%s]", GetBuffTypeToString(buffdatas2.Type)),12,200,110,0xffffff00);
+ 
+--buffdatas = GetBuffData(myHero,"dravenpassivestacks");
+--DrawText(string.format("[dravenpassivestacks INFO]", buffdatas.Type),12,200,130,0xff00ff00);
+--DrawText(string.format("Type = %d", buffdatas.Type),12,200,140,0xff00ff00);
+--DrawText(string.format("Name = %s", buffdatas.Name),12,200,150,0xff00ff00);
+--DrawText(string.format("Count = %d", buffdatas.Count),12,200,160,0xff00ff00);
+--DrawText(string.format("Stacks = %f", buffdatas.Stacks),12,200,170,0xff00ff00);
+--DrawText(string.format("StartTime = %f", buffdatas.StartTime),12,200,180,0xff00ff00);
+--DrawText(string.format("ExpireTime = %f", buffdatas.ExpireTime),12,200,190,0xff00ff00);
+--DrawText(string.format("[GameTime] = %f", GetGameTimer()),12,200,200,0xff00ff00);
+--DrawText(string.format("GetBuffTypeToString = [%s]", GetBuffTypeToString(buffdatas.Type)),12,200,220,0xffffff00); 
 end
 
 function LastHit(minion)
@@ -573,6 +596,9 @@ end
 
 			
 function Combo()
+  local unit = GetCurrentTarget()
+  local target = GetCurrentTarget()
+if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDead(target) or not IsVisible(target) or GetTeam(target) == GetTeam(myHero) then return false end
 		if DravenMenu.Combo.Q:Value() then
 		CastQ(target)
     end
@@ -596,6 +622,9 @@ function Combo()
     end
 end	
 function Harass()
+    local unit = GetCurrentTarget()
+    local target = GetCurrentTarget()
+    if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) then return false end
 		if DravenMenu.Harass.QH:Value() then
 		CastQ(target)		
     end
