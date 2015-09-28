@@ -71,11 +71,11 @@ Heal()
 end)
 
 function Combo()
-local unit = GetCurrentTarget()
+  local unit = GetCurrentTarget()
+  local target = GetCurrentTarget()
 if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) then return false end
 if IOW:Mode() == "Combo" then
-local unit = GetCurrentTarget()
-if GoS:ValidTarget(unit, 1550) then-- and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
+if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
             if AlistarMenu.Combo.CWQ:Value() then
                  if CanUseSpell(myHero, _W) == READY and CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 650) then
            CastTargetSpell(unit, _W)
@@ -109,11 +109,11 @@ end
 end  
 
 function Harass()
-local unit = GetCurrentTarget() 
+  local unit = GetCurrentTarget()
+  local target = GetCurrentTarget()
 if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) then return false end
 if IOW:Mode() == "Harass" then
-local unit = GetCurrentTarget()
-if GoS:ValidTarget(unit, 1550) then --and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
+if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
             if AlistarMenu.Harass.HWQ:Value() then
                  if CanUseSpell(myHero, _W) == READY and CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 650) then
            CastTargetSpell(unit, _W)
