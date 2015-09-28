@@ -1,7 +1,7 @@
 if GetObjectName(GetMyHero()) ~= "Fiora" then return end
---MonTour Fiora:V1.0.0.1
+--MonTour Fiora:V1.0.0.2
 PrintChat(string.format("<font color='#80F5F5'>MonTour Fiora:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.1</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.2</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> leoferrerinha for Auto W</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
 local FioraMenu = Menu("Fiora", "Fiora")
@@ -59,7 +59,7 @@ Defender = {["Aatrox"] = {_E},["Ahri"] = {_Q,_W,_E,_R},["Anivia"] = {_Q,_E},["An
 		return {x = unitPos.x + range * PosXZ.x / len, y = 0, z = unitPos.z + range * PosXZ.z / len}
 		end
 		unit = GetCurrentTarget()
-
+    target = GetCurrentTarget()
 --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/
 		OnProcessSpell(function(unit, spell)
 		myHero = GetMyHero()
@@ -99,10 +99,11 @@ if FioraMenu.Drawings.W:Value() and GetCastLevel(myHero,_W) >=1 then DrawCircle(
 end
 
 function Combo()
-unit = GetCurrentTarget()
+  local unit = GetCurrentTarget()
+  local target = GetCurrentTarget()
 if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) then return false end
 if IOW:Mode() == "Combo" then
-if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
+if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
       if FioraMenu.Combo.Q:Value() then
         if GetCastName(myHero, _Q) == "FioraQ" and (GetItemSlot(myHero, 3077) < 1 or GetItemSlot(myHero, 3074) < 1) then
         local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1700,250,400,50,false,true)
@@ -122,7 +123,7 @@ if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) an
        if GetCastName(myHero, _W) == "FioraW" then
             if FioraMenu.Combo.W:Value() then           
                 local WPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1700,250,750,50,false,true)
-                 if CanUseSpell(myHero, _W) == READY and IsObjectAlive(unit) and GoS:IsInDistance(unit, 750) then
+                 if CanUseSpell(myHero, _W) == READY and GoS:IsInDistance(unit, 750) then --and IsObjectAlive(unit)
             CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z)
             end
         end
@@ -136,7 +137,7 @@ if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) an
     end
    if GetCastName(myHero, _R) == "FioraR" then
             if FioraMenu.Combo.R:Value() then
-                if (GetCurrentHP(unit)/GetMaxHP(unit)) < (FioraMenu.Combo.HP:Value()/100) and
+                if (100*GetCurrentHP(unit)/GetMaxHP(unit)) < FioraMenu.Combo.HP:Value() and
                     CanUseSpell(myHero, _R) == READY and IsObjectAlive(unit) and GoS:IsInDistance(unit, 500) then
             CastTargetSpell(unit, _R)
             end
@@ -215,9 +216,11 @@ end
 end 
 
 function Harass()
+  local unit = GetCurrentTarget()
+  local target = GetCurrentTarget()
 if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) then return false end
 if IOW:Mode() == "Harass" then
-if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
+if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
 --        if FioraMenu.Harass.Q:Value() then
 --        if GetCastName(myHero, _Q) == "FioraQ" then
 --        local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1700,250,400,50,false,true)
@@ -245,7 +248,7 @@ if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) an
        if GetCastName(myHero, _W) == "FioraW" then
             if FioraMenu.Harass.W:Value() then           
                 local WPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1700,250,750,50,false,true)
-                 if CanUseSpell(myHero, _W) == READY and IsObjectAlive(unit) and GoS:IsInDistance(unit, 750) then
+                 if CanUseSpell(myHero, _W) == READY and GoS:IsInDistance(unit, 750) then --and IsObjectAlive(unit)
             CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z)
             end
         end
@@ -259,7 +262,7 @@ if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) an
     end
    if GetCastName(myHero, _R) == "FioraR" then
             if FioraMenu.Harass.R:Value() then
-                if (GetCurrentHP(unit)/GetMaxHP(unit)) < (FioraMenu.Harass.HP:Value()/100) and
+                if (100*GetCurrentHP(unit)/GetMaxHP(unit)) < FioraMenu.Harass.HP:Value() and
                     CanUseSpell(myHero, _R) == READY and IsObjectAlive(unit) and GoS:IsInDistance(unit, 500) then
             CastTargetSpell(unit, _R)
             end
@@ -271,7 +274,7 @@ end
 
 function Ignite()
       local Ignite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerdot") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerdot") and SUMMONER_2 or nil))
-    if GoS:ValidTarget(unit, 700) and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) and Ignite and FioraMenu.Items.Ignite:Value() and CanUseSpell(myHero,_Q) ~= READY and GoS:GetDistance(unit) > 450 then
+    if GoS:ValidTarget(unit, 700) and Ignite and FioraMenu.Items.Ignite:Value() and CanUseSpell(myHero,_Q) ~= READY and GoS:GetDistance(unit) > 450 then --and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) and
         for _, k in pairs(GoS:GetEnemyHeroes()) do
             if CanUseSpell(GetMyHero(), Ignite) == READY and (20*GetLevel(GetMyHero())+50) > GetCurrentHP(k)+GetHPRegen(k)*2.5 and GoS:GetDistanceSqr(GetOrigin(k)) < 600*600 then
                 CastTargetSpell(k, Ignite)
@@ -293,11 +296,11 @@ function Items()
     end
   end 
   if IOW:Mode() == "Combo" then
-      if FioraMenu.Items.useCut:Value() and GetItemSlot(myHero,3144) >= 1 and GoS:ValidTarget(unit,550) and GetCurrentHP(myHero)/GetMaxHP(myHero) < (FioraMenu.Items.CutBlademyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (FioraMenu.Items.CutBladeehp:Value()/100) then --CutBlade
+      if FioraMenu.Items.useCut:Value() and GetItemSlot(myHero,3144) >= 1 and GoS:ValidTarget(unit,550) and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < FioraMenu.Items.CutBlademyhp:Value() and (100*GetCurrentHP(target)/GetMaxHP(target)) > FioraMenu.Items.CutBladeehp:Value() then --CutBlade
         if CanUseSpell(myHero,GetItemSlot(myHero,3144)) == READY then
           CastTargetSpell(unit, GetItemSlot(myHero,3144))
         end	
-    elseif FioraMenu.Items.useBork:Value() and GetItemSlot(myHero,3153) >= 1 and GoS:ValidTarget(unit,550) and GetCurrentHP(myHero)/GetMaxHP(myHero) < (FioraMenu.Items.borkmyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (FioraMenu.Items.borkehp:Value()/100) then 
+    elseif FioraMenu.Items.useBork:Value() and GetItemSlot(myHero,3153) >= 1 and GoS:ValidTarget(unit,550) and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < FioraMenu.Items.borkmyhp:Value() and (100*GetCurrentHP(target)/GetMaxHP(target)) > FioraMenu.Items.borkehp:Value() then 
         if CanUseSpell(myHero,GetItemSlot(myHero,3153)) == READY then --bork
           CastTargetSpell(unit,GetItemSlot(myHero,3153))
         end
@@ -305,7 +308,7 @@ function Items()
         if CanUseSpell(myHero,GetItemSlot(myHero,3142)) == READY then
           CastSpell(GetItemSlot(myHero,3142))
         end
-     elseif FioraMenu.Items.useRedPot:Value() and GetItemSlot(myHero,2140) >= 1 and GoS:ValidTarget(unit,250) then --redpot
+     elseif FioraMenu.Items.useRedPot:Value() and GetItemSlot(myHero,2140) >= 1 and GoS:ValidTarget(unit,500) then --redpot
         if CanUseSpell(myHero,GetItemSlot(myHero,2140)) == READY then
           CastSpell(GetItemSlot(myHero,2140))
         end
