@@ -1,7 +1,7 @@
 if GetObjectName(GetMyHero()) ~= "TwistedFate" then return end
---MonTour TwistedFate:V0.1.0.0 Beta
+--MonTour TwistedFate:V0.1.0.1 Beta
 PrintChat(string.format("<font color='#80F5F5'>MonTour Nasus:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.1.0.0 Beta</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.1.0.1 Beta</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
 
 TwistedFateMenu = Menu("TwistedFate", "Twisted Fate")
@@ -326,7 +326,7 @@ if GoS:ValidTarget(minion, 525+250) then
 			CastSpell(_W) 
 		end
 	end
-  if GotBuff(myHero,"bluecardpreattack") == 1  and GetCurrentHP(minion) < bcard and GetCurrentHP(minion) > addmg then --GetCastName(myHero,_W) == "bluecardlock"
+  if GotBuff(myHero,"bluecardpreattack") == 1  and GetCurrentHP(minion) < bcard then --GetCastName(myHero,_W) == "bluecardlock"
 		AttackUnit(minion) 	
 	end  
 	if TwistedFateMenu.Farm.prio:Value() == 3 and curdmax > ManaValue and GetTickCount() > tick then
