@@ -1,37 +1,36 @@
 if GetObjectName(myHero) ~= "Draven" then return end
---MonTour Draven:V1.0.0.2
+--MonTour Draven:V1.0.0.3
 PrintChat(string.format("<font color='#80F5F5'>MonTour Draven:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.2</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.3</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Cloud for Axes Code</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> iLoveSona for Interrupter</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
 require('RecallUlt') 
 DravenMenu = Menu("Draven", "Draven")
 DravenMenu:SubMenu("Info", "Info about Auto Q Walk")
-DravenMenu.Info:Info("Draven", "Info: Use LastHit Q - Button X")
-DravenMenu.Info:Info("Draven", "for Catching the Axes of Q by Pressing.")
-DravenMenu.Info:Info("Draven", "or Set your Own Key to Catch in COMBOMENU!!")
-DravenMenu.Info:Info("Draven", "LastHit Autowalk Q in Farming/Jungle ")
-DravenMenu.Info:Info("Draven", "is true by default.")
-DravenMenu.Info:Info("Draven", "It is recommend to Use Auto Q Walk only by default!!!!")
-DravenMenu.Info:Info("Draven", "e.g Press Combo and Press X then to catch")
-DravenMenu.Info:Info("Draven", "or LaneClear and Press X then to catch")
-DravenMenu.Info:Info("Draven", "or Set your Own Key to Catch in COMBOMENU!!")
+DravenMenu.Info:Info("Draven", "Info: Use Catch Q AutoWalk")
+DravenMenu.Info:Info("Draven", "for Catching the Axes of Q by")
+DravenMenu.Info:Info("Draven", "Single Pressing the Button. ")
+DravenMenu.Info:Info("Draven", "Do not HOLD the Catch Q AutoWalk")
+DravenMenu.Info:Info("Draven", "Button, cause of Forcing Movement!")
 DravenMenu.Info:Info("Draven", "You need to train, before jump into ranked!")
 DravenMenu:SubMenu("Combo", "Combo")
 DravenMenu.Combo:Key("CQ", "Catch Q AutoWalk", string.byte("A"))
 DravenMenu.Combo:Info("Draven", "Pickup Q if Range")
-DravenMenu.Combo:Slider("CQPR", " Axe/MyHero < X (def: 600)", 600, 50, 1000, 1)
-DravenMenu.Combo:Info("Draven", " ")
+DravenMenu.Combo:Slider("CQPR", " Axe/MyMouse < X (def: 400)", 400, 50, 1000, 1)
+DravenMenu.Combo:Boolean("CM", "Draw Q Catch Circle", true)
+DravenMenu.Combo:Boolean("QC", "Draw Q Mouse Circle", true)
+DravenMenu.Combo:Boolean("CWS", "Use W to Catch", true)
 DravenMenu.Combo:Boolean("Q", "Use Q", true)
-DravenMenu.Combo:Boolean("LCCAQ", "Use Q Force Autowalk", false)
 DravenMenu.Combo:Boolean("W", "Use W", true)
 DravenMenu.Combo:Slider("WMANA", "Use W Only if Mana > x%", 60, 1, 90, 1)
-DravenMenu.Combo:Boolean("E", "Use E ", true)
+DravenMenu.Combo:Boolean("E", "Use E OOR", true)
+DravenMenu.Combo:Boolean("EB", "Use E if Banshees", true)
 DravenMenu.Combo:Boolean("R", "Use R", false)
 
 DravenMenu:SubMenu("Items", "Items")
 DravenMenu.Items:Info("Draven", "Only in Combo and Harass")
+DravenMenu.Items:Boolean("Ignite", "Use Ignite", true)
 DravenMenu.Items:Boolean("CutBlade", "Bilgewater Cutlass", true)  
 DravenMenu.Items:Slider("CutBlademyhp", "if My Health < x%", 50, 5, 100, 1)
 DravenMenu.Items:Slider("CutBladeehp", "if Enemy Health < x%", 20, 5, 100, 1)
@@ -51,20 +50,16 @@ DravenMenu.Items:Slider("QSSHP", "if My Health < x%", 75, 0, 100, 1)
 
 DravenMenu:SubMenu("Harass", "Harass")
 DravenMenu.Harass:Boolean("QH", "Use Q", true)
-DravenMenu.Harass:Boolean("LCHAQ", "Use Q Force Autowalk", false)
 DravenMenu.Harass:Boolean("WH", "Use W", true)
 DravenMenu.Harass:Slider("WMANA", "Use Only W if Mana > x%", 60, 1, 90, 1)
-DravenMenu.Harass:Boolean("EH", "Use E", true)
+DravenMenu.Harass:Boolean("EH", "Use E OOR", true)
+DravenMenu.Harass:Boolean("EHB", "Use E if Banshees", true)
 DravenMenu.Harass:Boolean("RH", "Use R", false)
 
 DravenMenu:SubMenu("Clear", "Farming/Jungle")
 DravenMenu.Clear:Boolean("LHQ", "Use Q LastHit", true)
-DravenMenu.Clear:Boolean("LHAQ", "Use Q LastHit Force Autowalk", true)
---DravenMenu.Clear:Boolean("LHQCircle", "Q LastHit Circle", true)
 DravenMenu.Clear:Boolean("LCQ", "Use Q LaneClear", true)
-DravenMenu.Clear:Boolean("LCAQ", "Use Q LaneClear Force Autowalk", false)
 DravenMenu.Clear:Boolean("LCJQ", "Use Q Jungle", true)
-DravenMenu.Clear:Boolean("LJAQ", "Use Q JungleClear Force Autowalk", false) 
 
 DravenMenu:SubMenu("Steal", "JungleSteal")
 DravenMenu.Steal:Boolean("Dragon", "Use R Dragon", true)
@@ -269,11 +264,14 @@ function addInterrupterCallback( callback0 )
 end
 
 PrintChat("[interrupter] : loading...")
-
+tick = 0
+tick2 = 0
 OnCreateObj(function(Object)
   -- Creation of the reticle position
   if GetObjectBaseName(Object) == "Draven_Base_Q_reticle_self.troy" then
     table.insert(reticles, Object)
+    tick = GetGameTimer() + 1.8
+    tick2 = GetGameTimer() + 1.8
   end
 end)
 
@@ -290,6 +288,7 @@ OnLoop(function(myHero)
    ItemUse()
    Killsteal()
    CatchQ()   
+   Ignite()
 	if DravenMenu.Misc.DOHP:Value() then 
 		Draws()
 	end
@@ -366,7 +365,6 @@ function Checks()
 	QSpinn1 = GotBuff(myHero,"DravenSpinning") == 1
   enemygotbansheesveil = GotBuff(target,"bansheesveil") == 1 
   
-  
 --buffdatas2 = GetBuffData(myHero,"dravenpassive");
 --DrawText(string.format("[dravenpassive INFO]", buffdatas2.Type),12,200,20,0xff00ff00);
 --DrawText(string.format("Type = %d", buffdatas2.Type),12,200,30,0xff00ff00);
@@ -413,29 +411,52 @@ function LastHit(minion)
         AttackUnitM(minion)
       end
     end
-      if DravenMenu.Clear.LHAQ:Value() then
-      for i, reticle in pairs(reticles) do
-        local Reticlepos = GetOrigin(reticle)
-        local myHer0 = GetOrigin(myHero)
-          if GoS:GetDistance(Reticlepos, myHer0) < 600 then 
-          IOW:DisableMovement() GoS:DelayAction(function() MoveToXYZ(Reticlepos.x, Reticlepos.y , Reticlepos.z) GoS:DelayAction(function() IOW:EnableMovement() end, 1) end, 100) 
-          end
-      end
-      end
   end
 end
 
+--function CatchQ()
+--      if DravenMenu.Combo.CQ:Value() then
+--      for i, reticle in pairs(reticles) do
+--        local Reticlepos = GetOrigin(reticle)
+--        local myHer0 = GetOrigin(myHero)
+--        local mymouse = GetCursorPos()
+--        DrawCircle(Reticlepos.x, Reticlepos.y, Reticlepos.z,120,1,100,0xff0000ff)
+--        DrawCircle(mymouse.x, mymouse.y, mymouse.z,DravenMenu.Combo.CQPR:Value(),1,100,0xff0000ff)
+--          if GoS:GetDistance(Reticlepos, myHer0) < DravenMenu.Combo.CQPR:Value() then 
+--          MoveToXYZ(Reticlepos.x, Reticlepos.y , Reticlepos.z)
+--          end
+--      end
+--      end
+--end
+
 function CatchQ()
-      if DravenMenu.Combo.CQ:Value() then
+      if DravenMenu.Combo.CQ:Value() and DravenMenu.Combo.QC:Value() then
+        local mymouse = GetMousePos()
+        DrawCircle(mymouse,DravenMenu.Combo.CQPR:Value(),0.9,100,0xff0000ff)
+      end    
       for i, reticle in pairs(reticles) do
         local Reticlepos = GetOrigin(reticle)
         local myHer0 = GetOrigin(myHero)
-          if GoS:GetDistance(Reticlepos, myHer0) < DravenMenu.Combo.CQPR:Value() then 
-          IOW:DisableMovement() GoS:DelayAction(function() MoveToXYZ(Reticlepos.x, Reticlepos.y , Reticlepos.z) GoS:DelayAction(function() IOW:EnableMovement() end, 1) end, 100) 
+        local mymouse = GetMousePos()
+        local asTime = IOW:GetFullAttackSpeed()*60
+        if DravenMenu.Combo.CM:Value() then
+        DrawCircle(Reticlepos.x, Reticlepos.y, Reticlepos.z,120,3,100,0xff00ff7f)
+        DrawCircle(Reticlepos.x, Reticlepos.y, Reticlepos.z,60,1,100,0xffff6600)
+        end
+        if DravenMenu.Combo.CQ:Value() then
+          if GoS:GetDistance(Reticlepos, mymouse) < DravenMenu.Combo.CQPR:Value() and tick > GetGameTimer() then --and GetTickCount() < tick
+          IOW:DisableMovement() GoS:DelayAction(function()  GoS:DelayAction(function() MoveToXYZ(Reticlepos.x, Reticlepos.y , Reticlepos.z) GoS:DelayAction(function() IOW:EnableMovement() end, 1) end, 1) end, 100) --tick = 0
           end
-      end
+        end
+        if DravenMenu.Combo.CWS:Value() and GetCurrentMana(myHero)/GetMaxMana(myHero) > (DravenMenu.Combo.WMANA:Value()/100) then
+          local catchtime = GoS:GetDistance(Reticlepos, myHero)/GetMoveSpeed(myHero)
+          if catchtime > (tick2-GetGameTimer()) then 
+          CastSpell(_W)
+          end
+        end
       end
 end
+
 function AttackUnitM(minion)
 	for i,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do  
   if GoS:IsInDistance(minion, GetRange(myHero)) and GoS:GetDistance(myHero, minion) <= (GetRange(myHero)) and GoS:GetDistance(myHero, minion) >= 1 then 
@@ -474,15 +495,6 @@ function LaneClear(minion)
         
       end
     end
-          if DravenMenu.Clear.LCAQ:Value() then
-      for i, reticle in pairs(reticles) do
-        local Reticlepos = GetOrigin(reticle)
-        local myHer0 = GetOrigin(myHero)
-          if GoS:GetDistance(Reticlepos, myHer0) < 600 then 
-          IOW:DisableMovement() GoS:DelayAction(function() MoveToXYZ(Reticlepos.x, Reticlepos.y , Reticlepos.z) GoS:DelayAction(function() IOW:EnableMovement() end, 1) end, 100)        
-          end
-      end
-      end
 	end
 end
 
@@ -502,15 +514,6 @@ function JungleClear(jminion)
 			--	 DelayAction(function() AttackUnit(jminion) end, 100) 
       end
     end
-          if DravenMenu.Clear.LJAQ:Value() then
-      for i, reticle in pairs(reticles) do
-        local Reticlepos = GetOrigin(reticle)
-        local myHer0 = GetOrigin(myHero)
-          if GoS:GetDistance(Reticlepos, myHer0) < 600 then 
-          IOW:DisableMovement() GoS:DelayAction(function() MoveToXYZ(Reticlepos.x, Reticlepos.y , Reticlepos.z) GoS:DelayAction(function() IOW:EnableMovement() end, 1) end, 100) 
-          end
-      end
-      end
 		end		
 end
 
@@ -605,20 +608,14 @@ if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDea
 		if DravenMenu.Combo.W:Value() and GetCurrentMana(myHero)/GetMaxMana(myHero) > (DravenMenu.Combo.WMANA:Value()/100) then
 		CastW(target)
     end
-    if DravenMenu.Combo.E:Value() and enemygotbansheesveil then
+    if DravenMenu.Combo.EB:Value() and enemygotbansheesveil then
     CastPredEBanshe(target)
     end
+    if DravenMenu.Combo.E:Value() then
+    CastPredE(target)
+    end  
     if DravenMenu.Combo.R:Value() then
     CastPredR(target)
-    end
-    if DravenMenu.Combo.LCCAQ:Value()  then
-      for i, reticle in pairs(reticles) do
-        local Reticlepos = GetOrigin(reticle)
-        local myHer0 = GetOrigin(myHero)
-          if GoS:GetDistance(Reticlepos, myHer0) < 600 then 
-          IOW:DisableMovement() GoS:DelayAction(function() MoveToXYZ(Reticlepos.x, Reticlepos.y , Reticlepos.z) GoS:DelayAction(function() IOW:EnableMovement() end, 1) end, 100) 
-          end
-      end
     end
 end	
 function Harass()
@@ -631,20 +628,14 @@ function Harass()
 		if DravenMenu.Harass.WH:Value() and GetCurrentMana(myHero)/GetMaxMana(myHero) > (DravenMenu.Harass.WMANA:Value()/100) then
 		CastW(target)	 
     end
-    if DravenMenu.Harass.EH:Value() and enemygotbansheesveil then
+    if DravenMenu.Harass.EHB:Value() and enemygotbansheesveil then
     CastPredEBanshe(target)
-    end
+     end
+    if DravenMenu.Harass.EH:Value() then
+    CastPredE(target)
+    end  
     if DravenMenu.Harass.RH:Value() then
     CastPredR(target)
-    end
-      if DravenMenu.Harass.LCHAQ:Value() then
-      for i, reticle in pairs(reticles) do
-        local Reticlepos = GetOrigin(reticle)
-        local myHer0 = GetOrigin(myHero)
-          if GoS:GetDistance(Reticlepos, myHer0) < 600 then 
-          IOW:DisableMovement() GoS:DelayAction(function() MoveToXYZ(Reticlepos.x, Reticlepos.y , Reticlepos.z) GoS:DelayAction(function() IOW:EnableMovement() end, 1) end, 100) 
-          end
-      end
     end
 end
 
@@ -672,6 +663,17 @@ function Killsteal()
 			CastPredE(enemy) GoS:DelayAction(function() CastWnoMana(enemy) GoS:DelayAction(function() CastPredE(enemy) GoS:DelayAction(function() AttackUnitKS(enemy) end, 100) end, 200) end, 300)				
 		end	
 	end	
+end
+
+function Ignite()
+      local Ignite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerdot") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerdot") and SUMMONER_2 or nil))
+    if GoS:ValidTarget(unit, 700) and Ignite and DravenMenu.Items.Ignite:Value() and CanUseSpell(myHero,_W) ~= READY and  GoS:GetDistance(unit) > 500 then --and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) and
+        for _, k in pairs(GoS:GetEnemyHeroes()) do
+            if CanUseSpell(GetMyHero(), Ignite) == READY and (20*GetLevel(GetMyHero())+50) > GetCurrentHP(k)+GetHPRegen(k)*2.5 and GoS:GetDistanceSqr(GetOrigin(k)) < 600*600 then
+                CastTargetSpell(k, Ignite)
+            end
+        end
+     end
 end
 
 function ItemUse()
