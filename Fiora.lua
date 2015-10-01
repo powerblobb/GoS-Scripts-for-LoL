@@ -85,6 +85,18 @@ Defender = {["Aatrox"] = {_E},["Ahri"] = {_Q,_W,_E,_R},["Anivia"] = {_Q,_E},["An
 		end)
 
 OnLoop(function(myHero)
+    
+-- buffdatas = GetBuffData(target,"fiorapassivemanager");
+--DrawText(string.format("[dravenpassivestacks INFO]", buffdatas.Type),12,200,130,0xff00ff00);
+--DrawText(string.format("Type = %d", buffdatas.Type),12,200,140,0xff00ff00);
+--DrawText(string.format("Name = %s", buffdatas.Name),12,200,150,0xff00ff00);
+--DrawText(string.format("Count = %d", buffdatas.Count),12,200,160,0xff00ff00);
+--DrawText(string.format("Stacks = %f", buffdatas.Stacks),12,200,170,0xff00ff00);
+--DrawText(string.format("StartTime = %f", buffdatas.StartTime),12,200,180,0xff00ff00);
+--DrawText(string.format("ExpireTime = %f", buffdatas.ExpireTime),12,200,190,0xff00ff00);
+--DrawText(string.format("[GameTime] = %f", GetGameTimer()),12,200,200,0xff00ff00);
+--DrawText(string.format("GetBuffTypeToString = [%s]", GetBuffTypeToString(buffdatas.Type)),12,200,220,0xffffff00);    
+        
 Ignite()
 Combo()
 Harass()
