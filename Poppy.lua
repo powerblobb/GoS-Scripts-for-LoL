@@ -640,8 +640,8 @@ function KillSteal()
       local DamageENoStun = GoS:CalcDamage(myHero, unit,(sheendmg + frozendmg)*Poppyult, (lichbane + EDmgNoStun)*Poppyult)       
       local DamageEQStun = GoS:CalcDamage(myHero, unit, (sheendmg + frozendmg)*Poppyult, (QDmg + lichbane + EDmgStun)*Poppyult)  
       local DamageEQNoStun = GoS:CalcDamage(myHero, unit, (sheendmg + frozendmg)*Poppyult,(QDmg + lichbane + EDmgNoStun)*Poppyult) 
-        DrawText(string.format("QMAXPERCENT = %f", QMAXPERCENT),20,100,300,0xffffffff);
-        DrawText(string.format("sheendmg = %f", sheendmg),20,100,330,0xffffffff);
+--        DrawText(string.format("QMAXPERCENT = %f", QMAXPERCENT),20,100,300,0xffffffff);
+--        DrawText(string.format("sheendmg = %f", sheendmg),20,100,330,0xffffffff);
       if GoS:ValidTarget(unit,125) and GoS:GetDistanceSqr(GetOrigin(unit)) <= 125*125 then
         if PoppyMenu.KS.Q:Value() and CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_E) ~= READY and enemyhp < DamageQ then
           Wskill() GoS:DelayAction(function() CastSpell(_Q) end, 100)
