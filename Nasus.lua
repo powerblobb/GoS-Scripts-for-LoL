@@ -1,7 +1,7 @@
 if GetObjectName(GetMyHero()) ~= "Nasus" then return end
---MonTour Nasus:V1.0.0.2
+--MonTour Nasus:V1.0.0.3
 PrintChat(string.format("<font color='#80F5F5'>MonTour Nasus:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.2</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.3</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Cloud for Old Q Stack Thank you</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Feretorix for everything and GetBuffData in new API</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
@@ -222,15 +222,15 @@ end
 function QAA()
 	for i,unit in pairs(Gos:GetEnemyHeroes()) do
     local sheendmg = 0
-    local sheendmg2 = 0
+    local sheendmg2 = 1
     local frozendmg = 0
-    local lichbane = 0    
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3057) then
-        sheendmg = sheendmg + GetBaseDamage(myHero)
-      end  
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3078) then
-        sheendmg2 = sheendmg2 + GetBaseDamage(myHero)*2
-      end
+    local lichbane = 0  
+      if GetItemSlot(myHero,3078) > 0 then
+        sheendmg2 = sheendmg2 + 1
+      end    
+      if GotBuff(myHero, "sheen") >= 1 then
+        sheendmg = sheendmg + GetBaseDamage(myHero)*sheendmg2
+      end 
       if GotBuff(myHero, "itemfrozenfist") >= 1 and GetItemSlot(myHero,3025) then
         frozendmg = frozendmg + GetBaseDamage(myHero)*1.25
       end 
@@ -238,7 +238,7 @@ function QAA()
         lichbane = lichbane + GetBaseDamage(myHero)*0.75 + GetBonusAP(myHero)*0.5
       end         
 		local unitPos = GetOrigin(unit)
-		local dmgQ = 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + sheendmg2 + frozendmg + QStack
+		local dmgQ = 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + frozendmg + QStack
 		local dmg = GoS:CalcDamage(myHero, unit, dmgQ, lichbane)
 		local hp = GetCurrentHP(unit) + GetMagicShield(unit) + GetDmgShield(unit)
 		local hPos = GetHPBarPos(unit)
@@ -252,14 +252,14 @@ end
 function DMGOHP()
   	for _,unit in pairs(Gos:GetEnemyHeroes()) do    
     local sheendmg = 0
-    local sheendmg2 = 0
+    local sheendmg2 = 1
     local frozendmg = 0
-    local lichbane = 0    
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3057) then
-        sheendmg = sheendmg + GetBaseDamage(myHero)
-      end  
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3078) then
-        sheendmg2 = sheendmg2 + GetBaseDamage(myHero)*2
+    local lichbane = 0   
+      if GotBuff(myHero, "sheen") >= 1 then
+        sheendmg = sheendmg + GetBaseDamage(myHero)*sheendmg2
+      end 
+      if GetItemSlot(myHero,3078) then
+        sheendmg2 = sheendmg2 + 1
       end
       if GotBuff(myHero, "itemfrozenfist") >= 1 and GetItemSlot(myHero,3025) then
         frozendmg = frozendmg + GetBaseDamage(myHero)*1.25
@@ -267,7 +267,7 @@ function DMGOHP()
       if GotBuff(myHero, "lichbane") >= 1 and GetItemSlot(myHero,3100) then
         lichbane = lichbane + GetBaseDamage(myHero)*0.75 + GetBonusAP(myHero)*0.5
       end        
-  local Qdmg = 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + sheendmg2 + frozendmg + QStack
+  local Qdmg = 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + frozendmg + QStack
 	if GoS:ValidTarget(unit,20000) and (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) then
 		DrawDmgOverHpBar(unit,GetCurrentHP(unit) + GetMagicShield(unit) + GetDmgShield(unit),0,GoS:CalcDamage(myHero, unit, Qdmg, lichbane),0xffffffff)	
   end  
@@ -277,15 +277,15 @@ end
 function LastHit(minion)
  for _,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do
     local sheendmg = 0
-    local sheendmg2 = 0
+    local sheendmg2 = 1
     local frozendmg = 0
     local lichbane = 0   
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3057) then
-        sheendmg = sheendmg + GetBaseDamage(myHero)
-      end  
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3078) then
-        sheendmg2 = sheendmg2 + GetBaseDamage(myHero)*2
-      end
+      if GetItemSlot(myHero,3078) > 0 then
+        sheendmg2 = sheendmg2 + 1
+      end    
+      if GotBuff(myHero, "sheen") >= 1 then
+        sheendmg = sheendmg + GetBaseDamage(myHero)*sheendmg2
+      end 
       if GotBuff(myHero, "itemfrozenfist") >= 1 and GetItemSlot(myHero,3025) then
         frozendmg = frozendmg + GetBaseDamage(myHero)*1.25
       end 
@@ -293,7 +293,7 @@ function LastHit(minion)
         lichbane = lichbane + GetBaseDamage(myHero)*0.75 + GetBonusAP(myHero)*0.5
       end  
   local minionpos = GetOrigin(minion)
-    if GoS:ValidTarget(minion, GetRange(myHero)+100) and GoS:CalcDamage(myHero, minion, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + sheendmg2 + frozendmg + QStack, lichbane) > GetCurrentHP(minion) and (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) then
+    if GoS:ValidTarget(minion, GetRange(myHero)+100) and GoS:CalcDamage(myHero, minion, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + frozendmg + QStack, lichbane) > GetCurrentHP(minion) and (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) then
         CastSpell(_Q) GoS:DelayAction(function() AttackUnit(minion) end, 100)
     end
   end
@@ -302,15 +302,15 @@ end
 function AutoLastHit(minion)
  for _,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do
     local sheendmg = 0
-    local sheendmg2 = 0
+    local sheendmg2 = 1
     local frozendmg = 0
     local lichbane = 0   
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3057) then
-        sheendmg = sheendmg + GetBaseDamage(myHero)
-      end  
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3078) then
-        sheendmg2 = sheendmg2 + GetBaseDamage(myHero)*2
-      end
+      if GetItemSlot(myHero,3078) > 0 then
+        sheendmg2 = sheendmg2 + 1
+      end    
+      if GotBuff(myHero, "sheen") >= 1 then
+        sheendmg = sheendmg + GetBaseDamage(myHero)*sheendmg2
+      end 
       if GotBuff(myHero, "itemfrozenfist") >= 1 and GetItemSlot(myHero,3025) then
         frozendmg = frozendmg + GetBaseDamage(myHero)*1.25
       end 
@@ -318,7 +318,7 @@ function AutoLastHit(minion)
         lichbane = lichbane + GetBaseDamage(myHero)*0.75 + GetBonusAP(myHero)*0.5
       end   
   local minionpos = GetOrigin(minion)
-    if GoS:ValidTarget(minion, NasusMenu.Stacks.AQR:Value()) and GoS:CalcDamage(myHero, minion, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + sheendmg2 + frozendmg + QStack, lichbane) > GetCurrentHP(minion) and (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) and GotBuff(myHero,"recall") == 0 then
+    if GoS:ValidTarget(minion, NasusMenu.Stacks.AQR:Value()) and GoS:CalcDamage(myHero, minion, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + frozendmg + QStack, lichbane) > GetCurrentHP(minion) and (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) and GotBuff(myHero,"recall") == 0 then
         CastSpell(_Q) GoS:DelayAction(function() AttackUnit(minion) end, 100)
     end
   end
@@ -327,15 +327,15 @@ end
 function AutoJungleClear(jminion)
  for _,jminion in pairs(GoS:GetAllMinions(MINION_JUNGLE)) do
     local sheendmg = 0
-    local sheendmg2 = 0
+    local sheendmg2 = 1
     local frozendmg = 0
     local lichbane = 0   
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3057) then
-        sheendmg = sheendmg + GetBaseDamage(myHero)
-      end  
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3078) then
-        sheendmg2 = sheendmg2 + GetBaseDamage(myHero)*2
-      end
+      if GetItemSlot(myHero,3078) > 0 then
+        sheendmg2 = sheendmg2 + 1
+      end    
+      if GotBuff(myHero, "sheen") >= 1 then
+        sheendmg = sheendmg + GetBaseDamage(myHero)*sheendmg2
+      end 
       if GotBuff(myHero, "itemfrozenfist") >= 1 and GetItemSlot(myHero,3025) then
         frozendmg = frozendmg + GetBaseDamage(myHero)*1.25
       end 
@@ -343,7 +343,7 @@ function AutoJungleClear(jminion)
         lichbane = lichbane + GetBaseDamage(myHero)*0.75 + GetBonusAP(myHero)*0.5
       end   
   local minionpos = GetOrigin(jminion)
-    if GoS:ValidTarget(jminion, NasusMenu.Stacks.AQR:Value()) and GoS:CalcDamage(myHero, jminion, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + sheendmg2 + frozendmg + QStack, lichbane) > GetCurrentHP(jminion) and (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) then
+    if GoS:ValidTarget(jminion, NasusMenu.Stacks.AQR:Value()) and GoS:CalcDamage(myHero, jminion, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + frozendmg + QStack, lichbane) > GetCurrentHP(jminion) and (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) then
         CastSpell(_Q) GoS:DelayAction(function() AttackUnit(jminion) end, 100)
     end
   end
@@ -352,15 +352,15 @@ end
 function JungleClear(jminion)
  for _,jminion in pairs(GoS:GetAllMinions(MINION_JUNGLE)) do
     local sheendmg = 0
-    local sheendmg2 = 0
+    local sheendmg2 = 1
     local frozendmg = 0
     local lichbane = 0   
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3057) then
-        sheendmg = sheendmg + GetBaseDamage(myHero)
-      end  
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3078) then
-        sheendmg2 = sheendmg2 + GetBaseDamage(myHero)*2
-      end
+      if GetItemSlot(myHero,3078) > 0 then
+        sheendmg2 = sheendmg2 + 1
+      end    
+      if GotBuff(myHero, "sheen") >= 1 then
+        sheendmg = sheendmg + GetBaseDamage(myHero)*sheendmg2
+      end 
       if GotBuff(myHero, "itemfrozenfist") >= 1 and GetItemSlot(myHero,3025) then
         frozendmg = frozendmg + GetBaseDamage(myHero)*1.25
       end 
@@ -368,7 +368,7 @@ function JungleClear(jminion)
         lichbane = lichbane + GetBaseDamage(myHero)*0.75 + GetBonusAP(myHero)*0.5
       end   
   local minionpos = GetOrigin(jminion)
-    if GoS:ValidTarget(jminion, GetRange(myHero)+100) and GoS:CalcDamage(myHero, jminion, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + sheendmg2 + frozendmg + QStack, lichbane) > GetCurrentHP(jminion) and (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) then
+    if GoS:ValidTarget(jminion, GetRange(myHero)+100) and GoS:CalcDamage(myHero, jminion, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + frozendmg + QStack, lichbane) > GetCurrentHP(jminion) and (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) then
         CastSpell(_Q) GoS:DelayAction(function() AttackUnit(jminion) end, 100)
     end
   end
@@ -380,33 +380,33 @@ function Killsteal()
 	for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 	local enemyhp = GetCurrentHP(enemy) + GetHPRegen(enemy) + GetMagicShield(enemy) + GetDmgShield(enemy)
     local sheendmg = 0
-    local sheendmg2 = 0
+    local sheendmg2 = 1
     local frozendmg = 0
     local lichbane = 0   
     local Edmg = (15 + 40*GetCastLevel(myHero,_E) + 0.6*GetBonusDmg(myHero))
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3057) then
-        sheendmg = sheendmg + GetBaseDamage(myHero)
-      end  
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3078) then
-        sheendmg2 = sheendmg2 + GetBaseDamage(myHero)*2
-      end
+      if GetItemSlot(myHero,3078) > 0 then
+        sheendmg2 = sheendmg2 + 1
+      end    
+      if GotBuff(myHero, "sheen") >= 1 then
+        sheendmg = sheendmg + GetBaseDamage(myHero)*sheendmg2
+      end 
       if GotBuff(myHero, "itemfrozenfist") >= 1 and GetItemSlot(myHero,3025) then
         frozendmg = frozendmg + GetBaseDamage(myHero)*1.25
       end 
       if GotBuff(myHero, "lichbane") >= 1 and GetItemSlot(myHero,3100) then
         lichbane = lichbane + GetBaseDamage(myHero)*0.75 + GetBonusAP(myHero)*0.5
       end   
-      if NasusMenu.KS.Q:Value() and GoS:ValidTarget(enemy, GetRange(myHero)+50) and GoS:CalcDamage(myHero, enemy, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + sheendmg2 + frozendmg + QStack, lichbane) > enemyhp and (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) and GoS:IsInDistance(enemy, GetRange(myHero)+50) and GoS:GetDistance(myHero, enemy) <= (GetRange(myHero)+50) and GoS:GetDistance(myHero, enemy) >= 10 and GoS:IsInDistance(target, GetRange(myHero)+50) then
+      if NasusMenu.KS.Q:Value() and GoS:ValidTarget(enemy, GetRange(myHero)+50) and GoS:CalcDamage(myHero, enemy, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + frozendmg + QStack, lichbane) > enemyhp and (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) and GoS:IsInDistance(enemy, GetRange(myHero)+50) and GoS:GetDistance(myHero, enemy) <= (GetRange(myHero)+50) and GoS:GetDistance(myHero, enemy) >= 10 and GoS:IsInDistance(target, GetRange(myHero)+50) then
         CastSpell(_Q) GoS:DelayAction(function() AttackUnit(enemy) end, 100)
       end
       local EPred = GetPredictionForPlayer(GoS:myHeroPos(),enemy,GetMoveSpeed(enemy),1700,250,650,70,true,false)
       if NasusMenu.KS.E:Value() and GoS:ValidTarget(enemy, 650) and GoS:CalcDamage(myHero, enemy, 0, Edmg) > enemyhp and (CanUseSpell(myHero, _E) == READY) and GoS:IsInDistance(enemy, 650) then
       CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
       end
-    if NasusMenu.KS.WEQ:Value() and GoS:ValidTarget(enemy, 500) and GoS:CalcDamage(myHero, enemy, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + sheendmg2 + frozendmg + QStack, lichbane + Edmg) > enemyhp and (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) and CanUseSpell(myHero, _W) == READY and GoS:IsInDistance(enemy, GetRange(myHero)+50) and GoS:GetDistance(myHero, enemy) <= 500 and GoS:GetDistance(myHero, enemy) >= 10 and GoS:IsInDistance(target, 500) and IsObjectAlive(enemy) then
+    if NasusMenu.KS.WEQ:Value() and GoS:ValidTarget(enemy, 500) and GoS:CalcDamage(myHero, enemy, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + frozendmg + QStack, lichbane + Edmg) > enemyhp and (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) and CanUseSpell(myHero, _W) == READY and GoS:IsInDistance(enemy, GetRange(myHero)+50) and GoS:GetDistance(myHero, enemy) <= 500 and GoS:GetDistance(myHero, enemy) >= 10 and GoS:IsInDistance(target, 500) and IsObjectAlive(enemy) then
         CastTargetSpell(enemy, _W) GoS:DelayAction(function() CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z) GoS:DelayAction(function() CastSpell(_Q) GoS:DelayAction(function() AttackUnit(enemy) end, 100) end, 200) end, 300)
     end
-    if NasusMenu.KS.WQ:Value() and GoS:ValidTarget(enemy, 500) and GoS:CalcDamage(myHero, enemy, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + sheendmg2 + frozendmg + QStack, lichbane) > enemyhp and (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) and CanUseSpell(myHero, _W) == READY and GoS:IsInDistance(enemy, GetRange(myHero)+50) and GoS:GetDistance(myHero, enemy) <= 500 and GoS:GetDistance(myHero, enemy) >= 10 and GoS:IsInDistance(target, 500) then
+    if NasusMenu.KS.WQ:Value() and GoS:ValidTarget(enemy, 500) and GoS:CalcDamage(myHero, enemy, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + frozendmg + QStack, lichbane) > enemyhp and (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) and CanUseSpell(myHero, _W) == READY and GoS:IsInDistance(enemy, GetRange(myHero)+50) and GoS:GetDistance(myHero, enemy) <= 500 and GoS:GetDistance(myHero, enemy) >= 10 and GoS:IsInDistance(target, 500) then
         CastTargetSpell(enemy, _W) GoS:DelayAction(function() CastSpell(_Q) GoS:DelayAction(function() AttackUnit(enemy) end, 100) end, 200)
     end    
   end
@@ -415,15 +415,15 @@ end
 function GLOBALULTNOTICE()
       if not (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) then return end
     local sheendmg = 0
-    local sheendmg2 = 0
+    local sheendmg2 = 1
     local frozendmg = 0
     local lichbane = 0   
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3057) then
-        sheendmg = sheendmg + GetBaseDamage(myHero)
-      end  
-      if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3078) then
-        sheendmg2 = sheendmg2 + GetBaseDamage(myHero)*2
-      end
+      if GetItemSlot(myHero,3078) > 0 then
+        sheendmg2 = sheendmg2 + 1
+      end    
+      if GotBuff(myHero, "sheen") >= 1 then
+        sheendmg = sheendmg + GetBaseDamage(myHero)*sheendmg2
+      end 
       if GotBuff(myHero, "itemfrozenfist") >= 1 and GetItemSlot(myHero,3025) then
         frozendmg = frozendmg + GetBaseDamage(myHero)*1.25
       end 
@@ -434,7 +434,7 @@ function GLOBALULTNOTICE()
         if (CanUseSpell(myHero, _Q) == READY or GotBuff(myHero,"NasusQ") == 1) then
        		for _,unit in pairs(Gos:GetEnemyHeroes()) do
                 if  IsObjectAlive(unit) then
-                        realdmg = GoS:CalcDamage(myHero, unit, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + sheendmg2 + frozendmg + QStack, lichbane)
+                        realdmg = GoS:CalcDamage(myHero, unit, 10 + 20*GetCastLevel(myHero,_Q) + GetBonusDmg(myHero) + GetBaseDamage(myHero) + sheendmg + frozendmg + QStack, lichbane)
                         hp =  GetCurrentHP(unit) + GetHPRegen(unit) + GetMagicShield(unit) + GetDmgShield(unit)
                         if realdmg > hp then
                                 info = info..GetObjectName(unit)
