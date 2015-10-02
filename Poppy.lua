@@ -536,17 +536,17 @@ end
 --DrawText(string.format("GetBuffTypeToString = [%s]", GetBuffTypeToString(buffdatas.Type)),12,0,110,0xffffff00);
 --end)
 
-OnLoop(function(myHero)
-local capspress = KeyIsDown(0x14); --Caps Lock key
-if capspress then
-	local itemid = GetItemID(myHero,ITEM_1);
-	local itemammo = GetItemAmmo(myHero,ITEM_1);
-	local itemstack = GetItemStack(myHero,ITEM_1);
-	PrintChat(string.format("itemID in Slot 1 is = %d", itemid));
-	PrintChat(string.format("AMMO! in Slot 1 is = %d", itemammo));
-	PrintChat(string.format("STACK in Slot 1 is = %d", itemstack));
-	end
-end)
+--OnLoop(function(myHero)
+--local capspress = KeyIsDown(0x14); --Caps Lock key
+--if capspress then
+--	local itemid = GetItemID(myHero,ITEM_1);
+--	local itemammo = GetItemAmmo(myHero,ITEM_1);
+--	local itemstack = GetItemStack(myHero,ITEM_1);
+--	PrintChat(string.format("itemID in Slot 1 is = %d", itemid));
+--	PrintChat(string.format("AMMO! in Slot 1 is = %d", itemammo));
+--	PrintChat(string.format("STACK in Slot 1 is = %d", itemstack));
+--	end
+--end)
 
 function KillSteal()
   local unit = GetCurrentTarget()
