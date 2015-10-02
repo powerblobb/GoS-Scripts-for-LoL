@@ -1,7 +1,7 @@
 if GetObjectName(myHero) ~= "Poppy" then return end
---MonTour Poppy:V0.0.1.0 Beta
+--MonTour Poppy:V0.0.1.1 Beta
 PrintChat(string.format("<font color='#80F5F5'>MonTour Poppy:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.0.1.0 Beta</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.0.1.1 Beta</font>"))
 mapID = GetMapID()
 if mapID ~= SUMMONERS_RIFT then 
   PrintChat(string.format("<font color='#BC0707'>This Map is not Supported for:</font> <font color='#EFF0F0'>STUN E!</font>"))
@@ -385,16 +385,16 @@ end
 
 function ItemUse()
     for _,target in pairs(Gos:GetEnemyHeroes()) do
-      if (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") then
+      if (IOW:Mode() == "Combo" or IOW:Mode() == "Harass" or PoppyMenu.Combo.AutoE:Value()) then
         if GetItemSlot(myHero,3153) > 0 and PoppyMenu.Items.bork:Value() and GoS:ValidTarget(target, 550)  and GetCurrentHP(myHero)/GetMaxHP(myHero) < (PoppyMenu.Items.borkmyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (PoppyMenu.Items.borkehp:Value()/100) then
         CastTargetSpell(target, GetItemSlot(myHero,3153)) --bork
         end
 
-        if GetItemSlot(myHero,3144) > 0 and PoppyMenu.Items.CutBlade:Value() and GoS:ValidTarget(target, 550) and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GetCurrentHP(myHero)/GetMaxHP(myHero) < (PoppyMenu.Items.CutBlademyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (PoppyMenu.Items.CutBladeehp:Value()/100) then 
+        if GetItemSlot(myHero,3144) > 0 and PoppyMenu.Items.CutBlade:Value() and GoS:ValidTarget(target, 550) and GetCurrentHP(myHero)/GetMaxHP(myHero) < (PoppyMenu.Items.CutBlademyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (PoppyMenu.Items.CutBladeehp:Value()/100) then 
         CastTargetSpell(target, GetItemSlot(myHero,3144)) --CutBlade
         end
 
-        if GetItemSlot(myHero,3142) > 0 and PoppyMenu.Items.ghostblade:Value() and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GoS:ValidTarget(target, PoppyMenu.Items.ghostbladeR:Value()) then --ghostblade
+        if GetItemSlot(myHero,3142) > 0 and PoppyMenu.Items.ghostblade:Value() and GoS:ValidTarget(target, PoppyMenu.Items.ghostbladeR:Value()) then --ghostblade
         CastTargetSpell(myHero, GetItemSlot(myHero,3142))
         end
 		
@@ -408,7 +408,7 @@ function ItemUse()
           CastTargetSpell(myHero, GetItemSlot(myHero, 3074))
           end
         end
-        if PoppyMenu.Items.useRedPot:Value() and GetItemSlot(myHero,2140) >= 1 and GoS:ValidTarget(target,PoppyMenu.Items.useRedPotR:Value()) and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") then --redpot
+        if PoppyMenu.Items.useRedPot:Value() and GetItemSlot(myHero,2140) >= 1 and GoS:ValidTarget(target,PoppyMenu.Items.useRedPotR:Value()) then --redpot
           if CanUseSpell(myHero,GetItemSlot(myHero,2140)) == READY then
           CastSpell(GetItemSlot(myHero,2140))
           end
