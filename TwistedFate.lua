@@ -1,7 +1,7 @@
 if GetObjectName(GetMyHero()) ~= "TwistedFate" then return end
---MonTour TwistedFate:V0.1.1.0 Beta
+--MonTour TwistedFate:V0.1.1.1 Beta
 PrintChat(string.format("<font color='#80F5F5'>MonTour Nasus:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.1.1.0 Beta</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.1.1.1 Beta</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
 
 local TwistedFateMenu = Menu("TwistedFate", "Twisted Fate")
@@ -598,7 +598,7 @@ if GetItemSlot(myHero,3140) > 0 and TwistedFateMenu.Items.QSS:Value() and GotBuf
         if GetItemSlot(myHero,3139) > 0 and TwistedFateMenu.Items.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < TwistedFateMenu.Items.QSSHP:Value() then
         CastTargetSpell(myHero, GetItemSlot(myHero,3139))
       end
-if TwistedFateMenu.Items.Zhonya:Value() and GetItemSlot(myHero,3157) > 0 and GoS:ValidTarget(target, 900) and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < TwistedFateMenu.Items.ZhonyaHP:Value()  then
+if TwistedFateMenu.Items.Zhonya:Value() and GetItemSlot(myHero,3157) > 0 and GoS:ValidTarget(target, 900) and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) <= TwistedFateMenu.Items.ZhonyaHP:Value()  then
                     CastTargetSpell(myHero, GetItemSlot(myHero,3157))
                     end      
 end
