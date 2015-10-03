@@ -1,7 +1,7 @@
 if GetObjectName(myHero) ~= "Draven" then return end
---MonTour Draven:V1.0.0.3
+--MonTour Draven:V1.0.0.4 - updated GoS:myHeroPos() to GetOrigin(myHero)
 PrintChat(string.format("<font color='#80F5F5'>MonTour Draven:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.3</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.4</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Cloud for Axes Code</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> iLoveSona for Interrupter</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
@@ -527,7 +527,7 @@ end
 
 function CastPredE(target)
 	local unitPos = GetOrigin(target)
-		local EPred = GetPredictionForPlayer(GoS:myHeroPos(), target, GetMoveSpeed(target), spellData[_E].speed, spellData[_E].delay, spellData[_E].range-25, spellData[_E].width, false, true)
+		local EPred = GetPredictionForPlayer(GetOrigin(myHero), target, GetMoveSpeed(target), spellData[_E].speed, spellData[_E].delay, spellData[_E].range-25, spellData[_E].width, false, true)
 		if EREADY and EPred.HitChance == 1 then
 			if GoS:GetDistance(myHero, target) > spellData[_Q].range and GoS:GetDistance(myHero, target) <= spellData[_E].range and GoS:ValidTarget(unit, spellData[_E].range) then 			
 				CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
@@ -538,7 +538,7 @@ end
 function CastPredEBanshe(target)
   for _,unit in pairs(Gos:GetEnemyHeroes()) do 
 	local unitPos = GetOrigin(unit)
-		local EPred = GetPredictionForPlayer(GoS:myHeroPos(), unit, GetMoveSpeed(unit), spellData[_E].speed, spellData[_E].delay, spellData[_E].range-25, spellData[_E].width, false, true)
+		local EPred = GetPredictionForPlayer(GetOrigin(myHero), unit, GetMoveSpeed(unit), spellData[_E].speed, spellData[_E].delay, spellData[_E].range-25, spellData[_E].width, false, true)
 		if EREADY and EPred.HitChance == 1 then
 			if GoS:GetDistance(myHero, unit) > spellData[_Q].range and GoS:GetDistance(myHero, unit) <= spellData[_E].range and GoS:ValidTarget(unit, spellData[_E].range) then 			
 				CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
@@ -589,7 +589,7 @@ end
 
 function CastPredR(target)
 	local unitPos = GetOrigin(target)
-	local RPred = GetPredictionForPlayer(GoS:myHeroPos(),target,GetMoveSpeed(target), spellData[_R].speed, spellData[_R].delay, spellData[_R].range, spellData[_R].width, false, true)
+	local RPred = GetPredictionForPlayer(GetOrigin(myHero),target,GetMoveSpeed(target), spellData[_R].speed, spellData[_R].delay, spellData[_R].range, spellData[_R].width, false, true)
 				if GoS:GetDistance(myHero, target) > 750 and GoS:GetDistance(myHero, target) < 4000 and IsObjectAlive(target) then		
 			if RREADY and GoS:ValidTarget(target, spellData[_R].range) and RPred.HitChance == 1 then
 				CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z)
@@ -826,7 +826,7 @@ OnProcessSpell(function(unit, spell)
  end)
 
 addInterrupterCallback(function(target, spellType, spell)
-    local EPred = GetPredictionForPlayer(GoS:myHeroPos(), target, GetMoveSpeed(target), spellData[_E].speed, spellData[_E].delay, spellData[_E].range, spellData[_E].width, false, true)
+    local EPred = GetPredictionForPlayer(GetOrigin(myHero), target, GetMoveSpeed(target), spellData[_E].speed, spellData[_E].delay, spellData[_E].range, spellData[_E].width, false, true)
     if GoS:IsInDistance(target, spellData[_E].range) and EREADY then --and DravenMenu.Close.Gapclose:Value() and spellType == GAPCLOSER_SPELLS then   
       CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)  
 --    elseif GoS:IsInDistance(target, spellData[_E].range-5) and EREADY and DravenMenu.Close.Interrupt:Value() and spellType == CHANELLING_SPELLS then   
