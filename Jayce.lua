@@ -1,5 +1,5 @@
 if GetObjectName(GetMyHero()) ~= "Jayce" then return end
---MonTour Jayce:V1.0.0.1
+--MonTour Jayce:V1.0.0.2 - updated GoS:myHeroPos() to GetOrigin(myHero)
 PrintChat(string.format("<font color='#80F5F5'>MonTour Jayce:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Reworked Version:</font> <font color='#EFF0F0'>1.0.0.1</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'>Platypus Jayce Version</font>"))
@@ -148,7 +148,7 @@ function Checks()
   target = IOW:GetTarget(spellData.QG.rangeAcc, DAMAGE_PHYSICAL)
   --target = GetCurrentTarget()
 	targetPos = GetOrigin(target)
-	myHeroPos = GoS:myHeroPos() --GetOrigin(myHero)
+	myHeroPos = GetOrigin(myHero) --GetOrigin(myHero)
 	rangedPassive = GotBuff(myHero,"jaycepassiverangedattack")
 	meleePassive = GotBuff(myHero,"jaycepassivemeleeattack")
 	HammerTime = GetCastName(myHero,_R) == "JayceStanceHtG"
@@ -179,7 +179,7 @@ end
 
 function Ignite()
       local Ignite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerdot") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerdot") and SUMMONER_2 or nil))
-    if GoS:ValidTarget(unit, 700) and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) and Ignite and Jayce.Items.Ignite:Value() and GoS:GetDistance(unit) > 450 then
+    if GoS:ValidTarget(unit, 700) and Ignite and Jayce.Items.Ignite:Value() and GoS:GetDistance(unit) > 450 then
         for _, k in pairs(GoS:GetEnemyHeroes()) do
             if CanUseSpell(GetMyHero(), Ignite) == READY and (20*GetLevel(GetMyHero())+50) > GetCurrentHP(k)+GetHPRegen(k)*2.5 and GoS:GetDistanceSqr(GetOrigin(k)) < 600*600 then
                 CastTargetSpell(k, Ignite)
