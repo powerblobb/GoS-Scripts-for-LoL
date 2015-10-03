@@ -1,5 +1,5 @@
 if GetObjectName(GetMyHero()) ~= "TwistedFate" then return end
---MonTour TwistedFate:V0.1.1.1 Beta
+--MonTour TwistedFate:V0.1.1.1 Beta - updated GoS:myHeroPos() to GetOrigin(myHero)
 PrintChat(string.format("<font color='#80F5F5'>MonTour Nasus:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.1.1.1 Beta</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
@@ -336,7 +336,7 @@ function Combo()
   local curdmax = currentmana/maxmana
   local ManaValue = TwistedFateMenu.Combo.Mana:Value()/100
 	local target = GetCurrentTarget()		
-	local QPred = GetPredictionForPlayer(GoS:myHeroPos(),target,GetMoveSpeed(target),1000,250,1450,40,false,true)
+	local QPred = GetPredictionForPlayer(GetOrigin(myHero),target,GetMoveSpeed(target),1000,250,1450,40,false,true)
   local unit = GetCurrentTarget()
   if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDead(target) or not IsVisible(target) or GetTeam(target) == GetTeam(myHero) then return false end
 if GoS:ValidTarget(target,1450) then		  
@@ -396,7 +396,7 @@ function Harass()
   local curdmax = currentmana/maxmana
   local ManaValue = TwistedFateMenu.Harass.Mana:Value()/100
 	local target = GetCurrentTarget()		
-	local QPred = GetPredictionForPlayer(GoS:myHeroPos(),target,GetMoveSpeed(target),1000,250,1450,40,false,true)
+	local QPred = GetPredictionForPlayer(GetOrigin(myHero),target,GetMoveSpeed(target),1000,250,1450,40,false,true)
   local unit = GetCurrentTarget()
   if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDead(target) or not IsVisible(target) or GetTeam(target) == GetTeam(myHero) then return false end
 if GoS:ValidTarget(target,1450) then		  
