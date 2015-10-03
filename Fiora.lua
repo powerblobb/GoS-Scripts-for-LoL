@@ -1,5 +1,5 @@
 if GetObjectName(GetMyHero()) ~= "Fiora" then return end
---MonTour Fiora:V1.0.0.2
+--MonTour Fiora:V1.0.0.3 - updated GoS:myHeroPos() to GetOrigin(myHero)
 PrintChat(string.format("<font color='#80F5F5'>MonTour Fiora:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.2</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> leoferrerinha for Auto W</font>"))
@@ -106,8 +106,8 @@ Draws()
 end)
 
 function Draws()
-if FioraMenu.Drawings.Q:Value() and GetCastLevel(myHero,_Q) >=1 then DrawCircle(GoS:myHeroPos().x, GoS:myHeroPos().y, GoS:myHeroPos().z,GetCastRange(myHero,_Q),0.6,50,0xff0000ff) end
-if FioraMenu.Drawings.W:Value() and GetCastLevel(myHero,_W) >=1 then DrawCircle(GoS:myHeroPos().x, GoS:myHeroPos().y, GoS:myHeroPos().z,GetCastRange(myHero,_W),0.6,50,0xff0000ff) end
+if FioraMenu.Drawings.Q:Value() and GetCastLevel(myHero,_Q) >=1 then DrawCircle(GetOrigin(myHero).x, GetOrigin(myHero).y, GetOrigin(myHero).z,GetCastRange(myHero,_Q),0.6,50,0xff0000ff) end
+if FioraMenu.Drawings.W:Value() and GetCastLevel(myHero,_W) >=1 then DrawCircle(GetOrigin(myHero).x, GetOrigin(myHero).y, GetOrigin(myHero).z,GetCastRange(myHero,_W),0.6,50,0xff0000ff) end
 end
 
 function Combo()
@@ -118,7 +118,7 @@ if IOW:Mode() == "Combo" then
 if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
       if FioraMenu.Combo.Q:Value() then
         if GetCastName(myHero, _Q) == "FioraQ" and (GetItemSlot(myHero, 3077) < 1 or GetItemSlot(myHero, 3074) < 1) then
-        local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1700,250,400,50,false,true)
+        local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1700,250,400,50,false,true)
             if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 400) then
             CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
             end
@@ -126,7 +126,7 @@ if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(un
       end  
       if FioraMenu.Combo.Q:Value() then
         if GetCastName(myHero, _Q) == "FioraQ" and (GetItemSlot(myHero, 3077) >= 1 or GetItemSlot(myHero, 3074) >= 1) then
-        local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1700,250,450,400,false,true)
+        local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1700,250,450,400,false,true)
             if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 450) then
             CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
             end
@@ -134,7 +134,7 @@ if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(un
       end  
        if GetCastName(myHero, _W) == "FioraW" then
             if FioraMenu.Combo.W:Value() then           
-                local WPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1700,250,750,50,false,true)
+                local WPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1700,250,750,50,false,true)
                  if CanUseSpell(myHero, _W) == READY and GoS:IsInDistance(unit, 750) then --and IsObjectAlive(unit)
             CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z)
             end
@@ -166,7 +166,7 @@ jminionpos = GetOrigin(jminion)
 if GoS:ValidTarget(jminion, 600) then
       if FioraMenu.LaneClear.Q:Value() then
         if GetCastName(myHero, _Q) == "FioraQ" and (GetItemSlot(myHero, 3077) < 1 or GetItemSlot(myHero, 3074) < 1) then
-        local QPred = GetPredictionForPlayer(GoS:myHeroPos(),jminion,GetMoveSpeed(jminion),1700,250,400,50,false,true)
+        local QPred = GetPredictionForPlayer(GetOrigin(myHero),jminion,GetMoveSpeed(jminion),1700,250,400,50,false,true)
             if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(jminion, 400) then
             CastSkillShot(_Q,jminionpos.x,jminionpos.y,jminionpos.z)
             end
@@ -174,7 +174,7 @@ if GoS:ValidTarget(jminion, 600) then
       end  
       if FioraMenu.LaneClear.Q:Value() then
         if GetCastName(myHero, _Q) == "FioraQ" and (GetItemSlot(myHero, 3077) >= 1 or GetItemSlot(myHero, 3074) >= 1) then
-        local QPred = GetPredictionForPlayer(GoS:myHeroPos(),jminion,GetMoveSpeed(jminion),1700,250,450,400,false,true)
+        local QPred = GetPredictionForPlayer(GetOrigin(myHero),jminion,GetMoveSpeed(jminion),1700,250,450,400,false,true)
             if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(jminion, 450) then
             CastSkillShot(_Q,jminionpos.x,jminionpos.y,jminionpos.z)
             end
@@ -191,7 +191,7 @@ if GoS:ValidTarget(jminion, 600) then
         end
       end
             if FioraMenu.LaneClear.W:Value() then           
-                local WPred = GetPredictionForPlayer(GoS:myHeroPos(),jminion,GetMoveSpeed(jminion),1700,250,750,50,false,true)
+                local WPred = GetPredictionForPlayer(GetOrigin(myHero),jminion,GetMoveSpeed(jminion),1700,250,750,50,false,true)
                 if CanUseSpell(myHero, _W) == READY and IsObjectAlive(jminion) and GoS:IsInDistance(jminion, 750) then
                   CastSkillShot(_W,jminionpos.x,jminionpos.y,jminionpos.z)
                 end
@@ -212,12 +212,12 @@ end
 if IOW:Mode() == "LaneClear" then
 for i,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do
   if GoS:ValidTarget(minion, 600) then
-      if FioraMenu.LaneClear.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GoS:myHeroPos(), 400) >= FioraMenu.LaneClear.TiHy:Value()  then --tiamat
+      if FioraMenu.LaneClear.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GetOrigin(myHero), 400) >= FioraMenu.LaneClear.TiHy:Value()  then --tiamat
         if GoS:GetDistance(minion) < 400 then
          CastTargetSpell(myHero, GetItemSlot(myHero, 3077))
         end
       end  
-      if FioraMenu.LaneClear.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GoS:myHeroPos(), 400) >= FioraMenu.LaneClear.TiHy:Value() then --hydra
+      if FioraMenu.LaneClear.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GetOrigin(myHero), 400) >= FioraMenu.LaneClear.TiHy:Value() then --hydra
         if GoS:GetDistance(minion) < 400 then
         CastTargetSpell(myHero, GetItemSlot(myHero, 3074))
         end
@@ -235,7 +235,7 @@ if IOW:Mode() == "Harass" then
 if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
 --        if FioraMenu.Harass.Q:Value() then
 --        if GetCastName(myHero, _Q) == "FioraQ" then
---        local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1700,250,400,50,false,true)
+--        local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1700,250,400,50,false,true)
 --            if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 400) then
 --            CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
 --            end
@@ -243,7 +243,7 @@ if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(un
 --      end 
       if FioraMenu.Harass.Q:Value() then
         if GetCastName(myHero, _Q) == "FioraQ" and (GetItemSlot(myHero, 3077) < 1 or GetItemSlot(myHero, 3074) < 1) then
-        local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1700,250,400,50,false,true)
+        local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1700,250,400,50,false,true)
             if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 400) then
             CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
             end
@@ -251,7 +251,7 @@ if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(un
       end  
       if FioraMenu.Harass.Q:Value() then
         if GetCastName(myHero, _Q) == "FioraQ" and (GetItemSlot(myHero, 3077) >= 1 or GetItemSlot(myHero, 3074) >= 1) then
-        local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1700,250,450,400,false,true)
+        local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1700,250,450,400,false,true)
             if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 450) then
             CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
             end
@@ -259,7 +259,7 @@ if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(un
       end 
        if GetCastName(myHero, _W) == "FioraW" then
             if FioraMenu.Harass.W:Value() then           
-                local WPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1700,250,750,50,false,true)
+                local WPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1700,250,750,50,false,true)
                  if CanUseSpell(myHero, _W) == READY and GoS:IsInDistance(unit, 750) then --and IsObjectAlive(unit)
             CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z)
             end
