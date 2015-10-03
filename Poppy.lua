@@ -1,7 +1,7 @@
 if GetObjectName(myHero) ~= "Poppy" then return end
---MonTour Poppy:V0.0.1.2 Beta - updated GoS:myHeroPos() to GetOrigin(myHero)
+--MonTour Poppy:V0.0.1.4 Beta - added interrupter
 PrintChat(string.format("<font color='#80F5F5'>MonTour Poppy:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.0.1.2 Beta</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.0.1.4 Beta</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
 mapID = GetMapID()
 if mapID ~= SUMMONERS_RIFT then 
@@ -63,8 +63,49 @@ MonTourMenu.Items:Slider("useRedPotR", "If Enemy in Range (def: 600)", 600, 100,
 MonTourMenu.Items:Info("MonTourMenu", " ")
 MonTourMenu.Items:Boolean("QSS", "Always Use QSS", true)
 MonTourMenu.Items:Slider("QSSHP", "if My Health < x%", 75, 0, 100, 1)
+MonTourMenu:SubMenu("Interrupt", "Interrupt")
+MonTourMenu.Interrupt:Boolean("Interrupt", "Auto Interrupt Spells", true)
 MonTourMenu:SubMenu("Misc", "Drawings")
 MonTourMenu.Misc:Boolean("D","Draw Vectors for E",true)
+
+CHANELLING_SPELLS = {
+    ["Caitlyn"]                     = {_R},
+    ["Katarina"]                    = {_R},
+    ["MasterYi"]                    = {_W},
+    ["FiddleSticks"]                = {_W, _R},
+    ["Galio"]                       = {_R},
+    ["Lucian"]                      = {_R},
+    ["MissFortune"]                 = {_R},
+    ["VelKoz"]                      = {_R},
+    ["Nunu"]                        = {_R},
+    ["Shen"]                        = {_R},
+    ["Karthus"]                     = {_R},
+    ["Malzahar"]                    = {_R},
+    ["Pantheon"]                    = {_R},
+    ["Warwick"]                     = {_R},
+    ["Xerath"]                      = {_Q, _R},
+    ["Varus"]                       = {_Q},
+    ["TahmKench"]                   = {_R},
+    ["TwistedFate"]                 = {_R},
+    ["Janna"]                       = {_R}
+}
+
+local callback = nil
+ 
+OnProcessSpell(function(unit, spell)    
+    if not callback or not unit or GetObjectType(unit) ~= Obj_AI_Hero  or GetTeam(unit) == GetTeam(GetMyHero()) then return end
+    local unitChanellingSpells = CHANELLING_SPELLS[GetObjectName(unit)]
+ 
+        if unitChanellingSpells then
+            for _, spellSlot in pairs(unitChanellingSpells) do
+                if spell.name == GetCastName(unit, spellSlot) then callback(unit, CHANELLING_SPELLS) end
+            end
+	end
+end)
+ 
+function addInterrupterCallback( callback0 )
+callback = callback0
+end
 
 target = GetCurrentTarget()	
 unit = GetCurrentTarget()
@@ -788,3 +829,12 @@ function KillSteal()
       end               
   end  
 end  
+
+addInterrupterCallback(function(unit, spellType)
+    local unit = GetCurrentTarget()
+        if spellType == CHANELLING_SPELLS and MonTourMenu.Interrupt.Interrupt:Value() then
+            if CanUseSpell(myHero, _E) == READY and GoS:IsInDistance(unit, 525) then
+            Eskill()
+            end    
+        end
+end)
