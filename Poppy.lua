@@ -1,7 +1,8 @@
 if GetObjectName(myHero) ~= "Poppy" then return end
---MonTour Poppy:V0.0.1.1 Beta
+--MonTour Poppy:V0.0.1.2 Beta - updated GoS:myHeroPos() to GetOrigin(myHero)
 PrintChat(string.format("<font color='#80F5F5'>MonTour Poppy:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.0.1.1 Beta</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.0.1.2 Beta</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
 mapID = GetMapID()
 if mapID ~= SUMMONERS_RIFT then 
   PrintChat(string.format("<font color='#BC0707'>This Map is not Supported for:</font> <font color='#EFF0F0'>STUN E!</font>"))
@@ -264,7 +265,7 @@ function AllforOne()
 			local Pos5 = TargetPos-(TargetPos-HeroPos)*(-distance5/GoS:GetDistance(unit))
 			--Check if in Wall--
     if GoS:ValidTarget(unit,1000) then      
-      if PoppyMenu.Combo.AutoE:Value() and CanUseSpell(myHero,_W) == READY and GetCastLevel(myHero,_Q) > 0 and GetCastLevel(myHero,_W) > 0 and GetCastLevel(myHero,_E) > 0 and GoS:EnemiesAround(GoS:myHeroPos(), PoppyMenu.Combo.AutoER:Value()) <= PoppyMenu.Combo.AutoEE:Value() then
+      if PoppyMenu.Combo.AutoE:Value() and CanUseSpell(myHero,_W) == READY and GetCastLevel(myHero,_Q) > 0 and GetCastLevel(myHero,_W) > 0 and GetCastLevel(myHero,_E) > 0 and GoS:EnemiesAround(GetOrigin(myHero), PoppyMenu.Combo.AutoER:Value()) <= PoppyMenu.Combo.AutoEE:Value() then
 				if MapPosition:inWall(Pos1)==true then
 					if GoS:GetDistance(unit)<=525 then
 						 Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 100) end, 200) end, 300)  
@@ -437,10 +438,10 @@ function LastHit()
       if GotBuff(myHero, "sheen") >= 1 then
         sheendmg = sheendmg + GetBaseDamage(myHero)*sheendmg2
       end 
-      if GotBuff(myHero, "itemfrozenfist") >= 1 and GetItemSlot(myHero,3025) then
+      if GotBuff(myHero, "itemfrozenfist") >= 1 and GetItemSlot(myHero,3025) > 0 then
         frozendmg = frozendmg + GetBaseDamage(myHero)*1.25
       end 
-      if GotBuff(myHero, "lichbane") >= 1 and GetItemSlot(myHero,3100) then
+      if GotBuff(myHero, "lichbane") >= 1 and GetItemSlot(myHero,3100) > 0 then
         lichbane = lichbane + GetBaseDamage(myHero)*0.75 + GetBonusAP(myHero)*0.5
       end 
   for i,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do      
@@ -494,12 +495,12 @@ end
 function CastItemsForMinion()
   for i,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do 
     if GoS:ValidTarget(minion, 600) and IOW:Mode() == "LaneClear" then
-      if PoppyMenu.LaneClear.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GoS:myHeroPos(), 400) >= PoppyMenu.LaneClear.TiHy:Value()  then --tiamat
+      if PoppyMenu.LaneClear.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GetOrigin(myHero), 400) >= PoppyMenu.LaneClear.TiHy:Value()  then --tiamat
         if GoS:GetDistance(minion) < 400 then
          CastTargetSpell(myHero, GetItemSlot(myHero, 3077))
         end
       end  
-      if PoppyMenu.LaneClear.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GoS:myHeroPos(), 400) >= PoppyMenu.LaneClear.TiHy:Value() then --hydra
+      if PoppyMenu.LaneClear.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GetOrigin(myHero), 400) >= PoppyMenu.LaneClear.TiHy:Value() then --hydra
         if GoS:GetDistance(minion) < 400 then
         CastTargetSpell(myHero, GetItemSlot(myHero, 3074))
         end
@@ -564,10 +565,10 @@ function KillSteal()
       if GotBuff(myHero, "sheen") >= 1 then
         sheendmg = sheendmg + GetBaseDamage(myHero)*sheendmg2
       end 
-      if GotBuff(myHero, "itemfrozenfist") >= 1 and GetItemSlot(myHero,3025) then
+      if GotBuff(myHero, "itemfrozenfist") >= 1 and GetItemSlot(myHero,3025) > 0 then
         frozendmg = frozendmg + GetBaseDamage(myHero)*1.25
       end 
-      if GotBuff(myHero, "lichbane") >= 1 and GetItemSlot(myHero,3100) then
+      if GotBuff(myHero, "lichbane") >= 1 and GetItemSlot(myHero,3100) > 0 then
         lichbane = lichbane + GetBaseDamage(myHero)*0.75 + GetBonusAP(myHero)*0.5
       end 
      for i,unit in pairs(GoS:GetEnemyHeroes()) do
