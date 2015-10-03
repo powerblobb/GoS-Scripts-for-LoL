@@ -1,7 +1,7 @@
 if GetObjectName(GetMyHero()) ~= "TwistedFate" then return end
---MonTour TwistedFate:V0.1.1.1 Beta - updated GoS:myHeroPos() to GetOrigin(myHero)
+--MonTour TwistedFate:V0.1.1.2 Beta - updated GoS:myHeroPos() to GetOrigin(myHero)
 PrintChat(string.format("<font color='#80F5F5'>MonTour Nasus:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.1.1.1 Beta</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.1.1.2 Beta</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
 
 local TwistedFateMenu = Menu("TwistedFate", "Twisted Fate")
