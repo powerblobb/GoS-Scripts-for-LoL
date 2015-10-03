@@ -4,50 +4,50 @@ PrintChat(string.format("<font color='#80F5F5'>MonTour Fiora:</font> <font color
 PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.2</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> leoferrerinha for Auto W</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
-local FioraMenu = Menu("Fiora", "Fiora")
-FioraMenu:SubMenu("Combo", "Combo")
-FioraMenu.Combo:Boolean("Q","Use Q",true)
-FioraMenu.Combo:Boolean("W","Use W",false)
-FioraMenu.Combo:Boolean("E","Use E",true)
-FioraMenu.Combo:Boolean("R","Use R",true)
-FioraMenu.Combo:Slider("HP", "Use R if HP < x%", 20, 1, 80, 1)
-FioraMenu:SubMenu("Harass", "Harass")
-FioraMenu.Harass:Boolean("Q","Use Q",true)
-FioraMenu.Harass:Boolean("W","Use W",false)
-FioraMenu.Harass:Boolean("E","Use E",false)
-FioraMenu.Harass:Boolean("R","Use R",false)
-FioraMenu.Harass:Slider("HP", "Use R if HP < x%", 20, 1, 80, 1)
-FioraMenu:SubMenu("LaneClear", "LaneClear/JungleClear")
-FioraMenu.LaneClear:Boolean("Q","Use Q",true)
-FioraMenu.LaneClear:Boolean("W","Use W",false)
-FioraMenu.LaneClear:Boolean("E","Use E",true)
-FioraMenu.LaneClear:Info("Fiora", " ")
-FioraMenu.LaneClear:Boolean("useTiamat", "Tiamat", true)
-FioraMenu.LaneClear:Boolean("useHydra", "Hydra", true)
-FioraMenu.LaneClear:Slider("TiHy", "if MinionAround >= X (Def. 5)", 5, 1, 20, 1)
-FioraMenu:SubMenu("Items", "Items&Ignite")
-FioraMenu.Items:Boolean("Ignite","AutoIgnite if OOR",true)
-FioraMenu.Items:Info("Fiora", " ")
-FioraMenu.Items:Info("Fiora", "In Combo/Harass")
-FioraMenu.Items:Boolean("useTiamat", "Tiamat", true)
-FioraMenu.Items:Boolean("useHydra", "Hydra", true)
-FioraMenu.Items:Info("Fiora", " ")
-FioraMenu.Items:Info("Fiora", "In Combo only")
-FioraMenu.Items:Boolean("useCut", "Bilgewater Cutlass", true)
-FioraMenu.Items:Slider("CutBlademyhp", "if My Health < x%", 50, 5, 100, 1)
-FioraMenu.Items:Slider("CutBladeehp", "if Enemy Health < x%", 20, 5, 100, 1)
-FioraMenu.Items:Info("Fiora", " ")
-FioraMenu.Items:Boolean("useBork", "Blade of the Ruined King", true)
-FioraMenu.Items:Slider("borkmyhp", "if My Health < x%", 50, 5, 100, 1)
-FioraMenu.Items:Slider("borkehp", "if Enemy Health < x%", 20, 5, 100, 1)
-FioraMenu.Items:Info("Fiora", " ")
-FioraMenu.Items:Boolean("useGhost", "Youmuu's Ghostblade", true)
-FioraMenu.Items:Boolean("useRedPot", "Elixir of Wrath(REDPOT)", true)
-FioraMenu:SubMenu("Drawings", "Drawings")
-FioraMenu.Drawings:Boolean("Q","Draw Q",true)
-FioraMenu.Drawings:Boolean("W","Draw W",true)
-FioraMenu:SubMenu("OP", "Auto Dodging")
-FioraMenu.OP:Boolean("W","Use W",true)
+local MonTourMenu = Menu("Fiora", "Fiora")
+MonTourMenu:SubMenu("Combo", "Combo")
+MonTourMenu.Combo:Boolean("Q","Use Q",true)
+MonTourMenu.Combo:Boolean("W","Use W",false)
+MonTourMenu.Combo:Boolean("E","Use E",true)
+MonTourMenu.Combo:Boolean("R","Use R",true)
+MonTourMenu.Combo:Slider("HP", "Use R if HP < x%", 20, 1, 80, 1)
+MonTourMenu:SubMenu("Harass", "Harass")
+MonTourMenu.Harass:Boolean("Q","Use Q",true)
+MonTourMenu.Harass:Boolean("W","Use W",false)
+MonTourMenu.Harass:Boolean("E","Use E",false)
+MonTourMenu.Harass:Boolean("R","Use R",false)
+MonTourMenu.Harass:Slider("HP", "Use R if HP < x%", 20, 1, 80, 1)
+MonTourMenu:SubMenu("LaneClear", "LaneClear/JungleClear")
+MonTourMenu.LaneClear:Boolean("Q","Use Q",true)
+MonTourMenu.LaneClear:Boolean("W","Use W",false)
+MonTourMenu.LaneClear:Boolean("E","Use E",true)
+MonTourMenu.LaneClear:Info("Fiora", " ")
+MonTourMenu.LaneClear:Boolean("useTiamat", "Tiamat", true)
+MonTourMenu.LaneClear:Boolean("useHydra", "Hydra", true)
+MonTourMenu.LaneClear:Slider("TiHy", "if MinionAround >= X (Def. 5)", 5, 1, 20, 1)
+MonTourMenu:SubMenu("Items", "Items&Ignite")
+MonTourMenu.Items:Boolean("Ignite","AutoIgnite if OOR",true)
+MonTourMenu.Items:Info("Fiora", " ")
+MonTourMenu.Items:Info("Fiora", "In Combo/Harass")
+MonTourMenu.Items:Boolean("useTiamat", "Tiamat", true)
+MonTourMenu.Items:Boolean("useHydra", "Hydra", true)
+MonTourMenu.Items:Info("Fiora", " ")
+MonTourMenu.Items:Info("Fiora", "In Combo only")
+MonTourMenu.Items:Boolean("useCut", "Bilgewater Cutlass", true)
+MonTourMenu.Items:Slider("CutBlademyhp", "if My Health < x%", 50, 5, 100, 1)
+MonTourMenu.Items:Slider("CutBladeehp", "if Enemy Health < x%", 20, 5, 100, 1)
+MonTourMenu.Items:Info("Fiora", " ")
+MonTourMenu.Items:Boolean("useBork", "Blade of the Ruined King", true)
+MonTourMenu.Items:Slider("borkmyhp", "if My Health < x%", 50, 5, 100, 1)
+MonTourMenu.Items:Slider("borkehp", "if Enemy Health < x%", 20, 5, 100, 1)
+MonTourMenu.Items:Info("Fiora", " ")
+MonTourMenu.Items:Boolean("useGhost", "Youmuu's Ghostblade", true)
+MonTourMenu.Items:Boolean("useRedPot", "Elixir of Wrath(REDPOT)", true)
+MonTourMenu:SubMenu("Drawings", "Drawings")
+MonTourMenu.Drawings:Boolean("Q","Draw Q",true)
+MonTourMenu.Drawings:Boolean("W","Draw W",true)
+MonTourMenu:SubMenu("OP", "Auto Dodging")
+MonTourMenu.OP:Boolean("W","Use W",true)
 
 --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/
 Defender = {["Aatrox"] = {_E},["Ahri"] = {_Q,_W,_E,_R},["Anivia"] = {_Q,_E},["Annie"] = {_Q},["Amumu"] = {_Q},["Blitzcrank"] = {_Q},["Brand"] = {_Q,_R},["Caitlyn"] = {_Q,_E},["Cassiopeia"] = {_W,_E},["Corki"] = {_R},["DrMundo"] = {_Q},["Elise"] = {_Q,_E},["Ezreal"] = {_Q,_W},["Galio"] = {_Q,_E},["Gangplank"] = {_Q},["Gnar"] = {_Q},["Graves"] = {_Q,_R},["Heimerdinger"] = {_W},["Irelia"] = {_R},["Jinx"] = {_W},["Kalista"] = {_Q},["Karma"] = {_Q},["Kassadin"] = {_Q},["Leblanc"] = {_Q,_E},["Leesin"] = {_Q},["Leona"] = {_E},["Lux"] = {_Q,_E},["Morgana"] = {_Q},["Pantheon"] = {_Q},["Quinn"] = {_Q},["Rengar"] = {_E},["Ryze"] = {_Q},["Sejuani"] = {_R},["Sivir"] = {_Q},["Skarner"] = {_E},["Teemo"] = {_Q},["Thresh"] = {_Q},["Varus"] = {_Q},["Vayne"] = {_E},["Veigar"] = {_R},["Twistedfate"] = {_Q},["Velkoz"] = {_Q},["Zed"] = {_Q}}
@@ -64,7 +64,7 @@ Defender = {["Aatrox"] = {_E},["Ahri"] = {_Q,_W,_E,_R},["Anivia"] = {_Q,_E},["An
 		OnProcessSpell(function(unit, spell)
 		myHero = GetMyHero()
 
-			if FioraMenu.OP.W:Value() then
+			if MonTourMenu.OP.W:Value() then
 
 				if unit and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == GetObjectType(myHero) and GoS:GetDistance(unit) < 700 then
 				local Ataques = Defender[GetObjectName(unit)]
@@ -106,8 +106,8 @@ Draws()
 end)
 
 function Draws()
-if FioraMenu.Drawings.Q:Value() and GetCastLevel(myHero,_Q) >=1 then DrawCircle(GetOrigin(myHero).x, GetOrigin(myHero).y, GetOrigin(myHero).z,GetCastRange(myHero,_Q),0.6,50,0xff0000ff) end
-if FioraMenu.Drawings.W:Value() and GetCastLevel(myHero,_W) >=1 then DrawCircle(GetOrigin(myHero).x, GetOrigin(myHero).y, GetOrigin(myHero).z,GetCastRange(myHero,_W),0.6,50,0xff0000ff) end
+if MonTourMenu.Drawings.Q:Value() and GetCastLevel(myHero,_Q) >=1 then DrawCircle(GetOrigin(myHero).x, GetOrigin(myHero).y, GetOrigin(myHero).z,GetCastRange(myHero,_Q),0.6,50,0xff0000ff) end
+if MonTourMenu.Drawings.W:Value() and GetCastLevel(myHero,_W) >=1 then DrawCircle(GetOrigin(myHero).x, GetOrigin(myHero).y, GetOrigin(myHero).z,GetCastRange(myHero,_W),0.6,50,0xff0000ff) end
 end
 
 function Combo()
@@ -116,7 +116,7 @@ function Combo()
 if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) then return false end
 if IOW:Mode() == "Combo" then
 if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
-      if FioraMenu.Combo.Q:Value() then
+      if MonTourMenu.Combo.Q:Value() then
         if GetCastName(myHero, _Q) == "FioraQ" and (GetItemSlot(myHero, 3077) < 1 or GetItemSlot(myHero, 3074) < 1) then
         local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1700,250,400,50,false,true)
             if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 400) then
@@ -124,7 +124,7 @@ if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(un
             end
         end
       end  
-      if FioraMenu.Combo.Q:Value() then
+      if MonTourMenu.Combo.Q:Value() then
         if GetCastName(myHero, _Q) == "FioraQ" and (GetItemSlot(myHero, 3077) >= 1 or GetItemSlot(myHero, 3074) >= 1) then
         local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1700,250,450,400,false,true)
             if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 450) then
@@ -133,7 +133,7 @@ if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(un
         end
       end  
        if GetCastName(myHero, _W) == "FioraW" then
-            if FioraMenu.Combo.W:Value() then           
+            if MonTourMenu.Combo.W:Value() then           
                 local WPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1700,250,750,50,false,true)
                  if CanUseSpell(myHero, _W) == READY and GoS:IsInDistance(unit, 750) then --and IsObjectAlive(unit)
             CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z)
@@ -141,15 +141,15 @@ if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(un
         end
     end
       if GetCastName(myHero, _E) == "FioraE" then
-            if FioraMenu.Combo.E:Value() then
+            if MonTourMenu.Combo.E:Value() then
               if CanUseSpell(myHero, _E) == READY and GoS:IsInDistance(unit, 260) then
                 CastSpell(_E)
             end
         end
     end
    if GetCastName(myHero, _R) == "FioraR" then
-            if FioraMenu.Combo.R:Value() then
-                if (100*GetCurrentHP(unit)/GetMaxHP(unit)) < FioraMenu.Combo.HP:Value() and
+            if MonTourMenu.Combo.R:Value() then
+                if (100*GetCurrentHP(unit)/GetMaxHP(unit)) < MonTourMenu.Combo.HP:Value() and
                     CanUseSpell(myHero, _R) == READY and IsObjectAlive(unit) and GoS:IsInDistance(unit, 500) then
             CastTargetSpell(unit, _R)
             end
@@ -164,7 +164,7 @@ if IOW:Mode() == "LaneClear" then
 for i,jminion in pairs(GoS:GetAllMinions(MINION_JUNGLE)) do
 jminionpos = GetOrigin(jminion)
 if GoS:ValidTarget(jminion, 600) then
-      if FioraMenu.LaneClear.Q:Value() then
+      if MonTourMenu.LaneClear.Q:Value() then
         if GetCastName(myHero, _Q) == "FioraQ" and (GetItemSlot(myHero, 3077) < 1 or GetItemSlot(myHero, 3074) < 1) then
         local QPred = GetPredictionForPlayer(GetOrigin(myHero),jminion,GetMoveSpeed(jminion),1700,250,400,50,false,true)
             if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(jminion, 400) then
@@ -172,7 +172,7 @@ if GoS:ValidTarget(jminion, 600) then
             end
         end
       end  
-      if FioraMenu.LaneClear.Q:Value() then
+      if MonTourMenu.LaneClear.Q:Value() then
         if GetCastName(myHero, _Q) == "FioraQ" and (GetItemSlot(myHero, 3077) >= 1 or GetItemSlot(myHero, 3074) >= 1) then
         local QPred = GetPredictionForPlayer(GetOrigin(myHero),jminion,GetMoveSpeed(jminion),1700,250,450,400,false,true)
             if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(jminion, 450) then
@@ -180,28 +180,28 @@ if GoS:ValidTarget(jminion, 600) then
             end
         end
       end  
-      if FioraMenu.LaneClear.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(jminion, 550) then --tiamat
+      if MonTourMenu.LaneClear.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(jminion, 550) then --tiamat
         if GoS:GetDistance(jminion) < 400 then
          CastTargetSpell(myHero, GetItemSlot(myHero, 3077))
         end
       end  
-      if FioraMenu.LaneClear.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(jminion, 550) then --hydra
+      if MonTourMenu.LaneClear.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(jminion, 550) then --hydra
         if GoS:GetDistance(jminion) < 385 then
         CastTargetSpell(myHero, GetItemSlot(myHero, 3074))
         end
       end
-            if FioraMenu.LaneClear.W:Value() then           
+            if MonTourMenu.LaneClear.W:Value() then           
                 local WPred = GetPredictionForPlayer(GetOrigin(myHero),jminion,GetMoveSpeed(jminion),1700,250,750,50,false,true)
                 if CanUseSpell(myHero, _W) == READY and IsObjectAlive(jminion) and GoS:IsInDistance(jminion, 750) then
                   CastSkillShot(_W,jminionpos.x,jminionpos.y,jminionpos.z)
                 end
             end
-            if FioraMenu.LaneClear.E:Value() then
+            if MonTourMenu.LaneClear.E:Value() then
               if CanUseSpell(myHero, _E) == READY and GoS:IsInDistance(jminion, 500) and GoS:GetDistance(myHero, jminion) < 450 and GoS:GetDistance(myHero, jminion) > 10 then
                 CastSpell(_E)
               end
             end
-            if FioraMenu.LaneClear.E:Value() then
+            if MonTourMenu.LaneClear.E:Value() then
               if CanUseSpell(myHero, _E) == READY and GoS:IsInDistance(jminion, 500) and GoS:GetDistance(myHero, jminion) < 450 and GoS:GetDistance(myHero, jminion) > 10 and (GetObjectName(jminion) == "SRU_Baron" or GetObjectName(mob) == "SRU_Dragon" or GetObjectName(mob) == "Sru_Crab" or GetObjectName(mob) == "SRU_Gromp" or GetObjectName(mob) == "SRU_Razorbeak" or GetObjectName(mob) == "SRU_Murkwolf" or GetObjectName(mob) == "SRU_Krug" or GetObjectName(mob) == "SRU_Red" or GetObjectName(mob) == "SRU_Blue") then
                 CastSpell(_E)
               end
@@ -212,12 +212,12 @@ end
 if IOW:Mode() == "LaneClear" then
 for i,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do
   if GoS:ValidTarget(minion, 600) then
-      if FioraMenu.LaneClear.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GetOrigin(myHero), 400) >= FioraMenu.LaneClear.TiHy:Value()  then --tiamat
+      if MonTourMenu.LaneClear.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GetOrigin(myHero), 400) >= MonTourMenu.LaneClear.TiHy:Value()  then --tiamat
         if GoS:GetDistance(minion) < 400 then
          CastTargetSpell(myHero, GetItemSlot(myHero, 3077))
         end
       end  
-      if FioraMenu.LaneClear.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GetOrigin(myHero), 400) >= FioraMenu.LaneClear.TiHy:Value() then --hydra
+      if MonTourMenu.LaneClear.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GetOrigin(myHero), 400) >= MonTourMenu.LaneClear.TiHy:Value() then --hydra
         if GoS:GetDistance(minion) < 400 then
         CastTargetSpell(myHero, GetItemSlot(myHero, 3074))
         end
@@ -233,7 +233,7 @@ function Harass()
 if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) then return false end
 if IOW:Mode() == "Harass" then
 if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
---        if FioraMenu.Harass.Q:Value() then
+--        if MonTourMenu.Harass.Q:Value() then
 --        if GetCastName(myHero, _Q) == "FioraQ" then
 --        local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1700,250,400,50,false,true)
 --            if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 400) then
@@ -241,7 +241,7 @@ if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(un
 --            end
 --        end
 --      end 
-      if FioraMenu.Harass.Q:Value() then
+      if MonTourMenu.Harass.Q:Value() then
         if GetCastName(myHero, _Q) == "FioraQ" and (GetItemSlot(myHero, 3077) < 1 or GetItemSlot(myHero, 3074) < 1) then
         local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1700,250,400,50,false,true)
             if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 400) then
@@ -249,7 +249,7 @@ if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(un
             end
         end
       end  
-      if FioraMenu.Harass.Q:Value() then
+      if MonTourMenu.Harass.Q:Value() then
         if GetCastName(myHero, _Q) == "FioraQ" and (GetItemSlot(myHero, 3077) >= 1 or GetItemSlot(myHero, 3074) >= 1) then
         local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1700,250,450,400,false,true)
             if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 450) then
@@ -258,7 +258,7 @@ if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(un
         end
       end 
        if GetCastName(myHero, _W) == "FioraW" then
-            if FioraMenu.Harass.W:Value() then           
+            if MonTourMenu.Harass.W:Value() then           
                 local WPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1700,250,750,50,false,true)
                  if CanUseSpell(myHero, _W) == READY and GoS:IsInDistance(unit, 750) then --and IsObjectAlive(unit)
             CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z)
@@ -266,15 +266,15 @@ if GoS:ValidTarget(unit, 1550) then--and IsObjectAlive(unit) and not IsImmune(un
         end
     end
       if GetCastName(myHero, _E) == "FioraE" then
-            if FioraMenu.Harass.E:Value() then
+            if MonTourMenu.Harass.E:Value() then
               if CanUseSpell(myHero, _E) == READY and GoS:IsInDistance(unit, 260) then
                 CastSpell(_E)
             end
         end
     end
    if GetCastName(myHero, _R) == "FioraR" then
-            if FioraMenu.Harass.R:Value() then
-                if (100*GetCurrentHP(unit)/GetMaxHP(unit)) < FioraMenu.Harass.HP:Value() and
+            if MonTourMenu.Harass.R:Value() then
+                if (100*GetCurrentHP(unit)/GetMaxHP(unit)) < MonTourMenu.Harass.HP:Value() and
                     CanUseSpell(myHero, _R) == READY and IsObjectAlive(unit) and GoS:IsInDistance(unit, 500) then
             CastTargetSpell(unit, _R)
             end
@@ -286,7 +286,7 @@ end
 
 function Ignite()
       local Ignite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerdot") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerdot") and SUMMONER_2 or nil))
-    if GoS:ValidTarget(unit, 700) and Ignite and FioraMenu.Items.Ignite:Value() and CanUseSpell(myHero,_Q) ~= READY and GoS:GetDistance(unit) > 450 then --and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) and
+    if GoS:ValidTarget(unit, 700) and Ignite and MonTourMenu.Items.Ignite:Value() and CanUseSpell(myHero,_Q) ~= READY and GoS:GetDistance(unit) > 450 then --and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) and
         for _, k in pairs(GoS:GetEnemyHeroes()) do
             if CanUseSpell(GetMyHero(), Ignite) == READY and (20*GetLevel(GetMyHero())+50) > GetCurrentHP(k)+GetHPRegen(k)*2.5 and GoS:GetDistanceSqr(GetOrigin(k)) < 600*600 then
                 CastTargetSpell(k, Ignite)
@@ -297,30 +297,30 @@ end
 
 function Items()
   if IOW:Mode() == "Combo" or IOW:Mode() == "Harass" then
-   if FioraMenu.Items.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(unit, 550) then --tiamat
+   if MonTourMenu.Items.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(unit, 550) then --tiamat
         if GoS:GetDistance(unit) < 400 then
          CastTargetSpell(myHero, GetItemSlot(myHero, 3077))
         end       
-    elseif FioraMenu.Items.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(unit, 550) then --hydra
+    elseif MonTourMenu.Items.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(unit, 550) then --hydra
       if GoS:GetDistance(unit) < 385 then
         CastTargetSpell(myHero, GetItemSlot(myHero, 3074))
       end
     end
   end 
   if IOW:Mode() == "Combo" then
-      if FioraMenu.Items.useCut:Value() and GetItemSlot(myHero,3144) >= 1 and GoS:ValidTarget(unit,550) and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < FioraMenu.Items.CutBlademyhp:Value() and (100*GetCurrentHP(target)/GetMaxHP(target)) > FioraMenu.Items.CutBladeehp:Value() then --CutBlade
+      if MonTourMenu.Items.useCut:Value() and GetItemSlot(myHero,3144) >= 1 and GoS:ValidTarget(unit,550) and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < MonTourMenu.Items.CutBlademyhp:Value() and (100*GetCurrentHP(target)/GetMaxHP(target)) > MonTourMenu.Items.CutBladeehp:Value() then --CutBlade
         if CanUseSpell(myHero,GetItemSlot(myHero,3144)) == READY then
           CastTargetSpell(unit, GetItemSlot(myHero,3144))
         end	
-    elseif FioraMenu.Items.useBork:Value() and GetItemSlot(myHero,3153) >= 1 and GoS:ValidTarget(unit,550) and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < FioraMenu.Items.borkmyhp:Value() and (100*GetCurrentHP(target)/GetMaxHP(target)) > FioraMenu.Items.borkehp:Value() then 
+    elseif MonTourMenu.Items.useBork:Value() and GetItemSlot(myHero,3153) >= 1 and GoS:ValidTarget(unit,550) and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < MonTourMenu.Items.borkmyhp:Value() and (100*GetCurrentHP(target)/GetMaxHP(target)) > MonTourMenu.Items.borkehp:Value() then 
         if CanUseSpell(myHero,GetItemSlot(myHero,3153)) == READY then --bork
           CastTargetSpell(unit,GetItemSlot(myHero,3153))
         end
-      elseif FioraMenu.Items.useGhost:Value() and GetItemSlot(myHero,3142) >= 1 and GoS:ValidTarget(unit,500) then --ghost
+      elseif MonTourMenu.Items.useGhost:Value() and GetItemSlot(myHero,3142) >= 1 and GoS:ValidTarget(unit,500) then --ghost
         if CanUseSpell(myHero,GetItemSlot(myHero,3142)) == READY then
           CastSpell(GetItemSlot(myHero,3142))
         end
-     elseif FioraMenu.Items.useRedPot:Value() and GetItemSlot(myHero,2140) >= 1 and GoS:ValidTarget(unit,500) then --redpot
+     elseif MonTourMenu.Items.useRedPot:Value() and GetItemSlot(myHero,2140) >= 1 and GoS:ValidTarget(unit,500) then --redpot
         if CanUseSpell(myHero,GetItemSlot(myHero,2140)) == READY then
           CastSpell(GetItemSlot(myHero,2140))
         end
