@@ -10,93 +10,93 @@ if mapID ~= SUMMONERS_RIFT then
   PrintChat(string.format("<font color='#BC0707'>Or use it at your own</font> <font color='#BC0707'>Risk!!!</font>"))
 end  
 require('MapPositionGOS')
-local PoppyMenu = Menu("PoppyMenu", "Poppy")
-PoppyMenu:SubMenu("Combo", "Combo")
-PoppyMenu.Combo:List("prio", "Start Combo only if Stunnable?", 1, {"Yes", "No"})
-PoppyMenu.Combo:Boolean("Q","Use Q",true)
-PoppyMenu.Combo:Boolean("W","Use W",true)
-PoppyMenu.Combo:Boolean("E","Use E ",true)
-PoppyMenu.Combo:List("Eprio", "Use E only with Stun", 1, {"Yes", "No"})
-PoppyMenu.Combo:Boolean("AutoE","Use Auto E+Q+W (Stun)",false)
-PoppyMenu.Combo:Slider("AutoEE", "if EnemyAround Me <= X (Def. 2)", 2, 1, 5, 1)
-PoppyMenu.Combo:Slider("AutoER", "EnemyAround Range (Def: 1000)", 1000, 200, 5000, 1)
-PoppyMenu:SubMenu("Harass", "Harass")
-PoppyMenu.Harass:List("prio", "Start Harass only if Stunnable?", 2, {"Yes", "No"})
-PoppyMenu.Harass:Boolean("Q","Use Q",true)
-PoppyMenu.Harass:Boolean("W","Use W",true)
-PoppyMenu.Harass:Boolean("E","Use E",true)
-PoppyMenu.Harass:List("Eprio", "Use E only with Stun", 1, {"Yes", "No"})
-PoppyMenu:SubMenu("LastHit", "LastHit")
-PoppyMenu.LastHit:Boolean("LHQ","Use Q",true)
-PoppyMenu:SubMenu("LaneClear", "LaneClear")
-PoppyMenu.LaneClear:Boolean("LHQ","Use Q",true)
-PoppyMenu.LaneClear:Boolean("useTiamat", "Tiamat", true)
-PoppyMenu.LaneClear:Boolean("useHydra", "Hydra", true)
-PoppyMenu.LaneClear:Slider("TiHy", "if MinionAround >= X (Def. 5)", 5, 1, 20, 1)
-PoppyMenu:SubMenu("KS", "KillSteal&DMGoHP")
-PoppyMenu.KS:Boolean("ALL","ALL ON/OFF",true)
-PoppyMenu.KS:Boolean("DOH","Draw DMGoHP",true)
-PoppyMenu.KS:Boolean("Q","Use Q KS",true)
-PoppyMenu.KS:Boolean("EQstun","Use EQ Stun KS",true)
-PoppyMenu.KS:Boolean("EQnostun","Use EQ No Stun KS",true)
-PoppyMenu.KS:Boolean("Estun","Use E Stun KS",true)
-PoppyMenu.KS:Boolean("Enostun","Use E No Stun KS",true)
-PoppyMenu:SubMenu("Items", "Items & Ignite")
-PoppyMenu.Items:Boolean("Ignite","AutoIgnite if OOR and E NotReady",true)
-PoppyMenu.Items:Info("PoppyMenu", " ")
-PoppyMenu.Items:Boolean("useTiamat", "Tiamat", true)
-PoppyMenu.Items:Boolean("useHydra", "Hydra", true)
-PoppyMenu.Items:Info("PoppyMenu", " ")
-PoppyMenu.Items:Boolean("CutBlade", "Bilgewater Cutlass", true)  
-PoppyMenu.Items:Slider("CutBlademyhp", "if My Health < x%", 50, 5, 100, 1)
-PoppyMenu.Items:Slider("CutBladeehp", "if Enemy Health < x%", 20, 5, 100, 1)
-PoppyMenu.Items:Info("PoppyMenu", " ")
-PoppyMenu.Items:Boolean("bork", "Blade of the Ruined King", true)
-PoppyMenu.Items:Slider("borkmyhp", "if My Health < x%", 50, 5, 100, 1)
-PoppyMenu.Items:Slider("borkehp", "if Enemy Health < x%", 20, 5, 100, 1)
-PoppyMenu.Items:Info("PoppyMenu", " ")
-PoppyMenu.Items:Boolean("ghostblade", "Youmuu's Ghostblade", true)
-PoppyMenu.Items:Slider("ghostbladeR", "If Enemy in Range (def: 600)", 600, 100, 2000, 1)
-PoppyMenu.Items:Info("PoppyMenu", " ")
-PoppyMenu.Items:Boolean("useRedPot", "Elixir of Wrath(REDPOT)", true)
-PoppyMenu.Items:Slider("useRedPotR", "If Enemy in Range (def: 600)", 600, 100, 2000, 1)
-PoppyMenu.Items:Info("PoppyMenu", " ")
-PoppyMenu.Items:Boolean("QSS", "Always Use QSS", true)
-PoppyMenu.Items:Slider("QSSHP", "if My Health < x%", 75, 0, 100, 1)
-PoppyMenu:SubMenu("Misc", "Drawings")
-PoppyMenu.Misc:Boolean("D","Draw Vectors for E",true)
+local MonTourMenu = Menu("MonTourMenu", "Poppy")
+MonTourMenu:SubMenu("Combo", "Combo")
+MonTourMenu.Combo:List("prio", "Start Combo only if Stunnable?", 1, {"Yes", "No"})
+MonTourMenu.Combo:Boolean("Q","Use Q",true)
+MonTourMenu.Combo:Boolean("W","Use W",true)
+MonTourMenu.Combo:Boolean("E","Use E ",true)
+MonTourMenu.Combo:List("Eprio", "Use E only with Stun", 1, {"Yes", "No"})
+MonTourMenu.Combo:Boolean("AutoE","Use Auto E+Q+W (Stun)",false)
+MonTourMenu.Combo:Slider("AutoEE", "if EnemyAround Me <= X (Def. 2)", 2, 1, 5, 1)
+MonTourMenu.Combo:Slider("AutoER", "EnemyAround Range (Def: 1000)", 1000, 200, 5000, 1)
+MonTourMenu:SubMenu("Harass", "Harass")
+MonTourMenu.Harass:List("prio", "Start Harass only if Stunnable?", 2, {"Yes", "No"})
+MonTourMenu.Harass:Boolean("Q","Use Q",true)
+MonTourMenu.Harass:Boolean("W","Use W",true)
+MonTourMenu.Harass:Boolean("E","Use E",true)
+MonTourMenu.Harass:List("Eprio", "Use E only with Stun", 1, {"Yes", "No"})
+MonTourMenu:SubMenu("LastHit", "LastHit")
+MonTourMenu.LastHit:Boolean("LHQ","Use Q",true)
+MonTourMenu:SubMenu("LaneClear", "LaneClear")
+MonTourMenu.LaneClear:Boolean("LHQ","Use Q",true)
+MonTourMenu.LaneClear:Boolean("useTiamat", "Tiamat", true)
+MonTourMenu.LaneClear:Boolean("useHydra", "Hydra", true)
+MonTourMenu.LaneClear:Slider("TiHy", "if MinionAround >= X (Def. 5)", 5, 1, 20, 1)
+MonTourMenu:SubMenu("KS", "KillSteal&DMGoHP")
+MonTourMenu.KS:Boolean("ALL","ALL ON/OFF",true)
+MonTourMenu.KS:Boolean("DOH","Draw DMGoHP",true)
+MonTourMenu.KS:Boolean("Q","Use Q KS",true)
+MonTourMenu.KS:Boolean("EQstun","Use EQ Stun KS",true)
+MonTourMenu.KS:Boolean("EQnostun","Use EQ No Stun KS",true)
+MonTourMenu.KS:Boolean("Estun","Use E Stun KS",true)
+MonTourMenu.KS:Boolean("Enostun","Use E No Stun KS",true)
+MonTourMenu:SubMenu("Items", "Items & Ignite")
+MonTourMenu.Items:Boolean("Ignite","AutoIgnite if OOR and E NotReady",true)
+MonTourMenu.Items:Info("MonTourMenu", " ")
+MonTourMenu.Items:Boolean("useTiamat", "Tiamat", true)
+MonTourMenu.Items:Boolean("useHydra", "Hydra", true)
+MonTourMenu.Items:Info("MonTourMenu", " ")
+MonTourMenu.Items:Boolean("CutBlade", "Bilgewater Cutlass", true)  
+MonTourMenu.Items:Slider("CutBlademyhp", "if My Health < x%", 50, 5, 100, 1)
+MonTourMenu.Items:Slider("CutBladeehp", "if Enemy Health < x%", 20, 5, 100, 1)
+MonTourMenu.Items:Info("MonTourMenu", " ")
+MonTourMenu.Items:Boolean("bork", "Blade of the Ruined King", true)
+MonTourMenu.Items:Slider("borkmyhp", "if My Health < x%", 50, 5, 100, 1)
+MonTourMenu.Items:Slider("borkehp", "if Enemy Health < x%", 20, 5, 100, 1)
+MonTourMenu.Items:Info("MonTourMenu", " ")
+MonTourMenu.Items:Boolean("ghostblade", "Youmuu's Ghostblade", true)
+MonTourMenu.Items:Slider("ghostbladeR", "If Enemy in Range (def: 600)", 600, 100, 2000, 1)
+MonTourMenu.Items:Info("MonTourMenu", " ")
+MonTourMenu.Items:Boolean("useRedPot", "Elixir of Wrath(REDPOT)", true)
+MonTourMenu.Items:Slider("useRedPotR", "If Enemy in Range (def: 600)", 600, 100, 2000, 1)
+MonTourMenu.Items:Info("MonTourMenu", " ")
+MonTourMenu.Items:Boolean("QSS", "Always Use QSS", true)
+MonTourMenu.Items:Slider("QSSHP", "if My Health < x%", 75, 0, 100, 1)
+MonTourMenu:SubMenu("Misc", "Drawings")
+MonTourMenu.Misc:Boolean("D","Draw Vectors for E",true)
 
 target = GetCurrentTarget()	
 unit = GetCurrentTarget()
 OnLoop(function(myHero)
 ItemUse()
-if PoppyMenu.Items.Ignite:Value() then
+if MonTourMenu.Items.Ignite:Value() then
 Ignite()
 end
-if PoppyMenu.KS.ALL:Value() then
+if MonTourMenu.KS.ALL:Value() then
 KillSteal()
 end
 AllforOne() 
 
-if IOW:Mode() == "Combo" and PoppyMenu.Combo.prio:Value() == 1 and (GetCastLevel(myHero,_Q) == 0 or GetCastLevel(myHero,_W) == 0 or GetCastLevel(myHero,_E) == 0) then
+if IOW:Mode() == "Combo" and MonTourMenu.Combo.prio:Value() == 1 and (GetCastLevel(myHero,_Q) == 0 or GetCastLevel(myHero,_W) == 0 or GetCastLevel(myHero,_E) == 0) then
 Combo()
 end
 
-if IOW:Mode() == "Combo" and PoppyMenu.Combo.prio:Value() == 2 then
+if IOW:Mode() == "Combo" and MonTourMenu.Combo.prio:Value() == 2 then
 Combo()
 end 
 
-if IOW:Mode() == "Harass" and PoppyMenu.Harass.prio:Value() == 1 and (GetCastLevel(myHero,_Q) == 0 or GetCastLevel(myHero,_W) == 0 or GetCastLevel(myHero,_E) == 0) then
+if IOW:Mode() == "Harass" and MonTourMenu.Harass.prio:Value() == 1 and (GetCastLevel(myHero,_Q) == 0 or GetCastLevel(myHero,_W) == 0 or GetCastLevel(myHero,_E) == 0) then
 Harass()
 end
 
-if IOW:Mode() == "Harass" and PoppyMenu.Harass.prio:Value() == 2 then
+if IOW:Mode() == "Harass" and MonTourMenu.Harass.prio:Value() == 2 then
 Harass()
 end 
-if IOW:Mode() == "LastHit" and PoppyMenu.LastHit.LHQ:Value() then
+if IOW:Mode() == "LastHit" and MonTourMenu.LastHit.LHQ:Value() then
 LastHit()
 end 
-if IOW:Mode() == "LaneClear" and PoppyMenu.LaneClear.LHQ:Value() then
+if IOW:Mode() == "LaneClear" and MonTourMenu.LaneClear.LHQ:Value() then
 LastHit()
 CastItemsForMinion()
 end
@@ -104,16 +104,16 @@ end)
 
 function Combo()
 --if GoS:ValidTarget(unit,600) then
-  if CanUseSpell(myHero,_W) == READY and PoppyMenu.Combo.W:Value() then
+  if CanUseSpell(myHero,_W) == READY and MonTourMenu.Combo.W:Value() then
     Wskill()
   end
-  if CanUseSpell(myHero,_E) == READY and PoppyMenu.Combo.E:Value() and PoppyMenu.Combo.Eprio:Value() == 1 then
+  if CanUseSpell(myHero,_E) == READY and MonTourMenu.Combo.E:Value() and MonTourMenu.Combo.Eprio:Value() == 1 then
     Estun()
   end  
-  if CanUseSpell(myHero,_E) == READY and PoppyMenu.Combo.E:Value() and PoppyMenu.Combo.Eprio:Value() == 2 then
+  if CanUseSpell(myHero,_E) == READY and MonTourMenu.Combo.E:Value() and MonTourMenu.Combo.Eprio:Value() == 2 then
     Eskill()
   end 
-  if CanUseSpell(myHero,_Q) == READY and PoppyMenu.Combo.Q:Value()then
+  if CanUseSpell(myHero,_Q) == READY and MonTourMenu.Combo.Q:Value()then
     Qskill()
   end
 --end
@@ -121,16 +121,16 @@ end
 
 function Harass()
 --if GoS:ValidTarget(unit,600) then
-  if CanUseSpell(myHero,_W) == READY and PoppyMenu.Harass.W:Value() then
+  if CanUseSpell(myHero,_W) == READY and MonTourMenu.Harass.W:Value() then
     Wskill()
   end
-  if CanUseSpell(myHero,_E) == READY and PoppyMenu.Harass.E:Value() and PoppyMenu.Harass.Eprio:Value() == 1 then
+  if CanUseSpell(myHero,_E) == READY and MonTourMenu.Harass.E:Value() and MonTourMenu.Harass.Eprio:Value() == 1 then
     Estun()
   end  
-  if CanUseSpell(myHero,_E) == READY and PoppyMenu.Harass.E:Value() and PoppyMenu.Harass.Eprio:Value() == 2 then
+  if CanUseSpell(myHero,_E) == READY and MonTourMenu.Harass.E:Value() and MonTourMenu.Harass.Eprio:Value() == 2 then
     Eskill()
   end  
-  if CanUseSpell(myHero,_Q) == READY and PoppyMenu.Harass.Q:Value()then
+  if CanUseSpell(myHero,_Q) == READY and MonTourMenu.Harass.Q:Value()then
     Qskill()
   end
 --end
@@ -265,7 +265,7 @@ function AllforOne()
 			local Pos5 = TargetPos-(TargetPos-HeroPos)*(-distance5/GoS:GetDistance(unit))
 			--Check if in Wall--
     if GoS:ValidTarget(unit,1000) then      
-      if PoppyMenu.Combo.AutoE:Value() and CanUseSpell(myHero,_W) == READY and GetCastLevel(myHero,_Q) > 0 and GetCastLevel(myHero,_W) > 0 and GetCastLevel(myHero,_E) > 0 and GoS:EnemiesAround(GetOrigin(myHero), PoppyMenu.Combo.AutoER:Value()) <= PoppyMenu.Combo.AutoEE:Value() then
+      if MonTourMenu.Combo.AutoE:Value() and CanUseSpell(myHero,_W) == READY and GetCastLevel(myHero,_Q) > 0 and GetCastLevel(myHero,_W) > 0 and GetCastLevel(myHero,_E) > 0 and GoS:EnemiesAround(GetOrigin(myHero), MonTourMenu.Combo.AutoER:Value()) <= MonTourMenu.Combo.AutoEE:Value() then
 				if MapPosition:inWall(Pos1)==true then
 					if GoS:GetDistance(unit)<=525 then
 						 Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 100) end, 200) end, 300)  
@@ -292,70 +292,70 @@ function AllforOne()
 					end
 				end
       end  
-      if IOW:Mode() == "Combo" and PoppyMenu.Combo.prio:Value() == 1 and GetCastLevel(myHero,_Q) > 0 and GetCastLevel(myHero,_W) > 0 and GetCastLevel(myHero,_E) > 0 then     
+      if IOW:Mode() == "Combo" and MonTourMenu.Combo.prio:Value() == 1 and GetCastLevel(myHero,_Q) > 0 and GetCastLevel(myHero,_W) > 0 and GetCastLevel(myHero,_E) > 0 then     
         if MapPosition:inWall(Pos1)==true then
-					if GoS:GetDistance(unit)<=525 and PoppyMenu.Combo.E:Value() then
+					if GoS:GetDistance(unit)<=525 and MonTourMenu.Combo.E:Value() then
 						 Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 100) end, 200) end, 300) 
 					end
 				end
 				if MapPosition:inWall(Pos2)==true then
-					if GoS:GetDistance(unit)<=525 and PoppyMenu.Combo.E:Value() then
+					if GoS:GetDistance(unit)<=525 and MonTourMenu.Combo.E:Value() then
 						 Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 100) end, 200) end, 300) 
 					end
 				end
 				if MapPosition:inWall(Pos3)==true then
-					if GoS:GetDistance(unit)<=525 and PoppyMenu.Combo.E:Value() then
+					if GoS:GetDistance(unit)<=525 and MonTourMenu.Combo.E:Value() then
 						 Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 100) end, 200) end, 300) 
 					end
 				end
 				if MapPosition:inWall(Pos4)==true then
-					if GoS:GetDistance(unit)<=525 and PoppyMenu.Combo.E:Value() then
+					if GoS:GetDistance(unit)<=525 and MonTourMenu.Combo.E:Value() then
 						 Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 100) end, 200) end, 300) 
 					end
 				end
 				if MapPosition:inWall(Pos5)==true then
-					if GoS:GetDistance(unit)<=525 and PoppyMenu.Combo.E:Value() then
+					if GoS:GetDistance(unit)<=525 and MonTourMenu.Combo.E:Value() then
 						 Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 100) end, 200) end, 300) 
 					end
 				end
-        if GoS:GetDistance(unit)<=525 and (CanUseSpell(myHero,_E) ~= READY or not PoppyMenu.Combo.E:Value()) then
+        if GoS:GetDistance(unit)<=525 and (CanUseSpell(myHero,_E) ~= READY or not MonTourMenu.Combo.E:Value()) then
             Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50)  
 				end
        end
-      if IOW:Mode() == "Harass" and PoppyMenu.Harass.prio:Value() == 1 and GetCastLevel(myHero,_Q) > 0 and GetCastLevel(myHero,_W) > 0 and GetCastLevel(myHero,_E) > 0 then     
+      if IOW:Mode() == "Harass" and MonTourMenu.Harass.prio:Value() == 1 and GetCastLevel(myHero,_Q) > 0 and GetCastLevel(myHero,_W) > 0 and GetCastLevel(myHero,_E) > 0 then     
         if MapPosition:inWall(Pos1)==true then
-					if GoS:GetDistance(unit)<=525 and PoppyMenu.Harass.E:Value() then
+					if GoS:GetDistance(unit)<=525 and MonTourMenu.Harass.E:Value() then
 						 Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 100) end, 200) end, 300) 
 					end
 				end
 				if MapPosition:inWall(Pos2)==true then
-					if GoS:GetDistance(unit)<=525 and PoppyMenu.Harass.E:Value() then
+					if GoS:GetDistance(unit)<=525 and MonTourMenu.Harass.E:Value() then
 						 Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 100) end, 200) end, 300) 
 					end
 				end
 				if MapPosition:inWall(Pos3)==true then
-					if GoS:GetDistance(unit)<=525 and PoppyMenu.Harass.E:Value() then
+					if GoS:GetDistance(unit)<=525 and MonTourMenu.Harass.E:Value() then
 						 Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 100) end, 200) end, 300) 
 					end
 				end
 				if MapPosition:inWall(Pos4)==true then
-					if GoS:GetDistance(unit)<=525 and PoppyMenu.Harass.E:Value() then
+					if GoS:GetDistance(unit)<=525 and MonTourMenu.Harass.E:Value() then
 						 Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 100) end, 200) end, 300) 
 					end
 				end
 				if MapPosition:inWall(Pos5)==true then
-					if GoS:GetDistance(unit)<=525 and PoppyMenu.Harass.E:Value() then
+					if GoS:GetDistance(unit)<=525 and MonTourMenu.Harass.E:Value() then
 						 Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 100) end, 200) end, 300) 
 					end
 				end
-        if GoS:GetDistance(unit)<=525 and (CanUseSpell(myHero,_E) ~= READY or not PoppyMenu.Harass.E:Value()) then
+        if GoS:GetDistance(unit)<=525 and (CanUseSpell(myHero,_E) ~= READY or not MonTourMenu.Harass.E:Value()) then
             Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50)  
 				end
 --        else
 --        Harass()
       end
    end
-if PoppyMenu.Misc.D:Value() then      
+if MonTourMenu.Misc.D:Value() then      
        if GoS:ValidTarget(unit,20000) then
 				if MapPosition:inWall(Pos1)==false then DrawCircle(Pos1.x,Pos1.y,Pos1.z,5,2,0,0xffff0000) 
 				elseif MapPosition:inWall(Pos1)==true then DrawCircle(Pos1.x,Pos1.y,Pos1.z,5,2,0,0xff00ff00) end
@@ -386,41 +386,41 @@ end
 
 function ItemUse()
     for _,target in pairs(Gos:GetEnemyHeroes()) do
-      if (IOW:Mode() == "Combo" or IOW:Mode() == "Harass" or PoppyMenu.Combo.AutoE:Value()) then
-        if GetItemSlot(myHero,3153) > 0 and PoppyMenu.Items.bork:Value() and GoS:ValidTarget(target, 550)  and GetCurrentHP(myHero)/GetMaxHP(myHero) < (PoppyMenu.Items.borkmyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (PoppyMenu.Items.borkehp:Value()/100) then
+      if (IOW:Mode() == "Combo" or IOW:Mode() == "Harass" or MonTourMenu.Combo.AutoE:Value()) then
+        if GetItemSlot(myHero,3153) > 0 and MonTourMenu.Items.bork:Value() and GoS:ValidTarget(target, 550)  and GetCurrentHP(myHero)/GetMaxHP(myHero) < (MonTourMenu.Items.borkmyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (MonTourMenu.Items.borkehp:Value()/100) then
         CastTargetSpell(target, GetItemSlot(myHero,3153)) --bork
         end
 
-        if GetItemSlot(myHero,3144) > 0 and PoppyMenu.Items.CutBlade:Value() and GoS:ValidTarget(target, 550) and GetCurrentHP(myHero)/GetMaxHP(myHero) < (PoppyMenu.Items.CutBlademyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (PoppyMenu.Items.CutBladeehp:Value()/100) then 
+        if GetItemSlot(myHero,3144) > 0 and MonTourMenu.Items.CutBlade:Value() and GoS:ValidTarget(target, 550) and GetCurrentHP(myHero)/GetMaxHP(myHero) < (MonTourMenu.Items.CutBlademyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (MonTourMenu.Items.CutBladeehp:Value()/100) then 
         CastTargetSpell(target, GetItemSlot(myHero,3144)) --CutBlade
         end
 
-        if GetItemSlot(myHero,3142) > 0 and PoppyMenu.Items.ghostblade:Value() and GoS:ValidTarget(target, PoppyMenu.Items.ghostbladeR:Value()) then --ghostblade
+        if GetItemSlot(myHero,3142) > 0 and MonTourMenu.Items.ghostblade:Value() and GoS:ValidTarget(target, MonTourMenu.Items.ghostbladeR:Value()) then --ghostblade
         CastTargetSpell(myHero, GetItemSlot(myHero,3142))
         end
 		
-        if PoppyMenu.Items.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(target, 550) then --tiamat
+        if MonTourMenu.Items.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(target, 550) then --tiamat
           if GoS:GetDistance(target) < 400 then
           CastTargetSpell(myHero, GetItemSlot(myHero, 3077))
           end 
         end
-        if PoppyMenu.Items.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(target, 550) then --hydra
+        if MonTourMenu.Items.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(target, 550) then --hydra
           if GoS:GetDistance(target) < 385 then
           CastTargetSpell(myHero, GetItemSlot(myHero, 3074))
           end
         end
-        if PoppyMenu.Items.useRedPot:Value() and GetItemSlot(myHero,2140) >= 1 and GoS:ValidTarget(target,PoppyMenu.Items.useRedPotR:Value()) then --redpot
+        if MonTourMenu.Items.useRedPot:Value() and GetItemSlot(myHero,2140) >= 1 and GoS:ValidTarget(target,MonTourMenu.Items.useRedPotR:Value()) then --redpot
           if CanUseSpell(myHero,GetItemSlot(myHero,2140)) == READY then
           CastSpell(GetItemSlot(myHero,2140))
           end
         end
       end
     end  
-    if GetItemSlot(myHero,3140) > 0 and PoppyMenu.Items.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < PoppyMenu.Items.QSSHP:Value() then
+    if GetItemSlot(myHero,3140) > 0 and MonTourMenu.Items.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < MonTourMenu.Items.QSSHP:Value() then
     CastTargetSpell(myHero, GetItemSlot(myHero,3140))
     end
 
-    if GetItemSlot(myHero,3139) > 0 and PoppyMenu.Items.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < PoppyMenu.Items.QSSHP:Value() then
+    if GetItemSlot(myHero,3139) > 0 and MonTourMenu.Items.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < MonTourMenu.Items.QSSHP:Value() then
     CastTargetSpell(myHero, GetItemSlot(myHero,3139))
     end
 
@@ -495,12 +495,12 @@ end
 function CastItemsForMinion()
   for i,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do 
     if GoS:ValidTarget(minion, 600) and IOW:Mode() == "LaneClear" then
-      if PoppyMenu.LaneClear.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GetOrigin(myHero), 400) >= PoppyMenu.LaneClear.TiHy:Value()  then --tiamat
+      if MonTourMenu.LaneClear.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GetOrigin(myHero), 400) >= MonTourMenu.LaneClear.TiHy:Value()  then --tiamat
         if GoS:GetDistance(minion) < 400 then
          CastTargetSpell(myHero, GetItemSlot(myHero, 3077))
         end
       end  
-      if PoppyMenu.LaneClear.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GetOrigin(myHero), 400) >= PoppyMenu.LaneClear.TiHy:Value() then --hydra
+      if MonTourMenu.LaneClear.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and GoS:ValidTarget(minion, 550) and MinionAround(GetOrigin(myHero), 400) >= MonTourMenu.LaneClear.TiHy:Value() then --hydra
         if GoS:GetDistance(minion) < 400 then
         CastTargetSpell(myHero, GetItemSlot(myHero, 3074))
         end
@@ -644,80 +644,80 @@ function KillSteal()
 --        DrawText(string.format("QMAXPERCENT = %f", QMAXPERCENT),20,100,300,0xffffffff);
 --        DrawText(string.format("sheendmg = %f", sheendmg),20,100,330,0xffffffff);
       if GoS:ValidTarget(unit,125) and GoS:GetDistanceSqr(GetOrigin(unit)) <= 125*125 then
-        if PoppyMenu.KS.Q:Value() and CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_E) ~= READY and enemyhp < DamageQ then
+        if MonTourMenu.KS.Q:Value() and CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_E) ~= READY and enemyhp < DamageQ then
           Wskill() GoS:DelayAction(function() CastSpell(_Q) end, 100)
         end  
-        if PoppyMenu.KS.Q:Value() and GotBuff(myHero,"PoppyDevastatingBlow") == 1 and enemyhp < DamageQ then
+        if MonTourMenu.KS.Q:Value() and GotBuff(myHero,"PoppyDevastatingBlow") == 1 and enemyhp < DamageQ then
           AttackUnitKS(unit) 
         end     
       end
       if GoS:ValidTarget(unit,525) and GoS:GetDistanceSqr(GetOrigin(unit)) <= 525*525 then
-        if PoppyMenu.KS.EQnostun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos1)==false and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQNoStun then
+        if MonTourMenu.KS.EQnostun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos1)==false and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQNoStun then
           Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
   
-        elseif PoppyMenu.KS.EQstun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos1)==true and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQStun then
+        elseif MonTourMenu.KS.EQstun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos1)==true and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQStun then
           Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
           
-        elseif PoppyMenu.KS.EQnostun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos2)==false and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQNoStun then
+        elseif MonTourMenu.KS.EQnostun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos2)==false and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQNoStun then
           Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
   
-        elseif PoppyMenu.KS.EQstun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos2)==true and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQStun then
+        elseif MonTourMenu.KS.EQstun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos2)==true and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQStun then
           Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)         
         
-        elseif PoppyMenu.KS.EQnostun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos3)==false and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQNoStun then
+        elseif MonTourMenu.KS.EQnostun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos3)==false and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQNoStun then
           Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
   
-        elseif PoppyMenu.KS.EQstun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos3)==true and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQStun then
+        elseif MonTourMenu.KS.EQstun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos3)==true and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQStun then
           Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
           
-        elseif PoppyMenu.KS.EQnostun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos4)==false and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQNoStun then
+        elseif MonTourMenu.KS.EQnostun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos4)==false and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQNoStun then
           Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
   
-        elseif PoppyMenu.KS.EQstun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos4)==true and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQStun then
+        elseif MonTourMenu.KS.EQstun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos4)==true and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQStun then
           Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
           
-        elseif PoppyMenu.KS.EQnostun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos5)==false and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQNoStun then
+        elseif MonTourMenu.KS.EQnostun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos5)==false and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQNoStun then
           Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
   
-        elseif PoppyMenu.KS.EQstun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos5)==true and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQStun then
+        elseif MonTourMenu.KS.EQstun:Value() and CanUseSpell(myHero,_E) == READY and MapPosition:inWall(Pos5)==true and (CanUseSpell(myHero,_Q) == READY or GotBuff(myHero,"PoppyDevastatingBlow") == 1) and enemyhp < DamageEQStun then
           Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)          
 
 ------------------
-        elseif PoppyMenu.KS.Enostun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos1)==false and enemyhp < DamageENoStun then
+        elseif MonTourMenu.KS.Enostun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos1)==false and enemyhp < DamageENoStun then
           GoS:DelayAction(function() Wskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
   
-        elseif PoppyMenu.KS.Estun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos1)==true and enemyhp < DamageEStun then
+        elseif MonTourMenu.KS.Estun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos1)==true and enemyhp < DamageEStun then
           GoS:DelayAction(function() Wskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
           
-        elseif PoppyMenu.KS.Enostun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos2)==false and enemyhp < DamageENoStun then
+        elseif MonTourMenu.KS.Enostun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos2)==false and enemyhp < DamageENoStun then
           GoS:DelayAction(function() Wskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
   
-        elseif PoppyMenu.KS.Estun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos2)==true and enemyhp < DamageEStun then
+        elseif MonTourMenu.KS.Estun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos2)==true and enemyhp < DamageEStun then
           GoS:DelayAction(function() Wskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)         
         
-        elseif PoppyMenu.KS.Enostun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos3)==false and enemyhp < DamageENoStun then
+        elseif MonTourMenu.KS.Enostun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos3)==false and enemyhp < DamageENoStun then
           GoS:DelayAction(function() Wskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
   
-        elseif PoppyMenu.KS.Estun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos3)==true and enemyhp < DamageEStun then
+        elseif MonTourMenu.KS.Estun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos3)==true and enemyhp < DamageEStun then
           GoS:DelayAction(function() Wskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
           
-        elseif PoppyMenu.KS.Enostun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos4)==false and enemyhp < DamageENoStun then
+        elseif MonTourMenu.KS.Enostun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos4)==false and enemyhp < DamageENoStun then
           GoS:DelayAction(function() Wskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
   
-        elseif PoppyMenu.KS.Estun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos4)==true and enemyhp < DamageEStun then
+        elseif MonTourMenu.KS.Estun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos4)==true and enemyhp < DamageEStun then
           GoS:DelayAction(function() Wskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
           
-        elseif PoppyMenu.KS.Enostun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos5)==false and enemyhp < DamageENoStun then
+        elseif MonTourMenu.KS.Enostun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos5)==false and enemyhp < DamageENoStun then
           GoS:DelayAction(function() Wskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)
   
-        elseif PoppyMenu.KS.Estun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos5)==true and enemyhp < DamageEStun then
+        elseif MonTourMenu.KS.Estun:Value() and CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) ~= READY and MapPosition:inWall(Pos5)==true and enemyhp < DamageEStun then
            GoS:DelayAction(function() Wskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 10) end, 50) end, 100)          
         end 
       end 
       
       -----------------------------------DMGOVER
       
-      if GoS:ValidTarget(unit,20000) and PoppyMenu.KS.DOH:Value() then
+      if GoS:ValidTarget(unit,20000) and MonTourMenu.KS.DOH:Value() then
         if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_E) ~= READY then
           DrawDmgOverHpBar(unit,enemyhp,0,DamageQ,0xffffffff) 
         
