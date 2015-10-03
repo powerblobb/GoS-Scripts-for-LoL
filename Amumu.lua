@@ -2,71 +2,71 @@ if GetObjectName(myHero) ~= "Amumu" then return end
 --MonTour Amumu:V1.0.0.4 - updated GoS:myHeroPos() to GetOrigin(myHero)
 PrintChat(string.format("<font color='#80F5F5'>MonTour Amumu:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.4</font>"))
-local AmumuMenu = Menu("Amumu", "Amumu")
-AmumuMenu:SubMenu("Combo", "Combo")
-AmumuMenu.Combo:Boolean("Q","Use Q",true)
-AmumuMenu.Combo:Boolean("W","Use W",true)
-AmumuMenu.Combo:Boolean("E","Use E",true)
-AmumuMenu.Combo:Boolean("R","Use R",true)
-AmumuMenu.Combo:Info("Amumu", "Use R if X+ Enemys")
-AmumuMenu.Combo:Slider("RE", "will be stunned (Def. 3)", 3, 1, 5, 1)
-AmumuMenu:SubMenu("Harass", "Harass")
-AmumuMenu.Harass:Boolean("Q","Use Q",true)
-AmumuMenu.Harass:Boolean("W","Use W",true)
-AmumuMenu.Harass:Boolean("E","Use E",true)
-AmumuMenu.Harass:Boolean("R","Use R",true)
-AmumuMenu.Harass:Info("Amumu", "Use R if X+ Enemys")
-AmumuMenu.Harass:Slider("RE", "will be stunned (Def. 1)", 1, 1, 5, 1)
-AmumuMenu:SubMenu("LaneClear", "LaneClear")
-AmumuMenu.LaneClear:Boolean("W","Use W",true)
-AmumuMenu.LaneClear:Slider("WC", "Turn on if MinionAround >= X (Def. 4)", 4, 1, 20, 1)
-AmumuMenu.LaneClear:Slider("WC2", "Turn off if MinionAround <= X (Def. 1)", 1, 1, 20, 1)
-AmumuMenu.LaneClear:Info("Amumu", " ")
-AmumuMenu.LaneClear:Boolean("E","Use E",true)
-AmumuMenu.LaneClear:Slider("EC", "Use E if MinionAround >= X (Def. 4)", 4, 1, 20, 1)
-AmumuMenu:SubMenu("JungleClear", "JungleClear")
-AmumuMenu.JungleClear:Boolean("Q","Use Q",true)
-AmumuMenu.JungleClear:Boolean("W","Use W",true)
-AmumuMenu.JungleClear:Boolean("E","Use E",true)
-AmumuMenu:SubMenu("KS", "KillSteal")
-AmumuMenu.KS:Boolean("Q","KS with Q",true)
-AmumuMenu.KS:Boolean("E","KS with E",true)
-AmumuMenu.KS:Info("Amumu", " ")
-AmumuMenu.KS:Boolean("R","KS with R",true)
-AmumuMenu.KS:Info("Amumu", "Use R if X+ Enemys")
-AmumuMenu.KS:Slider("RE", "will be stunned (Def. 3)", 3, 1, 5, 1)
-AmumuMenu.KS:Info("Amumu", " ")
-AmumuMenu.KS:Boolean("QE","KS with QE",false)
-AmumuMenu.KS:Info("Amumu", " ")
-AmumuMenu.KS:Boolean("QR","KS with QR",false)
-AmumuMenu.KS:Info("Amumu", "Use R if X+ Enemys")
-AmumuMenu.KS:Slider("RE2", "will be stunned (Def. 3)", 3, 1, 5, 1)
-AmumuMenu.KS:Info("Amumu", " ")
-AmumuMenu.KS:Boolean("QER","KS with QER",false)
-AmumuMenu.KS:Info("Amumu", "Use R if X+ Enemys")
-AmumuMenu.KS:Slider("RE3", "will be stunned (Def. 3)", 3, 1, 5, 1)
-AmumuMenu.KS:Info("Amumu", " ")
-AmumuMenu:SubMenu("Misc", "Misc")
-AmumuMenu.Misc:Boolean("MGUN","Ultimate Notifier", true)
-AmumuMenu.Misc:Boolean("MGUNDEB","TEXT DEBUG", false)
-AmumuMenu.Misc:Slider("MGUNSIZE", "UN Text Size", 30, 5, 60, 1)
-AmumuMenu.Misc:Slider("MGUNX", "UN X POS", 60, 0, 1600, 1)
-AmumuMenu.Misc:Slider("MGUNY", "UN Y POS", 200, 0, 1055, 1)
-AmumuMenu.Misc:Info("Amumu", " ")
-AmumuMenu.Misc:Boolean("MGUN2","Stunable Champion Notifier", true)
-AmumuMenu.Misc:Boolean("MGUNDEB2","TEXT DEBUG", false)
-AmumuMenu.Misc:Slider("MGUNSIZE2", "SCN Text Size", 25, 5, 60, 1)
-AmumuMenu.Misc:Slider("MGUNX2", "SCN X POS", 700, 0, 1600, 1)
-AmumuMenu.Misc:Slider("MGUNY2", "SCN Y POS", 785, 0, 1055, 1)
-AmumuMenu.Misc:Info("Amumu", " ")
-AmumuMenu.Misc:Boolean("DMGoHP","Draw DMG over HP",true) 
-AmumuMenu:SubMenu("Interrupt", "Interrupt")
-AmumuMenu.Interrupt:Boolean("InterruptQ", "Auto Interrupt Spells with Q", true)
-AmumuMenu.Interrupt:Info("Amumu", "Auto Interrupt Spells")
-AmumuMenu.Interrupt:Boolean("InterruptR", "with R if Q not Ready", true)
-AmumuMenu:SubMenu("Drawings", "Drawings")
-AmumuMenu.Drawings:Boolean("Q","Draw Q",true)
-AmumuMenu.Drawings:Boolean("R","Draw R",true)
+local MonTourMenu = Menu("Amumu", "Amumu")
+MonTourMenu:SubMenu("Combo", "Combo")
+MonTourMenu.Combo:Boolean("Q","Use Q",true)
+MonTourMenu.Combo:Boolean("W","Use W",true)
+MonTourMenu.Combo:Boolean("E","Use E",true)
+MonTourMenu.Combo:Boolean("R","Use R",true)
+MonTourMenu.Combo:Info("Amumu", "Use R if X+ Enemys")
+MonTourMenu.Combo:Slider("RE", "will be stunned (Def. 3)", 3, 1, 5, 1)
+MonTourMenu:SubMenu("Harass", "Harass")
+MonTourMenu.Harass:Boolean("Q","Use Q",true)
+MonTourMenu.Harass:Boolean("W","Use W",true)
+MonTourMenu.Harass:Boolean("E","Use E",true)
+MonTourMenu.Harass:Boolean("R","Use R",true)
+MonTourMenu.Harass:Info("Amumu", "Use R if X+ Enemys")
+MonTourMenu.Harass:Slider("RE", "will be stunned (Def. 1)", 1, 1, 5, 1)
+MonTourMenu:SubMenu("LaneClear", "LaneClear")
+MonTourMenu.LaneClear:Boolean("W","Use W",true)
+MonTourMenu.LaneClear:Slider("WC", "Turn on if MinionAround >= X (Def. 4)", 4, 1, 20, 1)
+MonTourMenu.LaneClear:Slider("WC2", "Turn off if MinionAround <= X (Def. 1)", 1, 1, 20, 1)
+MonTourMenu.LaneClear:Info("Amumu", " ")
+MonTourMenu.LaneClear:Boolean("E","Use E",true)
+MonTourMenu.LaneClear:Slider("EC", "Use E if MinionAround >= X (Def. 4)", 4, 1, 20, 1)
+MonTourMenu:SubMenu("JungleClear", "JungleClear")
+MonTourMenu.JungleClear:Boolean("Q","Use Q",true)
+MonTourMenu.JungleClear:Boolean("W","Use W",true)
+MonTourMenu.JungleClear:Boolean("E","Use E",true)
+MonTourMenu:SubMenu("KS", "KillSteal")
+MonTourMenu.KS:Boolean("Q","KS with Q",true)
+MonTourMenu.KS:Boolean("E","KS with E",true)
+MonTourMenu.KS:Info("Amumu", " ")
+MonTourMenu.KS:Boolean("R","KS with R",true)
+MonTourMenu.KS:Info("Amumu", "Use R if X+ Enemys")
+MonTourMenu.KS:Slider("RE", "will be stunned (Def. 3)", 3, 1, 5, 1)
+MonTourMenu.KS:Info("Amumu", " ")
+MonTourMenu.KS:Boolean("QE","KS with QE",false)
+MonTourMenu.KS:Info("Amumu", " ")
+MonTourMenu.KS:Boolean("QR","KS with QR",false)
+MonTourMenu.KS:Info("Amumu", "Use R if X+ Enemys")
+MonTourMenu.KS:Slider("RE2", "will be stunned (Def. 3)", 3, 1, 5, 1)
+MonTourMenu.KS:Info("Amumu", " ")
+MonTourMenu.KS:Boolean("QER","KS with QER",false)
+MonTourMenu.KS:Info("Amumu", "Use R if X+ Enemys")
+MonTourMenu.KS:Slider("RE3", "will be stunned (Def. 3)", 3, 1, 5, 1)
+MonTourMenu.KS:Info("Amumu", " ")
+MonTourMenu:SubMenu("Misc", "Misc")
+MonTourMenu.Misc:Boolean("MGUN","Ultimate Notifier", true)
+MonTourMenu.Misc:Boolean("MGUNDEB","TEXT DEBUG", false)
+MonTourMenu.Misc:Slider("MGUNSIZE", "UN Text Size", 30, 5, 60, 1)
+MonTourMenu.Misc:Slider("MGUNX", "UN X POS", 60, 0, 1600, 1)
+MonTourMenu.Misc:Slider("MGUNY", "UN Y POS", 200, 0, 1055, 1)
+MonTourMenu.Misc:Info("Amumu", " ")
+MonTourMenu.Misc:Boolean("MGUN2","Stunable Champion Notifier", true)
+MonTourMenu.Misc:Boolean("MGUNDEB2","TEXT DEBUG", false)
+MonTourMenu.Misc:Slider("MGUNSIZE2", "SCN Text Size", 25, 5, 60, 1)
+MonTourMenu.Misc:Slider("MGUNX2", "SCN X POS", 700, 0, 1600, 1)
+MonTourMenu.Misc:Slider("MGUNY2", "SCN Y POS", 785, 0, 1055, 1)
+MonTourMenu.Misc:Info("Amumu", " ")
+MonTourMenu.Misc:Boolean("DMGoHP","Draw DMG over HP",true) 
+MonTourMenu:SubMenu("Interrupt", "Interrupt")
+MonTourMenu.Interrupt:Boolean("InterruptQ", "Auto Interrupt Spells with Q", true)
+MonTourMenu.Interrupt:Info("Amumu", "Auto Interrupt Spells")
+MonTourMenu.Interrupt:Boolean("InterruptR", "with R if Q not Ready", true)
+MonTourMenu:SubMenu("Drawings", "Drawings")
+MonTourMenu.Drawings:Boolean("Q","Draw Q",true)
+MonTourMenu.Drawings:Boolean("R","Draw R",true)
 
 target = GetCurrentTarget()
 unit = GetCurrentTarget()
@@ -156,13 +156,13 @@ if IOW:Mode() == "LaneClear" then
   LaneClear(minion)
   JungleClear(jminion)
 end
-if AmumuMenu.Misc.DMGoHP:Value() then
+if MonTourMenu.Misc.DMGoHP:Value() then
   Draws()
 end
-if AmumuMenu.Misc.MGUN:Value() then
+if MonTourMenu.Misc.MGUN:Value() then
   GLOBALULTNOTICE()
 end
-if AmumuMenu.Misc.MGUN2:Value() then
+if MonTourMenu.Misc.MGUN2:Value() then
   GLOBALULTNOTICE2()
 end
 end)
@@ -173,20 +173,20 @@ function Combo()
   if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDead(target) or not IsVisible(target) or GetTeam(target) == GetTeam(myHero) then return false end
   if GoS:ValidTarget(target, spellData[_Q].range+50) then
  		local QPred = GetPredictionForPlayer(GetOrigin(myHero), target, GetMoveSpeed(target), spellData[_Q].speed, spellData[_Q].delay, spellData[_Q].range, spellData[_Q].width, true, true)
-		if AmumuMenu.Combo.Q:Value() and QREADY and QPred.HitChance == 1 then
+		if MonTourMenu.Combo.Q:Value() and QREADY and QPred.HitChance == 1 then
         CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
     end   
-    if AmumuMenu.Combo.W:Value() and WREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_W].range) >= 1 and AuraofDespairOff and GoS:IsInDistance(target, spellData[_W].range) and GoS:GetDistance(myHero, target) > 50 and GoS:GetDistance(myHero, target) <= spellData[_W].range then 
+    if MonTourMenu.Combo.W:Value() and WREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_W].range) >= 1 and AuraofDespairOff and GoS:IsInDistance(target, spellData[_W].range) and GoS:GetDistance(myHero, target) > 50 and GoS:GetDistance(myHero, target) <= spellData[_W].range then 
         CastTargetSpell(target,_W) 
     end    
-    if AmumuMenu.Combo.W:Value() and WREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_W].range+50) <= 0 and AuraofDespairOn and not GoS:IsInDistance(target, spellData[_W].range) and GoS:GetDistance(myHero, target) > spellData[_W].range then 
+    if MonTourMenu.Combo.W:Value() and WREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_W].range+50) <= 0 and AuraofDespairOn and not GoS:IsInDistance(target, spellData[_W].range) and GoS:GetDistance(myHero, target) > spellData[_W].range then 
         CastTargetSpell(target,_W) 
     end
-  	if AmumuMenu.Combo.E:Value() and EREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_E].range) >= 1 and GoS:IsInDistance(target, spellData[_E].range) and GoS:GetDistance(myHero, target) <= spellData[_E].range-30 and GoS:GetDistance(myHero, target) > 0 then 
+  	if MonTourMenu.Combo.E:Value() and EREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_E].range) >= 1 and GoS:IsInDistance(target, spellData[_E].range) and GoS:GetDistance(myHero, target) <= spellData[_E].range-30 and GoS:GetDistance(myHero, target) > 0 then 
         CastTargetSpell(target,_E)
     end
     for _,target in pairs(GoS:GetEnemyHeroes()) do
-    if AmumuMenu.Combo.R:Value() and RREADY and GoS:IsInDistance(target, spellData[_R].range) and GoS:EnemiesAround(GetOrigin(myHero), spellData[_R].range-10) >= AmumuMenu.Combo.RE:Value() then
+    if MonTourMenu.Combo.R:Value() and RREADY and GoS:IsInDistance(target, spellData[_R].range) and GoS:EnemiesAround(GetOrigin(myHero), spellData[_R].range-10) >= MonTourMenu.Combo.RE:Value() then
         CastTargetSpell(target,_R)
     end
     end
@@ -199,20 +199,20 @@ function Harass()
   if target == nil or GetOrigin(target) == nil or IsImmune(target,myHero) or IsDead(target) or not IsVisible(target) or GetTeam(target) == GetTeam(myHero) then return false end
   if GoS:ValidTarget(target, spellData[_Q].range+50) then
  		local QPred = GetPredictionForPlayer(GetOrigin(myHero), target, GetMoveSpeed(target), spellData[_Q].speed, spellData[_Q].delay, spellData[_Q].range, spellData[_Q].width, true, true)
-		if AmumuMenu.Harass.Q:Value() and QREADY and QPred.HitChance == 1 then
+		if MonTourMenu.Harass.Q:Value() and QREADY and QPred.HitChance == 1 then
         CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
     end   
-    if AmumuMenu.Harass.W:Value() and WREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_W].range) >= 1 and AuraofDespairOff and GoS:IsInDistance(target, spellData[_W].range) and GoS:GetDistance(myHero, target) > 50 and GoS:GetDistance(myHero, target) <= spellData[_W].range then 
+    if MonTourMenu.Harass.W:Value() and WREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_W].range) >= 1 and AuraofDespairOff and GoS:IsInDistance(target, spellData[_W].range) and GoS:GetDistance(myHero, target) > 50 and GoS:GetDistance(myHero, target) <= spellData[_W].range then 
         CastTargetSpell(target,_W) 
     end    
-    if AmumuMenu.Harass.W:Value() and WREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_W].range+50) <= 0 and AuraofDespairOn and not GoS:IsInDistance(target, spellData[_W].range) and GoS:GetDistance(myHero, target) > spellData[_W].range then 
+    if MonTourMenu.Harass.W:Value() and WREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_W].range+50) <= 0 and AuraofDespairOn and not GoS:IsInDistance(target, spellData[_W].range) and GoS:GetDistance(myHero, target) > spellData[_W].range then 
         CastTargetSpell(target,_W) 
     end
-  	if AmumuMenu.Harass.E:Value() and EREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_E].range) >= 1 and GoS:IsInDistance(target, spellData[_E].range) and GoS:GetDistance(myHero, target) <= spellData[_E].range-30 and GoS:GetDistance(myHero, target) > 0 then 
+  	if MonTourMenu.Harass.E:Value() and EREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_E].range) >= 1 and GoS:IsInDistance(target, spellData[_E].range) and GoS:GetDistance(myHero, target) <= spellData[_E].range-30 and GoS:GetDistance(myHero, target) > 0 then 
         CastTargetSpell(target,_E)
     end
     for _,target in pairs(GoS:GetEnemyHeroes()) do    
-    if AmumuMenu.Harass.R:Value() and RREADY and GoS:IsInDistance(target, spellData[_R].range) and GoS:EnemiesAround(GetOrigin(myHero), spellData[_R].range-10) >= AmumuMenu.Harass.RE:Value() then
+    if MonTourMenu.Harass.R:Value() and RREADY and GoS:IsInDistance(target, spellData[_R].range) and GoS:EnemiesAround(GetOrigin(myHero), spellData[_R].range-10) >= MonTourMenu.Harass.RE:Value() then
         CastTargetSpell(target,_R)
     end
     end
@@ -220,8 +220,8 @@ function Harass()
 end 
 
 function Drawings()
-if AmumuMenu.Drawings.Q:Value() and GetCastLevel(myHero,_Q) >=1 then DrawCircle(GetOrigin(myHero).x, GetOrigin(myHero).y, GetOrigin(myHero).z,GetCastRange(myHero,_Q),0.6,50,0xff0000ff) end
-if AmumuMenu.Drawings.R:Value() and GetCastLevel(myHero,_R) >=1 then DrawCircle(GetOrigin(myHero).x, GetOrigin(myHero).y, GetOrigin(myHero).z,GetCastRange(myHero,_R),0.6,50,0xff0000ff) end
+if MonTourMenu.Drawings.Q:Value() and GetCastLevel(myHero,_Q) >=1 then DrawCircle(GetOrigin(myHero).x, GetOrigin(myHero).y, GetOrigin(myHero).z,GetCastRange(myHero,_Q),0.6,50,0xff0000ff) end
+if MonTourMenu.Drawings.R:Value() and GetCastLevel(myHero,_R) >=1 then DrawCircle(GetOrigin(myHero).x, GetOrigin(myHero).y, GetOrigin(myHero).z,GetCastRange(myHero,_R),0.6,50,0xff0000ff) end
 end
 
 function Draws()
@@ -255,11 +255,11 @@ end
 function LaneClear(minion)
 			for i,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do	
   if GoS:ValidTarget(minion, spellData[_W].range+50) then     
-        if AmumuMenu.LaneClear.W:Value() and WREADY and MinionAround(GetOrigin(myHero), spellData[_W].range) >= AmumuMenu.LaneClear.WC:Value() and AuraofDespairOff and GoS:IsInDistance(minion, spellData[_W].range) and GoS:GetDistance(myHero, minion) > 50 and GoS:GetDistance(myHero, minion) <= spellData[_W].range then 
+        if MonTourMenu.LaneClear.W:Value() and WREADY and MinionAround(GetOrigin(myHero), spellData[_W].range) >= MonTourMenu.LaneClear.WC:Value() and AuraofDespairOff and GoS:IsInDistance(minion, spellData[_W].range) and GoS:GetDistance(myHero, minion) > 50 and GoS:GetDistance(myHero, minion) <= spellData[_W].range then 
         CastTargetSpell(minion,_W) 
-        elseif AmumuMenu.LaneClear.W:Value() and WREADY and MinionAround(GetOrigin(myHero), spellData[_W].range) <= AmumuMenu.LaneClear.WC2:Value() and AuraofDespairOn and not GoS:IsInDistance(minion, spellData[_W].range) and GoS:GetDistance(myHero, minion) > spellData[_W].range then 
+        elseif MonTourMenu.LaneClear.W:Value() and WREADY and MinionAround(GetOrigin(myHero), spellData[_W].range) <= MonTourMenu.LaneClear.WC2:Value() and AuraofDespairOn and not GoS:IsInDistance(minion, spellData[_W].range) and GoS:GetDistance(myHero, minion) > spellData[_W].range then 
         CastTargetSpell(minion,_W) 
-        elseif AmumuMenu.LaneClear.E:Value() and EREADY and MinionAround(GetOrigin(myHero), spellData[_E].range) >= AmumuMenu.LaneClear.EC:Value() and GoS:IsInDistance(minion, spellData[_E].range) and GoS:GetDistance(myHero, minion) >= 10 and GoS:GetDistance(myHero, minion) <= spellData[_E].range then 
+        elseif MonTourMenu.LaneClear.E:Value() and EREADY and MinionAround(GetOrigin(myHero), spellData[_E].range) >= MonTourMenu.LaneClear.EC:Value() and GoS:IsInDistance(minion, spellData[_E].range) and GoS:GetDistance(myHero, minion) >= 10 and GoS:GetDistance(myHero, minion) <= spellData[_E].range then 
         CastTargetSpell(minion,_E) 
 				end		
 			end
@@ -270,14 +270,14 @@ function JungleClear(jminion)
 			for i,jminion in pairs(GoS:GetAllMinions(MINION_JUNGLE)) do
         jminionpos = GetOrigin(jminion)
   if GoS:ValidTarget(jminion, spellData[_Q].range+50) then 
-    		if AmumuMenu.JungleClear.Q:Value() and QREADY and GoS:IsInDistance(jminion, spellData[_Q].range) and GoS:GetDistance(myHero, jminion) > spellData[_Q].range-spellData[_W].range then --GetRange(myHero)
+    		if MonTourMenu.JungleClear.Q:Value() and QREADY and GoS:IsInDistance(jminion, spellData[_Q].range) and GoS:GetDistance(myHero, jminion) > spellData[_Q].range-spellData[_W].range then --GetRange(myHero)
         CastSkillShot(_Q,jminionpos.x,jminionpos.y,jminionpos.z)
         end  
-        if AmumuMenu.JungleClear.W:Value() and WREADY and JMinionAround(GetOrigin(myHero), spellData[_W].range) >= 1 and AuraofDespairOff and GoS:IsInDistance(jminion, spellData[_W].range) and GoS:GetDistance(myHero, jminion) > 50 and GoS:GetDistance(myHero, jminion) <= spellData[_W].range then 
+        if MonTourMenu.JungleClear.W:Value() and WREADY and JMinionAround(GetOrigin(myHero), spellData[_W].range) >= 1 and AuraofDespairOff and GoS:IsInDistance(jminion, spellData[_W].range) and GoS:GetDistance(myHero, jminion) > 50 and GoS:GetDistance(myHero, jminion) <= spellData[_W].range then 
         CastTargetSpell(jminion,_W) 
-        elseif AmumuMenu.JungleClear.W:Value() and WREADY and JMinionAround(GetOrigin(myHero), spellData[_W].range) <= 0 and AuraofDespairOn and not GoS:IsInDistance(jminion, spellData[_W].range) and GoS:GetDistance(myHero, jminion) > spellData[_W].range then 
+        elseif MonTourMenu.JungleClear.W:Value() and WREADY and JMinionAround(GetOrigin(myHero), spellData[_W].range) <= 0 and AuraofDespairOn and not GoS:IsInDistance(jminion, spellData[_W].range) and GoS:GetDistance(myHero, jminion) > spellData[_W].range then 
         CastTargetSpell(jminion,_W) 
-        elseif AmumuMenu.JungleClear.E:Value() and EREADY and JMinionAround(GetOrigin(myHero), spellData[_E].range) >= 1 and GoS:IsInDistance(jminion, spellData[_E].range) and GoS:GetDistance(myHero, jminion) >= 10 and GoS:GetDistance(myHero, jminion) <= spellData[_E].range then 
+        elseif MonTourMenu.JungleClear.E:Value() and EREADY and JMinionAround(GetOrigin(myHero), spellData[_E].range) >= 1 and GoS:IsInDistance(jminion, spellData[_E].range) and GoS:GetDistance(myHero, jminion) >= 10 and GoS:GetDistance(myHero, jminion) <= spellData[_E].range then 
         CastTargetSpell(jminion,_E) 
 				end		
 			end
@@ -291,20 +291,20 @@ function Killsteal()
  -- local WDmg = WREADY and spellData[_W].dmg() or 0
   local EDmg = spellData[_E].dmg() or 0
   local RDmg = spellData[_R].dmg() or 0
-		if AmumuMenu.KS.E:Value() and GoS:ValidTarget(enemy, spellData[_E].range) and enemyhp < GoS:CalcDamage(myHero, enemy, 0, EDmg) then
+		if MonTourMenu.KS.E:Value() and GoS:ValidTarget(enemy, spellData[_E].range) and enemyhp < GoS:CalcDamage(myHero, enemy, 0, EDmg) then
 			  	if EREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_E].range) >= 1 and GoS:IsInDistance(enemy, spellData[_E].range) and GoS:GetDistance(myHero, enemy) <= spellData[_E].range-30 and GoS:GetDistance(myHero, enemy) > 0 then 
         CastTargetSpell(enemy,_E)
           end
-		elseif AmumuMenu.KS.Q:Value() and GoS:ValidTarget(enemy, spellData[_Q].range) and enemyhp < GoS:CalcDamage(myHero, enemy, 0, QDmg) then
+		elseif MonTourMenu.KS.Q:Value() and GoS:ValidTarget(enemy, spellData[_Q].range) and enemyhp < GoS:CalcDamage(myHero, enemy, 0, QDmg) then
       local QPred = GetPredictionForPlayer(GetOrigin(myHero), enemy, GetMoveSpeed(enemy), spellData[_Q].speed, spellData[_Q].delay, spellData[_Q].range, spellData[_Q].width, true, true)
         if QREADY and QPred.HitChance == 1 then
         CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
         end  		
-		elseif AmumuMenu.KS.R:Value() and GoS:ValidTarget(enemy, spellData[_R].range) and enemyhp < GoS:CalcDamage(myHero, enemy, 0, RDmg) then
-    if RREADY and GoS:IsInDistance(enemy, spellData[_R].range) and GoS:EnemiesAround(GetOrigin(myHero), spellData[_R].range-10) >= AmumuMenu.KS.RE:Value() then
+		elseif MonTourMenu.KS.R:Value() and GoS:ValidTarget(enemy, spellData[_R].range) and enemyhp < GoS:CalcDamage(myHero, enemy, 0, RDmg) then
+    if RREADY and GoS:IsInDistance(enemy, spellData[_R].range) and GoS:EnemiesAround(GetOrigin(myHero), spellData[_R].range-10) >= MonTourMenu.KS.RE:Value() then
         CastTargetSpell(enemy,_R)
     end
-		elseif AmumuMenu.KS.QE:Value() and GoS:ValidTarget(enemy, spellData[_Q].range) and enemyhp < GoS:CalcDamage(myHero, enemy, 0, EDmg + QDmg) then			
+		elseif MonTourMenu.KS.QE:Value() and GoS:ValidTarget(enemy, spellData[_Q].range) and enemyhp < GoS:CalcDamage(myHero, enemy, 0, EDmg + QDmg) then			
  		local QPred = GetPredictionForPlayer(GetOrigin(myHero), enemy, GetMoveSpeed(enemy), spellData[_Q].speed, spellData[_Q].delay, spellData[_Q].range, spellData[_Q].width, true, true)
 		if QREADY and QPred.HitChance == 1 then
         CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
@@ -318,7 +318,7 @@ function Killsteal()
   	if EREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_E].range) >= 1 and GoS:IsInDistance(enemy, spellData[_E].range) and GoS:GetDistance(myHero, enemy) <= spellData[_E].range-30 and GoS:GetDistance(myHero, enemy) > 0 then 
         CastTargetSpell(enemy,_E)
     end
-		elseif AmumuMenu.KS.QR:Value() and GoS:ValidTarget(enemy, spellData[_Q].range) and enemyhp < GoS:CalcDamage(myHero, enemy, 0, RDmg + QDmg) then			
+		elseif MonTourMenu.KS.QR:Value() and GoS:ValidTarget(enemy, spellData[_Q].range) and enemyhp < GoS:CalcDamage(myHero, enemy, 0, RDmg + QDmg) then			
       local QPred = GetPredictionForPlayer(GetOrigin(myHero), enemy, GetMoveSpeed(enemy), spellData[_Q].speed, spellData[_Q].delay, spellData[_Q].range, spellData[_Q].width, true, true)
         if QREADY and QPred.HitChance == 1 then
         CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
@@ -329,12 +329,12 @@ function Killsteal()
     if WREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_W].range+50) <= 0 and AuraofDespairOn and not GoS:IsInDistance(enemy, spellData[_W].range) and GoS:GetDistance(myHero, enemy) > spellData[_W].range then 
         CastTargetSpell(enemy,_W) 
     end
-    if RREADY and GoS:IsInDistance(enemy, spellData[_R].range) and GoS:EnemiesAround(GetOrigin(myHero), spellData[_R].range-10) >= AmumuMenu.KS.RE2:Value() then
+    if RREADY and GoS:IsInDistance(enemy, spellData[_R].range) and GoS:EnemiesAround(GetOrigin(myHero), spellData[_R].range-10) >= MonTourMenu.KS.RE2:Value() then
         CastTargetSpell(enemy,_R)
     end    
-		elseif AmumuMenu.KS.QER:Value() and GoS:ValidTarget(enemy, spellData[_Q].range) and enemyhp < GoS:CalcDamage(myHero, enemy, 0, QDmg  + EDmg + RDmg) then			
+		elseif MonTourMenu.KS.QER:Value() and GoS:ValidTarget(enemy, spellData[_Q].range) and enemyhp < GoS:CalcDamage(myHero, enemy, 0, QDmg  + EDmg + RDmg) then			
  		local QPred = GetPredictionForPlayer(GetOrigin(myHero), enemy, GetMoveSpeed(enemy), spellData[_Q].speed, spellData[_Q].delay, spellData[_Q].range, spellData[_Q].width, true, true)
-		if AmumuMenu.Harass.Q:Value() and QREADY and QPred.HitChance == 1 then
+		if MonTourMenu.Harass.Q:Value() and QREADY and QPred.HitChance == 1 then
         CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
     end   
     if WREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_W].range) >= 1 and AuraofDespairOff and GoS:IsInDistance(enemy, spellData[_W].range) and GoS:GetDistance(myHero, enemy) > 50 and GoS:GetDistance(myHero, enemy) <= spellData[_W].range then 
@@ -346,7 +346,7 @@ function Killsteal()
   	if EREADY and GoS:EnemiesAround(GetOrigin(myHero), spellData[_E].range) >= 1 and GoS:IsInDistance(enemy, spellData[_E].range) and GoS:GetDistance(myHero, enemy) <= spellData[_E].range-30 and GoS:GetDistance(myHero, enemy) > 0 then 
         CastTargetSpell(enemy,_E)
     end
-    if RREADY and GoS:IsInDistance(enemy, spellData[_R].range) and GoS:EnemiesAround(GetOrigin(myHero), spellData[_R].range-10) >= AmumuMenu.KS.RE3:Value() then
+    if RREADY and GoS:IsInDistance(enemy, spellData[_R].range) and GoS:EnemiesAround(GetOrigin(myHero), spellData[_R].range-10) >= MonTourMenu.KS.RE3:Value() then
         CastTargetSpell(enemy,_R)
     end	
 		end
@@ -371,7 +371,7 @@ end
         		 end               
 			end
 		end		 
-    DrawText(info1,AmumuMenu.Misc.MGUNSIZE:Value(),AmumuMenu.Misc.MGUNX:Value(),AmumuMenu.Misc.MGUNY:Value(),0xffff0000)                	
+    DrawText(info1,MonTourMenu.Misc.MGUNSIZE:Value(),MonTourMenu.Misc.MGUNX:Value(),MonTourMenu.Misc.MGUNY:Value(),0xffff0000)                	
 end
 
 function GLOBALULTNOTICE2()
@@ -396,15 +396,15 @@ function GLOBALULTNOTICE2()
         		 end               
 			end
 		end		 
-    DrawText(info,AmumuMenu.Misc.MGUNSIZE2:Value(),AmumuMenu.Misc.MGUNX2:Value(),AmumuMenu.Misc.MGUNY2:Value(),0xffff0000)                	
+    DrawText(info,MonTourMenu.Misc.MGUNSIZE2:Value(),MonTourMenu.Misc.MGUNX2:Value(),MonTourMenu.Misc.MGUNY2:Value(),0xffff0000)                	
 end
 
 function GLOBALULTNOTICEDEBUG()	 
-  if AmumuMenu.Misc.MGUNDEB:Value() then  
-    DrawText("I am in Range but not killable - TESTMODE ON",AmumuMenu.Misc.MGUNSIZE:Value(),AmumuMenu.Misc.MGUNX:Value(),AmumuMenu.Misc.MGUNY:Value(),0xffff0000)  
+  if MonTourMenu.Misc.MGUNDEB:Value() then  
+    DrawText("I am in Range but not killable - TESTMODE ON",MonTourMenu.Misc.MGUNSIZE:Value(),MonTourMenu.Misc.MGUNX:Value(),MonTourMenu.Misc.MGUNY:Value(),0xffff0000)  
   end 
-    if AmumuMenu.Misc.MGUNDEB2:Value() then  
-    DrawText("0 Enemys will be stunned - TESTMODE ON",AmumuMenu.Misc.MGUNSIZE2:Value(),AmumuMenu.Misc.MGUNX2:Value(),AmumuMenu.Misc.MGUNY2:Value(),0xffff0000)  
+    if MonTourMenu.Misc.MGUNDEB2:Value() then  
+    DrawText("0 Enemys will be stunned - TESTMODE ON",MonTourMenu.Misc.MGUNSIZE2:Value(),MonTourMenu.Misc.MGUNX2:Value(),MonTourMenu.Misc.MGUNY2:Value(),0xffff0000)  
   end
 end
 
@@ -433,12 +433,12 @@ end
 addInterrupterCallback(function(unit, spellType)
     local unit = GetCurrentTarget()
     for _,unit in pairs(GoS:GetEnemyHeroes()) do
-    if spellType == CHANELLING_SPELLS and AmumuMenu.Interrupt.InterruptQ:Value() then
+    if spellType == CHANELLING_SPELLS and MonTourMenu.Interrupt.InterruptQ:Value() then
       local QPred = GetPredictionForPlayer(GetOrigin(myHero), unit, GetMoveSpeed(unit), spellData[_Q].speed, spellData[_Q].delay, spellData[_Q].range, spellData[_Q].width, true, true)
       if CanUseSpell(myHero,_Q) == READY and QPred.HitChance == 1 then
         CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
       end
-    elseif spellType == CHANELLING_SPELLS and AmumuMenu.Interrupt.InterruptR:Value() and CanUseSpell(myHero,_Q) ~= READY then  
+    elseif spellType == CHANELLING_SPELLS and MonTourMenu.Interrupt.InterruptR:Value() and CanUseSpell(myHero,_Q) ~= READY then  
       if CanUseSpell(myHero,_R) == READY and GoS:IsInDistance(unit, spellData[_R].range) and GoS:EnemiesAround(GetOrigin(myHero), spellData[_R].range-10) >= 1 then
         CastTargetSpell(unit,_R)
       end
