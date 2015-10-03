@@ -1,7 +1,7 @@
 if GetObjectName(myHero) ~= "Alistar" then return end
---MonTour Alistar:V1.0.0.1
+--MonTour Alistar:V1.0.0.2 - updated GoS:myHeroPos() to GetOrigin(myHero)
 PrintChat(string.format("<font color='#80F5F5'>MonTour Alistar:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.1</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.2</font>"))
    local AlistarMenu = Menu("Alistar", "Alistar")
     AlistarMenu:SubMenu("Combo", "Combo")
     AlistarMenu.Combo:Boolean("CQW", "Use QW Combo", false)
@@ -82,13 +82,13 @@ if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) an
             end
         end
             if AlistarMenu.Combo.CWQ:Value() then
-        local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1200,250,260,50,false,true)
+        local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1200,250,260,50,false,true)
             if CanUseSpell(myHero, _Q) == READY and CanUseSpell(myHero, _W) ~= READY and GoS:IsInDistance(unit, 365) then
             CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z) 
             end
         end
             if AlistarMenu.Combo.CQW:Value() then
-        local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1200,250,260,50,false,true)
+        local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1200,250,260,50,false,true)
             if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 365) then
             CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z) 
             end
@@ -120,13 +120,13 @@ if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) an
             end
         end
             if AlistarMenu.Harass.HWQ:Value() then
-        local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1200,250,260,50,false,true)
+        local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1200,250,260,50,false,true)
             if CanUseSpell(myHero, _Q) == READY and CanUseSpell(myHero, _W) ~= READY and GoS:IsInDistance(unit, 365) then
             CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z) 
             end
         end
             if AlistarMenu.Harass.HQW:Value() then
-        local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1200,250,260,50,false,true)
+        local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1200,250,260,50,false,true)
             if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 365) then
             CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z) 
             end
@@ -169,7 +169,7 @@ addInterrupterCallback(function(unit, spellType)
             if CanUseSpell(myHero, _W) == READY and GoS:IsInDistance(unit, 300) then
             CastTargetSpell(unit, _W)
             end    
-            local QPred = GetPredictionForPlayer(GoS:myHeroPos(),unit,GetMoveSpeed(unit),1200,250,260,50,false,true)
+            local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1200,250,260,50,false,true)
             if CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 365) then
             CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z) 
             end
