@@ -1,7 +1,7 @@
 if GetObjectName(myHero) ~= "Poppy" then return end
---MonTour Poppy:V0.0.1.4 Beta - added interrupter
+--MonTour Poppy:V0.0.1.5 Beta - fixed Ignite ... hopefully
 PrintChat(string.format("<font color='#80F5F5'>MonTour Poppy:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.0.1.4 Beta</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.0.1.5 Beta</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
 mapID = GetMapID()
 if mapID ~= SUMMONERS_RIFT then 
@@ -10,6 +10,7 @@ if mapID ~= SUMMONERS_RIFT then
   PrintChat(string.format("<font color='#BC0707'>Or use it at your own</font> <font color='#BC0707'>Risk!!!</font>"))
 end  
 require('MapPositionGOS')
+--require('ItemDataBase')
 local MonTourMenu = Menu("MonTourMenu", "Poppy")
 MonTourMenu:SubMenu("Combo", "Combo")
 MonTourMenu.Combo:List("prio", "Start Combo only if Stunnable?", 1, {"Yes", "No"})
@@ -188,7 +189,7 @@ end
 function AttackUnitKS(unit)
 	for i,unit in pairs(GoS:GetEnemyHeroes()) do  
   if GoS:GetDistanceSqr(GetOrigin(unit)) <= 125*125 then --GoS:IsInDistance(minion, 125) and GoS:GetDistance(myHero, minion) <= 125 then 
-    AttackUnit(unit)
+    AttackUnit(unit) GoS:DelayAction(function() CastItemsForKS() GoS:DelayAction(function() AttackUnit(unit) end, 10) end, 50)
   end
   end
 end
@@ -308,7 +309,7 @@ function AllforOne()
     if GoS:ValidTarget(unit,1000) then      
       if MonTourMenu.Combo.AutoE:Value() and CanUseSpell(myHero,_W) == READY and GetCastLevel(myHero,_Q) > 0 and GetCastLevel(myHero,_W) > 0 and GetCastLevel(myHero,_E) > 0 and GoS:EnemiesAround(GetOrigin(myHero), MonTourMenu.Combo.AutoER:Value()) <= MonTourMenu.Combo.AutoEE:Value() then
 				if MapPosition:inWall(Pos1)==true then
-					if GoS:GetDistance(unit)<=525 then
+					if GoS:GetDistance(unit)<=525 then 
 						 Wskill() GoS:DelayAction(function() Qskill() GoS:DelayAction(function() Eskill() GoS:DelayAction(function() AttackUnitKS(unit) end, 100) end, 200) end, 300)  
 					end
 				end
@@ -415,11 +416,12 @@ end
 
 
 function Ignite()
-      local Igniteit = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerdot") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerdot") and SUMMONER_2 or nil))
-    if GoS:ValidTarget(unit, 700) and Igniteit and CanUseSpell(myHero,_E) ~= READY and GoS:GetDistance(unit) > 500 then --and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) and
-        for _, k in pairs(GoS:GetEnemyHeroes()) do
-            if CanUseSpell(GetMyHero(), Igniteit) == READY and (20*GetLevel(GetMyHero())+50) > GetCurrentHP(k)+GetHPRegen(k)*2.5 and GoS:GetDistanceSqr(GetOrigin(k)) < 600*600 then
-                CastTargetSpell(k, Igniteit)
+      --local Ignite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerdot") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerdot") and SUMMONER_2 or nil))
+      for _, k in pairs(GoS:GetEnemyHeroes()) do
+    if GoS:ValidTarget(k, 700) and Ignite and CanUseSpell(myHero,_E) ~= READY and GoS:GetDistance(k) > 500 then --and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) and
+        
+            if CanUseSpell(GetMyHero(), Ignite) == READY and (20*GetLevel(GetMyHero())+50) > GetCurrentHP(k)+GetHPRegen(k)*2.5 and GoS:GetDistanceSqr(GetOrigin(k)) < 600*600 then
+                CastTargetSpell(k, Ignite)
             end
         end
      end
@@ -550,6 +552,23 @@ function CastItemsForMinion()
   end
 end  
 
+function CastItemsForKS()
+  for i,unit in pairs(GoS:GetEnemyHeroes()) do 
+    if GoS:ValidTarget(unit, 600) then
+      if MonTourMenu.LaneClear.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 then --tiamat
+        if GoS:GetDistance(unit) < 400 then
+         CastTargetSpell(myHero, GetItemSlot(myHero, 3077))
+        end
+      end  
+      if MonTourMenu.LaneClear.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 then --hydra
+        if GoS:GetDistance(unit) < 400 then
+        CastTargetSpell(myHero, GetItemSlot(myHero, 3074))
+        end
+      end
+    end 
+  end
+end 
+
 function MinionAround(pos, range)
   local c = 0
   if pos == nil then return 0 end
@@ -560,35 +579,6 @@ function MinionAround(pos, range)
   end
   return c
 end
-
---OnLoop(function(myHero)
---buffdatas = GetBuffData(myHero,"sheen");
---DrawText(string.format("[RECALL_BUFF INFO]", buffdatas.Type),12,0,20,0xff00ff00);
---DrawText(string.format("Type = %d", buffdatas.Type),12,0,30,0xff00ff00);
---DrawText(string.format("Name = %s", buffdatas.Name),12,0,40,0xff00ff00);
---DrawText(string.format("Count = %d", buffdatas.Count),12,0,50,0xff00ff00);
---DrawText(string.format("Stacks = %f", buffdatas.Stacks),12,0,60,0xff00ff00);
---DrawText(string.format("StartTime = %f", buffdatas.StartTime),12,0,70,0xff00ff00);
---DrawText(string.format("ExpireTime = %f", buffdatas.ExpireTime),12,0,80,0xff00ff00);
---DrawText(string.format("[GameTime] = %f", GetGameTimer()),12,0,90,0xff00ff00);
---bufftypelist = GetBuffTypeList();
---if buffdatas.Type == bufftypelist.Aura then
---	DrawText("Buff is considered as aura",12,0,100,0xffffffff);
---	end
---DrawText(string.format("GetBuffTypeToString = [%s]", GetBuffTypeToString(buffdatas.Type)),12,0,110,0xffffff00);
---end)
-
---OnLoop(function(myHero)
---local capspress = KeyIsDown(0x14); --Caps Lock key
---if capspress then
---	local itemid = GetItemID(myHero,ITEM_1);
---	local itemammo = GetItemAmmo(myHero,ITEM_1);
---	local itemstack = GetItemStack(myHero,ITEM_1);
---	PrintChat(string.format("itemID in Slot 1 is = %d", itemid));
---	PrintChat(string.format("AMMO! in Slot 1 is = %d", itemammo));
---	PrintChat(string.format("STACK in Slot 1 is = %d", itemstack));
---	end
---end)
 
 function KillSteal()
   local unit = GetCurrentTarget()
@@ -838,3 +828,69 @@ addInterrupterCallback(function(unit, spellType)
             end    
         end
 end)
+
+
+
+
+--OnLoop(function(myHero)
+--buffdatas = GetBuffData(myHero,"sheen");
+--DrawText(string.format("[RECALL_BUFF INFO]", buffdatas.Type),12,0,20,0xff00ff00);
+--DrawText(string.format("Type = %d", buffdatas.Type),12,0,30,0xff00ff00);
+--DrawText(string.format("Name = %s", buffdatas.Name),12,0,40,0xff00ff00);
+--DrawText(string.format("Count = %d", buffdatas.Count),12,0,50,0xff00ff00);
+--DrawText(string.format("Stacks = %f", buffdatas.Stacks),12,0,60,0xff00ff00);
+--DrawText(string.format("StartTime = %f", buffdatas.StartTime),12,0,70,0xff00ff00);
+--DrawText(string.format("ExpireTime = %f", buffdatas.ExpireTime),12,0,80,0xff00ff00);
+--DrawText(string.format("[GameTime] = %f", GetGameTimer()),12,0,90,0xff00ff00);
+--bufftypelist = GetBuffTypeList();
+--if buffdatas.Type == bufftypelist.Aura then
+--	DrawText("Buff is considered as aura",12,0,100,0xffffffff);
+--	end
+--DrawText(string.format("GetBuffTypeToString = [%s]", GetBuffTypeToString(buffdatas.Type)),12,0,110,0xffffff00);
+--end)
+
+--OnLoop(function(myHero)
+-- class "Point" -- {
+--  function Point:__init(x, y, z) -- this constructor gets called when we create a new Point(x,y,z)
+--    local pos = GetOrigin(x) or type(x) ~= "number" and x or nil -- check if the input is a position or an object instead of x,y,z coordinates
+--    self.x = pos and pos.x or x -- set x
+--    self.y = pos and pos.y or y -- set y
+--    self.z = pos and pos.z or z -- set z
+--  end
+-- }
+
+--for i,unit in pairs(GoS:GetEnemyHeroes()) do
+--UseItem(3056, unit, 550)
+--end
+-- MonTour:UseItem12345()
+--local capspress = KeyIsDown(0x14); --Caps Lock key
+--test = GetCastRange(myHero,GetItemSlot(myHero,3092))
+--DrawText(test,30,30,120,0xffffffff);
+-- create some points
+--local p1 = Point(myHero) -- create a new point of myHero coordinates
+--local p2 = Point(GetMousePos()) -- create a new point of mouse coordinates
+--local p3 = Point(100,10,100) -- create a new point with defined coordinates
+
+-- print distances between the three points in chat
+--PrintChat(GoS:GetDistance(p1, p2)) 
+
+--if capspress then
+--	local itemid = GetItemID(myHero,ITEM_7);
+--	local itemammo = GetItemAmmo(myHero,ITEM_7);
+--	local itemstack = GetItemStack(myHero,ITEM_7);
+--	PrintChat(string.format("itemID in Slot 7 is = %d", itemid));
+--	PrintChat(string.format("AMMO! in Slot 7 is = %d", itemammo));
+--	PrintChat(string.format("STACK in Slot 7 is = %d", itemstack));
+--	end
+--end)
+--OnLoop(function(myHero)
+--local capspress = KeyIsDown(0x14); --Caps Lock key
+--if capspress then
+--	local itemid = GetItemID(myHero,ITEM_1);
+--	local itemammo = GetItemAmmo(myHero,ITEM_1);
+--	local itemstack = GetItemStack(myHero,ITEM_1);
+--	PrintChat(string.format("itemID in Slot 1 is = %d", itemid));
+--	PrintChat(string.format("AMMO! in Slot 1 is = %d", itemammo));
+--	PrintChat(string.format("STACK in Slot 1 is = %d", itemstack));
+--	end
+--end)
