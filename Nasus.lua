@@ -1,7 +1,7 @@
 if GetObjectName(GetMyHero()) ~= "Nasus" then return end
---MonTour Nasus:V1.0.0.4 - updated GoS:myHeroPos() to GetOrigin(myHero)
+--MonTour Nasus:V1.0.0.5 - fixed Ignite ... hopefully
 PrintChat(string.format("<font color='#80F5F5'>MonTour Nasus:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.1</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.5</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Cloud for Old Q Stack Thank you</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Feretorix for everything and GetBuffData in new API</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
@@ -168,9 +168,10 @@ end
 end
 
 function Ignite()
-      local Ignite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerdot") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerdot") and SUMMONER_2 or nil))
-    if GoS:ValidTarget(unit, 700) and Ignite and MonTourMenu.Items.Ignite:Value() and CanUseSpell(myHero,_E) ~= READY and CanUseSpell(myHero,_W) ~= READY and  GoS:GetDistance(unit) > 460 then --and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) and
-        for _, k in pairs(GoS:GetEnemyHeroes()) do
+      --local Ignite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerdot") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerdot") and SUMMONER_2 or nil))
+      for _, k in pairs(GoS:GetEnemyHeroes()) do
+    if GoS:ValidTarget(k, 700) and Ignite and MonTourMenu.Items.Ignite:Value() and CanUseSpell(myHero,_E) ~= READY and CanUseSpell(myHero,_W) ~= READY and  GoS:GetDistance(k) > 460 then --and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) and
+        
             if CanUseSpell(GetMyHero(), Ignite) == READY and (20*GetLevel(GetMyHero())+50) > GetCurrentHP(k)+GetHPRegen(k)*2.5 and GoS:GetDistanceSqr(GetOrigin(k)) < 600*600 then
                 CastTargetSpell(k, Ignite)
             end
@@ -216,7 +217,7 @@ function ItemUse()
       end
     end
   end       
-      end
+end
 end      
 
 function QAA()
