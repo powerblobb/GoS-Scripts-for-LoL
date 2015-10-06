@@ -1,7 +1,7 @@
 if GetObjectName(myHero) ~= "Alistar" then return end
---MonTour Alistar:V1.0.0.2 - updated GoS:myHeroPos() to GetOrigin(myHero)
+--MonTour Alistar:V1.0.0.3 - IsImmune(unit, myHero) fixed
 PrintChat(string.format("<font color='#80F5F5'>MonTour Alistar:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.2</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>1.0.0.3</font>"))
    local MonTourMenu = Menu("Alistar", "Alistar")
     MonTourMenu:SubMenu("Combo", "Combo")
     MonTourMenu.Combo:Boolean("CQW", "Use QW Combo", false)
@@ -75,7 +75,7 @@ function Combo()
   local target = GetCurrentTarget()
 if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) then return false end
 if IOW:Mode() == "Combo" then
-if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
+if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit,myHero) and IsTargetable(unit) then
             if MonTourMenu.Combo.CWQ:Value() then
                  if CanUseSpell(myHero, _W) == READY and CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 650) then
            CastTargetSpell(unit, _W)
@@ -113,7 +113,7 @@ function Harass()
   local target = GetCurrentTarget()
 if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) then return false end
 if IOW:Mode() == "Harass" then
-if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) then
+if GoS:ValidTarget(unit, 1550) and IsObjectAlive(unit) and not IsImmune(unit,myHero) and IsTargetable(unit) then
             if MonTourMenu.Harass.HWQ:Value() then
                  if CanUseSpell(myHero, _W) == READY and CanUseSpell(myHero, _Q) == READY and GoS:IsInDistance(unit, 650) then
            CastTargetSpell(unit, _W)
@@ -175,4 +175,3 @@ addInterrupterCallback(function(unit, spellType)
             end
         end
 end)
-PrintChat(string.format("<font color='#198c19'>Alistar:</font> <font color='#ffff32'>loaded by MarCiii!</font>"))
