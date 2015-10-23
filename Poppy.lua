@@ -1,7 +1,7 @@
 if GetObjectName(myHero) ~= "Poppy" then return end
---MonTour Poppy:V0.0.1.5 Beta - fixed Ignite ... hopefully
+--MonTour Poppy:V0.0.1.6 Beta - fixed Ignite ... hopefully
 PrintChat(string.format("<font color='#80F5F5'>MonTour Poppy:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
-PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.0.1.5 Beta</font>"))
+PrintChat(string.format("<font color='#80F5F5'>Version:</font> <font color='#EFF0F0'>0.0.1.6 Beta</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'> Deftsu for ItemsUse Code</font>"))
 mapID = GetMapID()
 if mapID ~= SUMMONERS_RIFT then 
@@ -10,8 +10,10 @@ if mapID ~= SUMMONERS_RIFT then
   PrintChat(string.format("<font color='#BC0707'>Or use it at your own</font> <font color='#BC0707'>Risk!!!</font>"))
 end  
 require('MapPositionGOS')
---require('ItemDataBase')
-local MonTourMenu = Menu("MonTourMenu", "Poppy")
+require('Inspired')
+require('MenuConfig')
+require('IOW')
+local MonTourMenu = Menu("MoTPoppy", "MoTPoppy")
 MonTourMenu:SubMenu("Combo", "Combo")
 MonTourMenu.Combo:List("prio", "Start Combo only if Stunnable?", 1, {"Yes", "No"})
 MonTourMenu.Combo:Boolean("Q","Use Q",true)
@@ -44,24 +46,18 @@ MonTourMenu.KS:Boolean("Estun","Use E Stun KS",true)
 MonTourMenu.KS:Boolean("Enostun","Use E No Stun KS",true)
 MonTourMenu:SubMenu("Items", "Items & Ignite")
 MonTourMenu.Items:Boolean("Ignite","AutoIgnite if OOR and E NotReady",true)
-MonTourMenu.Items:Info("MonTourMenu", " ")
 MonTourMenu.Items:Boolean("useTiamat", "Tiamat", true)
 MonTourMenu.Items:Boolean("useHydra", "Hydra", true)
-MonTourMenu.Items:Info("MonTourMenu", " ")
 MonTourMenu.Items:Boolean("CutBlade", "Bilgewater Cutlass", true)  
 MonTourMenu.Items:Slider("CutBlademyhp", "if My Health < x%", 50, 5, 100, 1)
 MonTourMenu.Items:Slider("CutBladeehp", "if Enemy Health < x%", 20, 5, 100, 1)
-MonTourMenu.Items:Info("MonTourMenu", " ")
 MonTourMenu.Items:Boolean("bork", "Blade of the Ruined King", true)
 MonTourMenu.Items:Slider("borkmyhp", "if My Health < x%", 50, 5, 100, 1)
 MonTourMenu.Items:Slider("borkehp", "if Enemy Health < x%", 20, 5, 100, 1)
-MonTourMenu.Items:Info("MonTourMenu", " ")
 MonTourMenu.Items:Boolean("ghostblade", "Youmuu's Ghostblade", true)
 MonTourMenu.Items:Slider("ghostbladeR", "If Enemy in Range (def: 600)", 600, 100, 2000, 1)
-MonTourMenu.Items:Info("MonTourMenu", " ")
 MonTourMenu.Items:Boolean("useRedPot", "Elixir of Wrath(REDPOT)", true)
 MonTourMenu.Items:Slider("useRedPotR", "If Enemy in Range (def: 600)", 600, 100, 2000, 1)
-MonTourMenu.Items:Info("MonTourMenu", " ")
 MonTourMenu.Items:Boolean("QSS", "Always Use QSS", true)
 MonTourMenu.Items:Slider("QSSHP", "if My Health < x%", 75, 0, 100, 1)
 MonTourMenu:SubMenu("Interrupt", "Interrupt")
@@ -110,17 +106,8 @@ end
 
 target = GetCurrentTarget()	
 unit = GetCurrentTarget()
-OnLoop(function(myHero)
-ItemUse()
-if MonTourMenu.Items.Ignite:Value() then
-Ignite()
-end
-if MonTourMenu.KS.ALL:Value() then
-KillSteal()
-end
-AllforOne() 
-
-if IOW:Mode() == "Combo" and MonTourMenu.Combo.prio:Value() == 1 and (GetCastLevel(myHero,_Q) == 0 or GetCastLevel(myHero,_W) == 0 or GetCastLevel(myHero,_E) == 0) then
+OnDraw(function(myHero)
+ if IOW:Mode() == "Combo" and MonTourMenu.Combo.prio:Value() == 1 and (GetCastLevel(myHero,_Q) == 0 or GetCastLevel(myHero,_W) == 0 or GetCastLevel(myHero,_E) == 0) then
 Combo()
 end
 
@@ -141,6 +128,19 @@ end
 if IOW:Mode() == "LaneClear" and MonTourMenu.LaneClear.LHQ:Value() then
 LastHit()
 CastItemsForMinion()
+end
+end)
+
+
+
+OnTick(function(myHero)
+AllforOne()
+ItemUse()
+if MonTourMenu.KS.ALL:Value() then
+KillSteal()
+end
+if MonTourMenu.Items.Ignite:Value() then
+Igniteit()
 end
 end)
 
@@ -415,16 +415,15 @@ if MonTourMenu.Misc.D:Value() then
 end    
 
 
-function Ignite()
-      --local Ignite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerdot") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerdot") and SUMMONER_2 or nil))
-      for _, k in pairs(GoS:GetEnemyHeroes()) do
-    if GoS:ValidTarget(k, 700) and Ignite and CanUseSpell(myHero,_E) ~= READY and GoS:GetDistance(k) > 500 then --and IsObjectAlive(unit) and not IsImmune(unit) and IsTargetable(unit) and
-        
-            if CanUseSpell(GetMyHero(), Ignite) == READY and (20*GetLevel(GetMyHero())+50) > GetCurrentHP(k)+GetHPRegen(k)*2.5 and GoS:GetDistanceSqr(GetOrigin(k)) < 600*600 then
-                CastTargetSpell(k, Ignite)
-            end
-        end
-     end
+function Igniteit()  
+  for i,enemy in pairs(GoS:GetEnemyHeroes()) do
+  	if Ignite and MonTourMenu.Items.Ignite:Value() and CanUseSpell(myHero,_E) ~= READY and GoS:GetDistance(unit)>=525 then
+          if CanUseSpell(myHero, Ignite) == READY and 20*GetLevel(myHero)+50 > GetCurrentHP(enemy)+GetHPRegen(enemy)*2.5 and GoS:GetDistanceSqr(GetOrigin(enemy)) < 600*600 then
+          CastTargetSpell(enemy, Ignite)
+          end
+    end
+  end     
+     
 end
 
 function ItemUse()
