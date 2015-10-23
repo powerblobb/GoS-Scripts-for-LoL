@@ -104,8 +104,8 @@ function addInterrupterCallback( callback0 )
 callback = callback0
 end
 
-target = GetCurrentTarget()	
-unit = GetCurrentTarget()
+target = IOW.target	
+unit = IOW.target
 OnDraw(function(myHero)
  if IOW:Mode() == "Combo" and MonTourMenu.Combo.prio:Value() == 1 and (GetCastLevel(myHero,_Q) == 0 or GetCastLevel(myHero,_W) == 0 or GetCastLevel(myHero,_E) == 0) then
 Combo()
@@ -195,14 +195,14 @@ function AttackUnitKS(unit)
 end
 
 function Qskill()
-  local unit = GetCurrentTarget()
+  local unit = IOW.target
   if GoS:ValidTarget(unit,300) and GoS:GetDistance(myHero, unit) <= 300 and CanUseSpell(myHero,_Q) == READY then
     CastSpell(_Q)
   end
 end
 
 function Wskill()
-  local unit = GetCurrentTarget()
+  local unit = IOW.target
   if GoS:ValidTarget(unit,600) and GoS:GetDistance(myHero, unit) <= 600 and CanUseSpell(myHero,_W) == READY and GotBuff(myHero, "poppyparagonstats") < 10 then
     CastSpell(_W)
   end
@@ -216,7 +216,7 @@ function Wskill()
 end
 
 function Eskill()
-  local unit = GetCurrentTarget()
+  local unit = IOW.target
   if GoS:ValidTarget(unit,525) and GoS:GetDistance(myHero, unit) <= 525 and CanUseSpell(myHero,_E) == READY then
     CastTargetSpell(unit, _E)
   end
@@ -517,7 +517,7 @@ function LastHit()
    end
   -- DrawText(string.format("QMAXPERCENT = %f", QMAXPERCENT),20,100,300,0xffffffff);
     if GotBuff(myHero,"PoppyDevastatingBlow") == 0 then
-      IOW:EnableAutoAttacks()
+      IOW.attacksEnabled = true
     end
     if GoS:ValidTarget(minion,125) then
       local ADDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
@@ -525,10 +525,10 @@ function LastHit()
       local DamageAD = GoS:CalcDamage(myHero, minion,ADDmg + sheendmg + frozendmg,lichbane)
       local DamageQ = GoS:CalcDamage(myHero, minion, sheendmg + frozendmg,QDmg + lichbane)
       if GetCurrentHP(minion) < DamageQ and GetCurrentHP(minion) > DamageAD then
-         IOW:DisableAutoAttacks() GoS:DelayAction(function() CastSpell(_Q) end, 1)
+         IOW.attacksEnabled = false GoS:DelayAction(function() CastSpell(_Q) end, 1)
       end  
       if GotBuff(myHero,"PoppyDevastatingBlow") == 1 and GoS:GetDistanceSqr(GetOrigin(minion)) <= 125*125 and GetCurrentHP(minion) < DamageQ and GetCurrentHP(minion) > DamageAD then
-        AttackUnit(minion) GoS:DelayAction(function() IOW:EnableAutoAttacks() end, 100)
+        AttackUnit(minion) GoS:DelayAction(function() IOW.attacksEnabled = true end, 100)
       end     
     end
   end  
@@ -580,7 +580,7 @@ function MinionAround(pos, range)
 end
 
 function KillSteal()
-  local unit = GetCurrentTarget()
+  local unit = IOW.target
   local myHero = GetMyHero()
     local sheendmg = 0
     local sheendmg2 = 1
@@ -820,76 +820,10 @@ function KillSteal()
 end  
 
 addInterrupterCallback(function(unit, spellType)
-    local unit = GetCurrentTarget()
+    local unit = IOW.target
         if spellType == CHANELLING_SPELLS and MonTourMenu.Interrupt.Interrupt:Value() then
             if CanUseSpell(myHero, _E) == READY and GoS:IsInDistance(unit, 525) then
             Eskill()
             end    
         end
 end)
-
-
-
-
---OnLoop(function(myHero)
---buffdatas = GetBuffData(myHero,"sheen");
---DrawText(string.format("[RECALL_BUFF INFO]", buffdatas.Type),12,0,20,0xff00ff00);
---DrawText(string.format("Type = %d", buffdatas.Type),12,0,30,0xff00ff00);
---DrawText(string.format("Name = %s", buffdatas.Name),12,0,40,0xff00ff00);
---DrawText(string.format("Count = %d", buffdatas.Count),12,0,50,0xff00ff00);
---DrawText(string.format("Stacks = %f", buffdatas.Stacks),12,0,60,0xff00ff00);
---DrawText(string.format("StartTime = %f", buffdatas.StartTime),12,0,70,0xff00ff00);
---DrawText(string.format("ExpireTime = %f", buffdatas.ExpireTime),12,0,80,0xff00ff00);
---DrawText(string.format("[GameTime] = %f", GetGameTimer()),12,0,90,0xff00ff00);
---bufftypelist = GetBuffTypeList();
---if buffdatas.Type == bufftypelist.Aura then
---	DrawText("Buff is considered as aura",12,0,100,0xffffffff);
---	end
---DrawText(string.format("GetBuffTypeToString = [%s]", GetBuffTypeToString(buffdatas.Type)),12,0,110,0xffffff00);
---end)
-
---OnLoop(function(myHero)
--- class "Point" -- {
---  function Point:__init(x, y, z) -- this constructor gets called when we create a new Point(x,y,z)
---    local pos = GetOrigin(x) or type(x) ~= "number" and x or nil -- check if the input is a position or an object instead of x,y,z coordinates
---    self.x = pos and pos.x or x -- set x
---    self.y = pos and pos.y or y -- set y
---    self.z = pos and pos.z or z -- set z
---  end
--- }
-
---for i,unit in pairs(GoS:GetEnemyHeroes()) do
---UseItem(3056, unit, 550)
---end
--- MonTour:UseItem12345()
---local capspress = KeyIsDown(0x14); --Caps Lock key
---test = GetCastRange(myHero,GetItemSlot(myHero,3092))
---DrawText(test,30,30,120,0xffffffff);
--- create some points
---local p1 = Point(myHero) -- create a new point of myHero coordinates
---local p2 = Point(GetMousePos()) -- create a new point of mouse coordinates
---local p3 = Point(100,10,100) -- create a new point with defined coordinates
-
--- print distances between the three points in chat
---PrintChat(GoS:GetDistance(p1, p2)) 
-
---if capspress then
---	local itemid = GetItemID(myHero,ITEM_7);
---	local itemammo = GetItemAmmo(myHero,ITEM_7);
---	local itemstack = GetItemStack(myHero,ITEM_7);
---	PrintChat(string.format("itemID in Slot 7 is = %d", itemid));
---	PrintChat(string.format("AMMO! in Slot 7 is = %d", itemammo));
---	PrintChat(string.format("STACK in Slot 7 is = %d", itemstack));
---	end
---end)
---OnLoop(function(myHero)
---local capspress = KeyIsDown(0x14); --Caps Lock key
---if capspress then
---	local itemid = GetItemID(myHero,ITEM_1);
---	local itemammo = GetItemAmmo(myHero,ITEM_1);
---	local itemstack = GetItemStack(myHero,ITEM_1);
---	PrintChat(string.format("itemID in Slot 1 is = %d", itemid));
---	PrintChat(string.format("AMMO! in Slot 1 is = %d", itemammo));
---	PrintChat(string.format("STACK in Slot 1 is = %d", itemstack));
---	end
---end)
