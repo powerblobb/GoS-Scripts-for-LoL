@@ -44,6 +44,8 @@ self.MonTourMenu:SubMenu("Items", "Items & Ignite")
 self.MonTourMenu.Items:Boolean("Ignite","AutoIgnite if OOR and Q/E NotReady",true)
 self.MonTourMenu.Items:Boolean("QSS", "Always Use QSS", true)
 self.MonTourMenu.Items:Slider("QSSHP", "if My Health < x%", 75, 0, 100, 1)
+self.MonTourMenu.Items:Boolean("Zhonya", "Always Use Zhonyas", true)
+self.MonTourMenu.Items:Slider("ZhonyaHP", "if My Health < x% (Def.30)", 30, 0, 90, 1)
 self.MonTourMenu:SubMenu("KS", "KillSteal")
 self.MonTourMenu.KS:Boolean("Q","Use Q",true)
 self.MonTourMenu.KS:Boolean("E","Use E",true)
@@ -51,6 +53,9 @@ self.MonTourMenu.KS:Boolean("R","Use R",true)
 self.MonTourMenu:SubMenu("Interrupter", "Interrupter")
 self.MonTourMenu.Interrupter:Boolean("Q","Use Q",true)
 self.MonTourMenu.Interrupter:Boolean("W","Use W",true)
+self.MonTourMenu.Interrupter:Info("AniviaMoT14", "Delay for Interrupts min/max")
+self.MonTourMenu.Interrupter:Slider("Imin", "Delay min.", 632, 10, 3500, 1)
+self.MonTourMenu.Interrupter:Slider("Imax", "Delay max.", 1055, 100, 3500, 1) 
 self.MonTourMenu:SubMenu("Misc", "Drawings")
 self.MonTourMenu.Misc:Boolean("DOH","Draw Damage Over HpBar",true)
 self.MonTourMenu.Misc:Boolean("DCC","Draw Casted Circles",true)
@@ -126,6 +131,7 @@ self:EnemyNoneChilledUseE()
 self:QSSuse()
 self:Igniteit()
 self:DMGCALCnKS()
+self:Zhonyas()
 if IOW:Mode() == "LastHit" then
 self:LastHit()
 end
@@ -532,6 +538,12 @@ function Anivia:Igniteit()
   end          
 end
 
+function Anivia:Zhonyas()
+if self.MonTourMenu.Items.Zhonya:Value() and GetItemSlot(myHero,3157) > 0 and ValidTarget(self.target, 1000) and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) <= self.MonTourMenu.Items.ZhonyaHP:Value()  then
+  CastTargetSpell(myHero, GetItemSlot(myHero,3157))
+end
+end                  
+
 function Anivia:MakeWall()
 --local unit = self.target
 local distance = 0
@@ -604,7 +616,7 @@ function Anivia:ProcessSpell2(unit, spell)
         if IsInDistance(unit, 1000) and GetObjectName(unit) == self.CHANELLING_SPELLS[spell.name].Name and self.MonTourMenu.Interrupter[GetObjectName(unit).."Interrupting"]:Value() then 
           local WPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1850,100,1000,45,false,true) 
           if WPred.HitChance == 1 then
-          CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z)
+          DelayAction(function() CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z) end,math.random(self.MonTourMenu.Interrupter.Imin:Value(),self.MonTourMenu.Interrupter.Imax:Value()))
           end
         end
       end
@@ -612,8 +624,8 @@ function Anivia:ProcessSpell2(unit, spell)
       if self.CHANELLING_SPELLS[spell.name] and ValidTarget(unit,900) then
         if IsInDistance(unit, 900) and GetObjectName(unit) == self.CHANELLING_SPELLS[spell.name].Name and self.MonTourMenu.Interrupter[GetObjectName(unit).."Interrupting"]:Value() then 
           local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1000,100,1175,75,false,true) 
-            if QPred.HitChance == 1 then  
-              CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+            if QPred.HitChance == 1 then
+              DelayAction(function() CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z) end,math.random(self.MonTourMenu.Interrupter.Imin:Value(),self.MonTourMenu.Interrupter.Imax:Value()))
                 if GotBuff(myHero,"FlashFrost") == 1 and self.Qattack ~= myHero then
                   if EnemiesAround(GetOrigin(self.Qattack), 175) >= 1 then
                   CastSpell(_Q) 
@@ -627,7 +639,7 @@ function Anivia:ProcessSpell2(unit, spell)
         if IsInDistance(unit, 900) and GetObjectName(unit) == self.CHANELLING_SPELLS[spell.name].Name and self.MonTourMenu.Interrupter[GetObjectName(unit).."Interrupting"]:Value() then 
           local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1000,100,1175,75,false,true) 
             if QPred.HitChance == 1 then  
-              CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+              DelayAction(function() CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z) end,math.random(self.MonTourMenu.Interrupter.Imin:Value(),self.MonTourMenu.Interrupter.Imax:Value()))
                 if GotBuff(myHero,"FlashFrost") == 1 and self.Qattack ~= myHero then
                   if EnemiesAround(GetOrigin(self.Qattack), 175) >= 1 then
                   CastSpell(_Q) 
