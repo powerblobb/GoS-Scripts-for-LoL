@@ -1,11 +1,10 @@
 require("Inspired")
 local MoTBaseVersion = "MoTBase: v1.0 by MarCiii"
-print(MoTBaseVersion)
-
 -------------Anivia----------------
 
 class "Anivia"
 function Anivia:__init()
+print(MoTBaseVersion)  
 self.Version = "1.0"
 self.Qattack = myHero
 self.Rattack = myHero  
@@ -487,7 +486,10 @@ if IOW:Mode() == "Combo" then
   if self.MonTourMenu.Combo.E:Value() and self.MonTourMenu.Combo.ES:Value() then
   if ValidTarget(self.target,650) then
     for i,unit in pairs(GetEnemyHeroes()) do 
-      if GotBuff(unit,"chilled") == 1 then
+      if GotBuff(unit,"chilled") == 1 and GetObjectName(self.target) == GetObjectName(unit) then
+        CastTargetSpell(unit, _E)
+      elseif
+        GotBuff(unit,"chilled") == 1 and GetObjectName(self.target) ~= GetObjectName(unit) then
         CastTargetSpell(unit, _E)
       end
     end
@@ -567,16 +569,20 @@ function Anivia:ProcessSpell(unit, spell)
 for i,unit in pairs(GetEnemyHeroes()) do
 if self.MonTourMenu.Combo.QS:Value() and IOW:Mode() == "Combo" and self.MonTourMenu.Combo.QS2:Value() == false then  
   if GotBuff(myHero,"FlashFrost") == 1 and self.Qattack ~= myHero then
-    if EnemiesAround(GetOrigin(self.Qattack), 175) >= 1 then
+    if EnemiesAround(GetOrigin(self.Qattack), 175) >= 1 and GetObjectName(self.target) == GetObjectName(unit) then
     CastSpell(_Q) 
-    end
+    elseif EnemiesAround(GetOrigin(self.Qattack), 175) >= 1 and GetObjectName(self.target) ~= GetObjectName(unit) then
+    CastSpell(_Q) 
+    end    
   end
 end 
 if self.MonTourMenu.Combo.QS2:Value() then  
-  if GotBuff(myHero,"FlashFrost") == 1 and self.Qattack ~= myHero then
-    if EnemiesAround(GetOrigin(self.Qattack), 175) >= 1 then
+  if GotBuff(myHero,"FlashFrost") == 1 and self.Qattack ~= myHero  then
+    if EnemiesAround(GetOrigin(self.Qattack), 175) >= 1 and GetObjectName(self.target) == GetObjectName(unit) then
     CastSpell(_Q) 
-    end
+    elseif EnemiesAround(GetOrigin(self.Qattack), 175) >= 1 and GetObjectName(self.target) ~= GetObjectName(unit) then
+    CastSpell(_Q) 
+    end 
   end
 end 
 if self.MonTourMenu.Combo.RS:Value() then
@@ -657,6 +663,7 @@ end
 
 class "TwistedFate"
 function TwistedFate:__init()
+print(MoTBaseVersion)  
 self.Version = "1.0"
 self.MonTourMenu = Menu("MoT-TwistedFate", "MoT-TwistedFate")
 self.MonTourMenu:SubMenu("Combo", "Combo")
