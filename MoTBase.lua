@@ -1,6 +1,9 @@
 require("Inspired")
 local MoTBaseVersion = "MoTBase: v1.0 by MarCiii"
 print(MoTBaseVersion)
+
+-------------Anivia----------------
+
 class "Anivia"
 function Anivia:__init()
 self.Version = "1.0"
@@ -144,7 +147,7 @@ function Anivia:DrawENEMY()
 --		DrawText(GetObjectName(self.target),14,hpbar.x+110-GetTextArea(GetObjectName(self.target),14)/2, hpbar.y+9,ARGB(255,52,210,35))
 --    DrawText(GetObjectName(myHero),14,hpbar.x+113-GetTextArea(GetObjectName(myHero),14)/2, hpbar.y+11,ARGB(255,52,210,35))
 --        DrawText("MonkeyKing",14,hpbar.x+113-GetTextArea("MonkeyKing",14)/2, hpbar.y+10,ARGB(255,255,0,0))
-        DrawText(GetObjectName(self.target),14,hpbar.x+113-GetTextArea(GetObjectName(self.target),14)/2, hpbar.y+10,self.MonTourMenu.Misc.CTSC:Value())
+        DrawText(GetObjectName(self.target),14,hpbar.x+113-GetTextArea(GetObjectName(self.target).."  ",14)/2, hpbar.y+10,self.MonTourMenu.Misc.CTSC:Value())
 	else
     DrawText("No Target found!",14,hpbar.x+113-GetTextArea("No Target found",14)/2, hpbar.y+10,self.MonTourMenu.Misc.CTSC:Value())
   end
@@ -650,6 +653,8 @@ self.Rattack = myHero
 end
 end
 
+-------------TWISTED FATE----------------
+
 class "TwistedFate"
 function TwistedFate:__init()
 self.Version = "1.0"
@@ -689,45 +694,138 @@ self.MonTourMenu.Items:Boolean("QSS", "Always Use QSS", true)
 self.MonTourMenu.Items:Slider("QSSHP", "if My Health < x% (Def.75)", 75, 0, 100, 1)
 self.MonTourMenu.Items:Boolean("Zhonya", "Always Use Zhonyas", true)
 self.MonTourMenu.Items:Slider("ZhonyaHP", "if My Health < x% (Def.30)", 30, 0, 90, 1)
-self.MonTourMenu:SubMenu("Int", "Interrupt Spells")
-self.MonTourMenu.Int:Boolean("Int", "Interrupt Spells", true)
+self.MonTourMenu:SubMenu("Interrupter", "Interrupter")
 self.MonTourMenu:SubMenu("Misc", "Misc")
 self.MonTourMenu.Misc:Boolean("DOH", "Draw DmgOverHPBars", true)
 self.MonTourMenu.Misc:Boolean("DKS", "Draw Killable Text", true)
-self.targetsselect = TargetSelector(1200, TARGET_LESS_CAST, DAMAGE_MAGIC)
-self.self.MonTourMenu:TargetSelector("ts", "TargetSelector", self.targetsselect)
-self.self.MonTourMenu:Info("AniviaMoT", "")
-self.self.MonTourMenu:Info("AniviaMoT2", MoTBaseVersion)
-self.self.MonTourMenu:Info("AniviaMoT3", "MoTBase "..GetObjectName(myHero)..": v"..self.Version)
+self.MonTourMenu.Misc:Boolean("CTS","Draw Current Target",true)
+self.MonTourMenu.Misc:ColorPick("CTSC", "Current Target Color", {255,23,255,120})
+self.MonTourMenu.Misc:ColorPick("CTSC2", "Underground Target Color", {197,109,65,74})
+self.targetsselect = TargetSelector(1460, TARGET_LESS_CAST, DAMAGE_MAGIC)
+self.MonTourMenu:TargetSelector("ts", "TargetSelector", self.targetsselect)
+self.MonTourMenu:Info("TwistedFateMoT", "")
+self.MonTourMenu:Info("TwistedFateMoT2", MoTBaseVersion)
+self.MonTourMenu:Info("TwistedFateMoT3", "MoTBase "..GetObjectName(myHero)..": v"..self.Version)
 
 self.tick = 0
 self.ultimateused = false
 self.tickwarn = 0
-self.selectedcard ""
+self.selectedcard = ""
+self.OverAllDmgTwisted = 0
 
+--Thanks to Deftsu for Interrupter :)
+self.CHANELLING_SPELLS = {
+    ["CaitlynAceintheHole"]         = {Name = "Caitlyn",      Spellslot = _R},
+    ["Drain"]                       = {Name = "FiddleSticks", Spellslot = _W},
+    ["Crowstorm"]                   = {Name = "FiddleSticks", Spellslot = _R},
+    ["GalioIdolOfDurand"]           = {Name = "Galio",        Spellslot = _R},
+    ["FallenOne"]                   = {Name = "Karthus",      Spellslot = _R},
+    ["KatarinaR"]                   = {Name = "Katarina",     Spellslot = _R},
+    ["LucianR"]                     = {Name = "Lucian",       Spellslot = _R},
+    ["AlZaharNetherGrasp"]          = {Name = "Malzahar",     Spellslot = _R},
+    ["MissFortuneBulletTime"]       = {Name = "MissFortune",  Spellslot = _R},
+    ["AbsoluteZero"]                = {Name = "Nunu",         Spellslot = _R},                        
+    ["Pantheon_GrandSkyfall_Jump"]  = {Name = "Pantheon",     Spellslot = _R},
+    ["ShenStandUnited"]             = {Name = "Shen",         Spellslot = _R},
+    ["UrgotSwap2"]                  = {Name = "Urgot",        Spellslot = _R},
+    ["VarusQ"]                      = {Name = "Varus",        Spellslot = _Q},
+    ["InfiniteDuress"]              = {Name = "Warwick",      Spellslot = _R} 
+}
+DelayAction(function()
+  local QWERSLOT = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
+  for i, spell in pairs(self.CHANELLING_SPELLS) do
+    for _,unit in pairs(GetEnemyHeroes()) do
+        if spell["Name"] == GetObjectName(unit) then
+        self.MonTourMenu.Interrupter:Boolean(GetObjectName(unit).."Interrupting", "On "..GetObjectName(unit).." "..(type(spell.Spellslot) == 'number' and QWERSLOT[spell.Spellslot]), true)
+        end
+    end
+  end	
+end, 20)
+
+OnTick(function(myHero) self:Tick(myHero) end)
+OnDraw(function(myHero) self:Draw(myHero) end)
+OnProcessSpell(function(Object,spellProc) self:ProcessSpell(Object,spellProc) end)
+OnProcessSpell(function(unit,spell) self:ProcessSpell2(unit,spell) end)
 end
 
-OnTick(function(myHero)
-  Items() 
-if self.MonTourMenu.Misc.DOH:Value() then
-  DMGoHP()
-end
+function TwistedFate:Tick(myHero)
+  self:Items() 
+  self:DMGCalcnKS()
 if self.MonTourMenu.Items.Ignite:Value() then
-  Igniteit()
+  self:Igniteit()
 end
 	if self.selectedcard ~= "" then
-		SelectCard()
-	end	
-	if self.MonTourMenu.Misc.DKS:Value() then
-		Killable()
-	end	
+		self:SelectCard()
+	end		
 	if self.MonTourMenu.Farm.Card:Value() and IOW:Mode() == "LastHit" and GetTickCount() > self.tick then
-    LastHit()
+    self:LastHit()
 	end 
 	if self.MonTourMenu.Farm2.Card:Value() and IOW:Mode() == "LaneClear" and GetTickCount() > self.tick then
-    IOW:EnableAutoAttacks()
-		LaneClear()
+--    IOW:EnableAutoAttacks()
+		self:LaneClear()
 	end
+	if IOW:Mode() == "Combo" then
+		self:Combo()
+	end
+  if IOW:Mode() == "Harass" then
+    self:Harass()
+  end
+  self:PickACard()
+  self:Checks()
+end
+
+function TwistedFate:Draw(myHero)
+if self.MonTourMenu.Misc.DOH:Value() then
+  self:DMGoHP()
+end  
+	if self.MonTourMenu.Misc.DKS:Value() then
+		self:Killable()
+	end
+if self.MonTourMenu.Misc.CTS:Value() then  
+self:DrawENEMY()
+end
+end  
+
+function TwistedFate:DrawENEMY()
+	local hpbar = GetHPBarPos(myHero)
+    if hpbar.x > 0 then
+			if hpbar.y > 0 then  
+      FillRect(hpbar.x, hpbar.y+13, 107, 11,self.MonTourMenu.Misc.CTSC2:Value())
+      FillRect(hpbar.x, hpbar.y+22, 107, 2,ARGB(255,0,0,0))
+      FillRect(hpbar.x+106, hpbar.y-2, 1, 24,ARGB(255,0,0,0))
+--    FillRect(hpbar.x, hpbar.y+10, 107, 12,ARGB(255,74,73,74))
+      end
+    end
+	if self.target ~= nil then
+    if hpbar.x > 0 then
+      if hpbar.y > 0 then
+        DrawText(GetObjectName(self.target),14,hpbar.x+113-GetTextArea(GetObjectName(self.target).."  ",14)/2, hpbar.y+10,self.MonTourMenu.Misc.CTSC:Value())
+      end
+    end  
+	else
+    if hpbar.x > 0 then
+			if hpbar.y > 0 then
+        DrawText("No Target found!",14,hpbar.x+113-GetTextArea("No Target found",14)/2, hpbar.y+10,self.MonTourMenu.Misc.CTSC:Value())
+      end
+    end  
+  end
+--  FillRect(hpbar.x, hpbar.y+24, 107, 11,self.MonTourMenu.Misc.CTSC2:Value())
+--  FillRect(hpbar.x, hpbar.y+33, 107, 2,ARGB(255,0,0,0))
+--  FillRect(hpbar.x, hpbar.y+25, 25, 8,ARGB(255,255,255,0))
+--  FillRect(hpbar.x+106, hpbar.y+24, 1, 11,ARGB(255,0,0,0))
+--  FillRect(hpbar.x, hpbar.y+24, 1, 11,ARGB(255,0,0,0))
+--  DrawText(" Q",10,hpbar.x+6, hpbar.y+23,ARGB(255,255,0,255))
+----  DrawText(GetObjectName(myHero),12,hpbar.x+113-GetTextArea(GetObjectName(myHero),14)/2, hpbar.y+22,self.MonTourMenu.Misc.CTSC:Value())
+--  DrawText("Lux",12,hpbar.x+107-GetTextArea("Lux",14)/2, hpbar.y+22,self.MonTourMenu.Misc.CTSC:Value())
+	end
+
+function TwistedFate:Checks()
+self.MonTourMenu.ts.range = 1460
+self.target = self.MonTourMenu.ts:GetTarget()--IOW:GetTarget()
+self.unit = self.MonTourMenu.ts:GetTarget()--IOW:GetTarget()  
+end
+
+function TwistedFate:PickACard()
 	if self.MonTourMenu.Combo.Blue:Value() and GetTickCount() > self.tick then
 		if CanUseSpell(myHero,_W) == READY and GetCastName(myHero,_W) == "PickACard" then
 			self.selectedcard = "bluecardlock"
@@ -751,35 +849,10 @@ end
 			CastSpell(_W)
 		end
 	end
-	if IOW:Mode() == "Combo" then
-		Combo()
-	end
-  if IOW:Mode() == "Harass" then
-    Harass()
-  end
-end)
+end
 
-OnProcessSpell(function(Object,spellProc)
-	if not self.MonTourMenu.Combo.R:Value() then
-		return
-	end
-	if Object and Object == myHero then
-		local name = spellProc.name:lower()		    
-		if name == "destiny" then
-			self.ultimateused = true
-		end
-		if name == "gate" then 
-			self.ultimateused = false
-			self.selectedcard = "goldcardlock"			
-			if CanUseSpell(myHero,_W) == READY and GetCastName(myHero,_W) == "PickACard" then					
-				CastSpell(_W)
-			end
-		end
-				
-	end	
-end)
-
-function DMGoHP()
+function TwistedFate:DMGCalcnKS()
+  self.OverAllDmgTwisted = 0
 	local ad = GetBonusDmg(myHero) + GetBaseDamage(myHero)
 	local Wlevel = GetCastLevel(myHero,_W) - 1
 	local Qlevel = GetCastLevel(myHero,_Q) - 1
@@ -788,10 +861,10 @@ function DMGoHP()
   local lichbane = 0 
   local sheendmg = 0	
   local Ludens = 0
-	local bcard = (40 + (20 * Wlevel) + (ad) + (GetBonusAP(myHero) * 0.5 ))		
+  local bcard = (40 + (20 * Wlevel) + (ad) + (GetBonusAP(myHero) * 0.5 ))		
 	local ycard = (15 + (7.5 * Wlevel) + (ad) + (GetBonusAP(myHero) * 0.5 ))
   local rcard = (30 + (15 * Wlevel) + ad + (GetBonusAP(myHero) * 0.5))
-	local qdmg = (60 + (50 * Qlevel) + (GetBonusAP(myHero) * 0.65 ))
+	local qdmg = (60 + (50 * Qlevel) + (GetBonusAP(myHero) * 0.65 )) 
   if GotBuff(myHero, "lichbane") >= 1 and GetItemSlot(myHero,3100) then
     lichbane = lichbane + GetBaseDamage(myHero)*0.75 + GetBonusAP(myHero)*0.5
   end 
@@ -804,56 +877,131 @@ function DMGoHP()
   if GotBuff(myHero, "itemmagicshankcharge") > 99 then
     Ludens = Ludens + 0.1*GetBonusAP(myHero) + 100
   end    
-	for _,unit in pairs(GetEnemyHeroes()) do
-  if not IsDead(unit) and ValidTarget(unit,20000) then
+	for _,unit in pairs(GetEnemyHeroes()) do 
 			local hp = GetCurrentHP(unit) + GetMagicShield(unit) + GetDmgShield(unit)
-			local Qdmg = CalcDamage(myHero, unit, sheendmg, qdmg + Ludens) or 0      
-			local Ydmg = CalcDamage(myHero, unit, sheendmg, ycard + qdmg + lichbane + EPassive + Ludens) or 0
-      local ALLdmg = CalcDamage(myHero, unit, ad, EPassive) or 0
-			local Bdmg = CalcDamage(myHero, unit, sheendmg, bcard + qdmg + lichbane + EPassive + Ludens) or 0
-			local Rdmg = CalcDamage(myHero, unit, sheendmg, rcard + qdmg + lichbane + EPassive + Ludens) or 0	
-      local YBRdmg = CalcDamage(myHero, unit, sheendmg, ((rcard + bcard + ycard)/3) + qdmg + lichbane + EPassive + Ludens) or 0	
-      local YdmgmQ = CalcDamage(myHero, unit, sheendmg, ycard + lichbane + EPassive + Ludens) or 0
-			local BdmgmQ = CalcDamage(myHero, unit, sheendmg, bcard + lichbane + EPassive + Ludens) or 0
-			local RdmgmQ = CalcDamage(myHero, unit, sheendmg, rcard + lichbane + EPassive + Ludens) or 0	
-			local YBRdmgmQ = CalcDamage(myHero, unit, sheendmg, ((rcard + bcard + ycard)/3) + lichbane + EPassive + Ludens) or 0	
-      
+--			local Qdmg = CalcDamage(myHero, unit, sheendmg, qdmg + Ludens) or 0      
+--			local Ydmg = CalcDamage(myHero, unit, sheendmg, ycard + qdmg + lichbane + EPassive + Ludens) or 0
+--      local ALLdmg = CalcDamage(myHero, unit, ad, EPassive) or 0
+--			local Bdmg = CalcDamage(myHero, unit, sheendmg, bcard + qdmg + lichbane + EPassive + Ludens) or 0
+--			local Rdmg = CalcDamage(myHero, unit, sheendmg, rcard + qdmg + lichbane + EPassive + Ludens) or 0	
+--      local YBRdmg = CalcDamage(myHero, unit, sheendmg, ((rcard + bcard + ycard)/3) + qdmg + lichbane + EPassive + Ludens) or 0	
+--      local YdmgmQ = CalcDamage(myHero, unit, sheendmg, ycard + lichbane + EPassive + Ludens) or 0
+--			local BdmgmQ = CalcDamage(myHero, unit, sheendmg, bcard + lichbane + EPassive + Ludens) or 0
+--			local RdmgmQ = CalcDamage(myHero, unit, sheendmg, rcard + lichbane + EPassive + Ludens) or 0	
+--			local YBRdmgmQ = CalcDamage(myHero, unit, sheendmg, ((rcard + bcard + ycard)/3) + lichbane + EPassive + Ludens) or 0	
+      local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1000,250,1450,40,false,true)    
 	if CanUseSpell(myHero,_Q) == READY and GetCastName(myHero,_W) == "goldcardlock" then
-		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,Ydmg,0xffffffff)	--and GotBuff(myHero,"goldcardpreattack") == 1
-  end 
-  if CanUseSpell(myHero,_Q) == READY  and GetCastName(myHero,_W) == "redcardlock" and GetCastLevel(myHero,_W) > 0 then
-		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,Rdmg,0xffffffff)	--and GotBuff(myHero,"redcardpreattack") == 1
-  end 
-  if CanUseSpell(myHero,_Q) == READY  and GetCastName(myHero,_W) == "bluecardlock" and GetCastLevel(myHero,_W) > 0 then
-		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,Bdmg,0xffffffff)	--and GotBuff(myHero,"bluecardpreattack") == 1
-  end
-  if CanUseSpell(myHero,_Q) == READY and GetCastName(myHero,_W) == "PickACard" and (GotBuff(myHero,"redcardpreattack") == 0 or GotBuff(myHero,"bluecardpreattack") == 0 or GotBuff(myHero,"goldcardpreattack") == 0) and GetCastLevel(myHero,_W) > 0 then
-		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,YBRdmg,0xffffffff)	
-  end
-  	if (CanUseSpell(myHero,_Q) == ONCOOLDOWN or GetCastLevel(myHero,_Q) == 0) and GetCastName(myHero,_W) == "goldcardlock" and GetCastLevel(myHero,_W) > 0 then
-		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,YdmgmQ,0xffffffff)	
-  end 
-  if (CanUseSpell(myHero,_Q) == ONCOOLDOWN or GetCastLevel(myHero,_Q) == 0) and GetCastName(myHero,_W) == "redcardlock" and GetCastLevel(myHero,_W) > 0 then
-		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,RdmgmQ,0xffffffff)	
-  end 
-  if (CanUseSpell(myHero,_Q) == ONCOOLDOWN or GetCastLevel(myHero,_Q) == 0) and GetCastName(myHero,_W) == "bluecardlock" and GetCastLevel(myHero,_W) > 0 then
-		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,BdmgmQ,0xffffffff)	
-  end
-  if (CanUseSpell(myHero,_Q) == ONCOOLDOWN or GetCastLevel(myHero,_Q) == 0) and GetCastName(myHero,_W) == "PickACard" and (GotBuff(myHero,"redcardpreattack") == 0 or GotBuff(myHero,"bluecardpreattack") == 0 or GotBuff(myHero,"goldcardpreattack") == 0) and GetCastLevel(myHero,_W) > 0 then
-		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,YBRdmgmQ,0xffffffff)	
-  end
-  if CanUseSpell(myHero,_Q) == READY and GetCastLevel(myHero,_W) == 0 then
-		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,Qdmg,0xffffffff)	
-  end
-    if CanUseSpell(myHero,_Q) == ONCOOLDOWN and CanUseSpell(myHero,_Q) == ONCOOLDOWN then
-		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,ALLdmg,0xffffffff)	
-  end
-  end
-  end
+		self.OverAllDmgTwisted = CalcDamage(myHero, unit, sheendmg, ycard + qdmg + lichbane + EPassive + Ludens)	--and GotBuff(myHero,"goldcardpreattack") == 1
+    if hp < self.OverAllDmgTwisted then
+        if ValidTarget(unit,550) then
+          CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)	
+        end 
+        if ValidTarget(unit,525) then
+          AttackUnit(unit)
+        end         
+    end
+  elseif CanUseSpell(myHero,_Q) == READY  and GetCastName(myHero,_W) == "redcardlock" and GetCastLevel(myHero,_W) > 0 then
+		self.OverAllDmgTwisted = CalcDamage(myHero, unit, sheendmg, rcard + qdmg + lichbane + EPassive + Ludens)	--and GotBuff(myHero,"redcardpreattack") == 1
+    if hp < self.OverAllDmgTwisted then
+        if ValidTarget(unit,550) then
+          CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)	
+        end 
+        if ValidTarget(unit,525) then
+          AttackUnit(unit)
+        end 
+    end    
+  elseif CanUseSpell(myHero,_Q) == READY  and GetCastName(myHero,_W) == "bluecardlock" and GetCastLevel(myHero,_W) > 0 then
+		self.OverAllDmgTwisted = CalcDamage(myHero, unit, sheendmg, bcard + qdmg + lichbane + EPassive + Ludens)	--and GotBuff(myHero,"bluecardpreattack") == 1
+    if hp < self.OverAllDmgTwisted then
+        if ValidTarget(unit,550) then
+          CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)	
+        end 
+        if ValidTarget(unit,525) then
+          AttackUnit(unit)
+        end 
+    end    
+  elseif CanUseSpell(myHero,_Q) == READY and GetCastName(myHero,_W) == "PickACard" and (GotBuff(myHero,"redcardpreattack") == 0 or GotBuff(myHero,"bluecardpreattack") == 0 or GotBuff(myHero,"goldcardpreattack") == 0) and GetCastLevel(myHero,_W) > 0 then
+		self.OverAllDmgTwisted = CalcDamage(myHero, unit, sheendmg, bcard + qdmg + lichbane + EPassive + Ludens)
+    if hp < self.OverAllDmgTwisted then
+        if ValidTarget(unit,600) then
+          CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)	
+          if CanUseSpell(myHero,_W) == READY and GetCastName(myHero,_W) == "PickACard" then   
+              self.selectedcard = "bluecardlock"
+              self.tick = GetTickCount() + 3000
+              CastSpell(_W)
+          end
+        end
+        if ValidTarget(unit,525) then
+          AttackUnit(unit)
+        end
+    end    
+  elseif (CanUseSpell(myHero,_Q) == ONCOOLDOWN or GetCastLevel(myHero,_Q) == 0) and GetCastName(myHero,_W) == "goldcardlock" and GetCastLevel(myHero,_W) > 0 then
+		self.OverAllDmgTwisted = CalcDamage(myHero, unit, sheendmg, ycard + lichbane + EPassive + Ludens)
+    if hp < self.OverAllDmgTwisted then
+        if ValidTarget(unit,525) then
+          AttackUnit(unit)
+        end 
+    end    
+  elseif (CanUseSpell(myHero,_Q) == ONCOOLDOWN or GetCastLevel(myHero,_Q) == 0) and GetCastName(myHero,_W) == "redcardlock" and GetCastLevel(myHero,_W) > 0 then
+		self.OverAllDmgTwisted = CalcDamage(myHero, unit, sheendmg, rcard + lichbane + EPassive + Ludens)
+    if hp < self.OverAllDmgTwisted then
+        if ValidTarget(unit,525) then
+          AttackUnit(unit)
+        end 
+    end    
+  elseif (CanUseSpell(myHero,_Q) == ONCOOLDOWN or GetCastLevel(myHero,_Q) == 0) and GetCastName(myHero,_W) == "bluecardlock" and GetCastLevel(myHero,_W) > 0 then
+		self.OverAllDmgTwisted = CalcDamage(myHero, unit, sheendmg, bcard + lichbane + EPassive + Ludens)
+    if hp < self.OverAllDmgTwisted then
+        if ValidTarget(unit,525) then
+          AttackUnit(unit)
+        end 
+    end    
+  elseif (CanUseSpell(myHero,_Q) == ONCOOLDOWN or GetCastLevel(myHero,_Q) == 0) and GetCastName(myHero,_W) == "PickACard" and (GotBuff(myHero,"redcardpreattack") == 0 or GotBuff(myHero,"bluecardpreattack") == 0 or GotBuff(myHero,"goldcardpreattack") == 0) and GetCastLevel(myHero,_W) > 0 then
+		self.OverAllDmgTwisted = CalcDamage(myHero, unit, sheendmg, bcard + lichbane + EPassive + Ludens)
+    if hp < self.OverAllDmgTwisted then
+        if ValidTarget(unit,600) then
+          if CanUseSpell(myHero,_W) == READY and GetCastName(myHero,_W) == "PickACard" then   
+              self.selectedcard = "bluecardlock"
+              self.tick = GetTickCount() + 3000
+              CastSpell(_W)
+          end
+        end
+        if ValidTarget(unit,525) then
+          AttackUnit(unit)
+        end 
+    end    
+  elseif CanUseSpell(myHero,_Q) == READY and GetCastLevel(myHero,_W) == 0 then
+		self.OverAllDmgTwisted = CalcDamage(myHero, unit, sheendmg, qdmg + Ludens)
+    if hp < self.OverAllDmgTwisted then
+        if ValidTarget(unit,600) then
+          CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)	
+        end 
+    end    
+  elseif CanUseSpell(myHero,_Q) == ONCOOLDOWN and CanUseSpell(myHero,_W) == ONCOOLDOWN then
+		self.OverAllDmgTwisted = CalcDamage(myHero, unit, ad, EPassive)
+    if hp < self.OverAllDmgTwisted then
+        if ValidTarget(unit,525) then
+          AttackUnit(unit)
+        end 
+    end    
+  end    
+end
 end
   
+function TwistedFate:DMGoHP()
+for i,unit in pairs(GetEnemyHeroes()) do 
+if ValidTarget(unit,20000) then  
+local enemyhp = GetCurrentHP(unit) + GetHPRegen(unit) + GetMagicShield(unit) + GetDmgShield(unit)
+  if enemyhp < self.OverAllDmgTwisted then
+    DrawDmgOverHpBar(unit,enemyhp,0,self.OverAllDmgTwisted,0xfffde782) 
+  elseif enemyhp > self.OverAllDmgTwisted then
+    DrawDmgOverHpBar(unit,enemyhp,0,self.OverAllDmgTwisted,0xffffffff) 
+  end
+end
+end
+end
 
-function Killable()
+function TwistedFate:Killable()
 	local ad = GetBonusDmg(myHero) + GetBaseDamage(myHero)
 	local Wlevel = GetCastLevel(myHero,_W) - 1
 	local Qlevel = GetCastLevel(myHero,_Q) - 1
@@ -884,29 +1032,47 @@ function Killable()
 			local Ydmg = CalcDamage(myHero, unit, sheendmg, ycard + qdmg + lichbane + EPassive + Ludens) or 0
 			local Bdmg = CalcDamage(myHero, unit, sheendmg, bcard + qdmg + lichbane + EPassive + Ludens) or 0
 			local Rdmg = CalcDamage(myHero, unit, sheendmg, rcard + qdmg + lichbane + EPassive + Ludens) or 0	
-			if Ydmg > hp and tickwarn < GetTickCount() then
-				local HPBARPOS = GetHPBarPos(myHero)
-				if HPBARPOS.x > 0 then
-					if HPBARPOS.y > 0 then				
-						DrawText(string.format("You can kill %s(Q+YellowCard)",GetObjectName(unit)),12,HPBARPOS.x,HPBARPOS.y - 30,0xffffff00)						
+			if Ydmg > hp and self.tickwarn < GetTickCount() then
+        local hpbar = GetHPBarPos(myHero)
+				if hpbar.x > 0 then
+					if hpbar.y > 0 then
+  FillRect(hpbar.x, hpbar.y+24, 107, 11,self.MonTourMenu.Misc.CTSC2:Value())
+  FillRect(hpbar.x, hpbar.y+33, 107, 2,ARGB(255,0,0,0))
+  FillRect(hpbar.x, hpbar.y+25, 25, 8,ARGB(255,255,255,0))
+  FillRect(hpbar.x+106, hpbar.y+24, 1, 11,ARGB(255,0,0,0))
+  FillRect(hpbar.x, hpbar.y+24, 1, 11,ARGB(255,0,0,0))
+  DrawText(" Q",10,hpbar.x+6, hpbar.y+23,ARGB(255,255,0,255))
+  DrawText(GetObjectName(unit),12,hpbar.x+107-GetTextArea(GetObjectName(unit),14)/2, hpbar.y+22,self.MonTourMenu.Misc.CTSC:Value())		
 					end
 				end
 				self.tickwarn = GetTickCount() + 5000
 				return
 			elseif Bdmg > hp then
-				local HPBARPOS = GetHPBarPos(myHero)
-				if HPBARPOS.x > 0 then
-					if HPBARPOS.y > 0 then				
-						DrawText(string.format("You can kill %s(Q+BlueCard)",GetObjectName(unit)),12,HPBARPOS.x,HPBARPOS.y - 30,0xffffff00)
+				local hpbar = GetHPBarPos(myHero)
+				if hpbar.x > 0 then
+					if hpbar.y > 0 then
+  FillRect(hpbar.x, hpbar.y+24, 107, 11,self.MonTourMenu.Misc.CTSC2:Value())
+  FillRect(hpbar.x, hpbar.y+33, 107, 2,ARGB(255,0,0,0))
+  FillRect(hpbar.x, hpbar.y+25, 25, 8,ARGB(255,0,0,255))
+  FillRect(hpbar.x+106, hpbar.y+24, 1, 11,ARGB(255,0,0,0))
+  FillRect(hpbar.x, hpbar.y+24, 1, 11,ARGB(255,0,0,0))
+  DrawText(" Q",10,hpbar.x+6, hpbar.y+23,ARGB(255,255,255,255))
+  DrawText(GetObjectName(unit),12,hpbar.x+107-GetTextArea(GetObjectName(unit),14)/2, hpbar.y+22,self.MonTourMenu.Misc.CTSC:Value())
 					end
 				end					
 				self.tickwarn = GetTickCount() + 5000
 				return
       elseif Rdmg > hp then
-				local HPBARPOS = GetHPBarPos(myHero)
-				if HPBARPOS.x > 0 then
-					if HPBARPOS.y > 0 then				
-						DrawText(string.format("You can kill %s(Q+RedCard)",GetObjectName(unit)),12,HPBARPOS.x,HPBARPOS.y - 30,0xffffff00)
+				local hpbar = GetHPBarPos(myHero)
+				if hpbar.x > 0 then
+					if hpbar.y > 0 then
+  FillRect(hpbar.x, hpbar.y+24, 107, 11,self.MonTourMenu.Misc.CTSC2:Value())
+  FillRect(hpbar.x, hpbar.y+33, 107, 2,ARGB(255,0,0,0))
+  FillRect(hpbar.x, hpbar.y+25, 25, 8,ARGB(255,255,0,0))
+  FillRect(hpbar.x+106, hpbar.y+24, 1, 11,ARGB(255,0,0,0))
+  FillRect(hpbar.x, hpbar.y+24, 1, 11,ARGB(255,0,0,0))
+  DrawText(" Q",10,hpbar.x+6, hpbar.y+23,ARGB(255,255,0,255))
+  DrawText(GetObjectName(unit),12,hpbar.x+107-GetTextArea(GetObjectName(unit),14)/2, hpbar.y+22,self.MonTourMenu.Misc.CTSC:Value())
 					end
 				end					
 				self.tickwarn = GetTickCount() + 5000
@@ -919,7 +1085,7 @@ function Killable()
 --  DrawText(string.format("sheendmg= %f", sheendmg),25,478,316,0xffffffff);
 end
 
-function SelectCard()
+function TwistedFate:SelectCard()
 	local name = GetCastName(myHero,_W):lower()
 	if name == "goldcardlock" and self.selectedcard == name then
 		CastSpell(_W)
@@ -935,13 +1101,13 @@ function SelectCard()
 	end
 end
 
-function Combo()
+function TwistedFate:Combo()
   local currentmana = GetCurrentMana(myHero)
 	local maxmana = GetMaxMana(myHero)
   local curdmax = currentmana/maxmana*100
   local ManaValue = self.MonTourMenu.Combo.Mana:Value()	
-	local QPred = GetPredictionForPlayer(GetOrigin(myHero),target,GetMoveSpeed(target),1000,250,1450,40,false,true)
-if ValidTarget(target,1450) then		  
+if ValidTarget(self.target,1450) then
+  	local QPred = GetPredictionForPlayer(GetOrigin(myHero),self.target,GetMoveSpeed(self.target),1000,250,1450,40,false,true)
   if self.MonTourMenu.Combo.prio:Value() == 1 and curdmax > ManaValue and GetTickCount() > self.tick then
 		if CanUseSpell(myHero,_W) == READY and GetCastName(myHero,_W) == "PickACard" then
 			self.selectedcard = "goldcardlock"
@@ -971,7 +1137,7 @@ if ValidTarget(target,1450) then
 		end
 	end
   if self.MonTourMenu.Combo.Q:Value() and self.MonTourMenu.Combo.QR:Value() == 1 then
-		if CanUseSpell(myHero,_Q) == READY and GetDistance(myHero, target) <= 525 and (GotBuff(myHero,"redcardpreattack") == 1 or GotBuff(myHero,"bluecardpreattack") == 1 or GotBuff(myHero,"goldcardpreattack") == 1) and CanUseSpell(myHero,_W) ~= READY and QPred.HitChance == 1 then
+		if CanUseSpell(myHero,_Q) == READY and GetDistance(myHero, self.target) <= 525 and (GotBuff(myHero,"redcardpreattack") == 1 or GotBuff(myHero,"bluecardpreattack") == 1 or GotBuff(myHero,"goldcardpreattack") == 1) and CanUseSpell(myHero,_W) ~= READY and QPred.HitChance == 1 then
 			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)			
 		end	
 	end
@@ -992,13 +1158,13 @@ if ValidTarget(target,1450) then
 	end
 end  
 end
-function Harass()
+function TwistedFate:Harass()
   local currentmana = GetCurrentMana(myHero)
 	local maxmana = GetMaxMana(myHero)
   local curdmax = currentmana/maxmana*100
   local ManaValue = self.MonTourMenu.Harass.Mana:Value()	
-	local QPred = GetPredictionForPlayer(GetOrigin(myHero),target,GetMoveSpeed(target),1000,250,1450,40,false,true)
-if ValidTarget(target,1450) then		  
+if ValidTarget(self.target,1450) then		
+  	local QPred = GetPredictionForPlayer(GetOrigin(myHero),self.target,GetMoveSpeed(self.target),1000,250,1450,40,false,true)
   if self.MonTourMenu.Harass.prio:Value() == 1 and curdmax > ManaValue and GetTickCount() > self.tick then
 		if CanUseSpell(myHero,_W) == READY and GetCastName(myHero,_W) == "PickACard" then
 			self.selectedcard = "goldcardlock"
@@ -1028,7 +1194,7 @@ if ValidTarget(target,1450) then
 		end
 	end
   if self.MonTourMenu.Harass.Q:Value() and self.MonTourMenu.Harass.QR:Value() == 1 then
-		if CanUseSpell(myHero,_Q) == READY and GetDistance(myHero, target) <= 525 and (GotBuff(myHero,"redcardpreattack") == 1 or GotBuff(myHero,"bluecardpreattack") == 1 or GotBuff(myHero,"goldcardpreattack") == 1) and CanUseSpell(myHero,_W) ~= READY and QPred.HitChance == 1 then
+		if CanUseSpell(myHero,_Q) == READY and GetDistance(myHero, self.target) <= 525 and (GotBuff(myHero,"redcardpreattack") == 1 or GotBuff(myHero,"bluecardpreattack") == 1 or GotBuff(myHero,"goldcardpreattack") == 1) and CanUseSpell(myHero,_W) ~= READY and QPred.HitChance == 1 then
 			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)			
 		end	
 	end
@@ -1050,8 +1216,9 @@ if ValidTarget(target,1450) then
 end           
 end
 
-function LastHit()
-    for i,minion in pairs(GetAllMinions(MINION_ENEMY)) do 
+function TwistedFate:LastHit()
+for i=1, IOW.mobs.maxObjects do
+  local minion = IOW.mobs.objects[i] --MINION_ENEMY 
 	local currentmana = GetCurrentMana(myHero)
 	local maxmana = GetMaxMana(myHero)
   local curdmax = currentmana/maxmana*100
@@ -1134,12 +1301,43 @@ end
 end
 end
 
-function LaneClear()
-  for i,minion in pairs(GetAllMinions(MINION_ENEMY)) do
+function TwistedFate:LaneClear()
+for i=1, IOW.mobs.maxObjects do
+  local minion = IOW.mobs.objects[i] --MINION_ENEMY
 	local currentmana = GetCurrentMana(myHero)
 	local maxmana = GetMaxMana(myHero)
   local curdmax = currentmana/maxmana*100
   local ManaValue = self.MonTourMenu.Farm2.Mana:Value()
+  local ad = GetBonusDmg(myHero) + GetBaseDamage(myHero)
+	local Wlevel = GetCastLevel(myHero,_W) - 1
+	local Qlevel = GetCastLevel(myHero,_Q) - 1
+  local Elevel = GetCastLevel(myHero,_E) - 1 
+  local EPassive = 0
+  local lichbane = 0 
+  local sheendmg = 0
+  local Ludens = 0
+	local qdmg = (60 + (50 * Qlevel) + (GetBonusAP(myHero) * 0.65 ))
+  if GotBuff(myHero, "lichbane") >= 1 and GetItemSlot(myHero,3100) then
+    lichbane = lichbane + GetBaseDamage(myHero)*0.75 + GetBonusAP(myHero)*0.5
+  end 
+  if GotBuff(myHero, "sheen") >= 1 and GetItemSlot(myHero,3057) then
+    sheendmg = sheendmg + GetBaseDamage(myHero)
+  end
+  if GotBuff(myHero, "cardmasterstackparticle") == 1 then
+    EPassive = EPassive + 55 + (25 * Elevel) + (GetBonusAP(myHero) * 0.5 )
+  end 
+  if GotBuff(myHero, "itemmagicshankcharge") > 99 then
+    Ludens = Ludens + 0.1*GetBonusAP(myHero) + 100
+  end  
+  local bdmg = (40 + (20 * Wlevel)  + ad + (GetBonusAP(myHero) * 0.5)) or 0
+  local ydmg = (15 + (7.5 * Wlevel) + ad + (GetBonusAP(myHero) * 0.5)) or 0
+  local rdmg = (30 + (15 * Wlevel) + ad + (GetBonusAP(myHero) * 0.5)) or 0
+	local bcard = CalcDamage(myHero, minion,sheendmg, bdmg + lichbane + EPassive + Ludens)	
+	local ycard = CalcDamage(myHero, minion,sheendmg, ydmg + lichbane + EPassive + Ludens)
+	local rcard = CalcDamage(myHero, minion,sheendmg, rdmg + lichbane + EPassive + Ludens) 
+  local ncardpassive = CalcDamage(myHero, minion, sheendmg + ad ,lichbane + EPassive + Ludens)
+  local ncard = CalcDamage(myHero, minion, sheendmg + ad ,lichbane + Ludens)
+  local addmg = CalcDamage(myHero, minion, ad ,0)
     
 if ValidTarget(minion, 525+250) then
   if self.MonTourMenu.Farm2.prio:Value() == 1 and curdmax > ManaValue and GetTickCount() > self.tick then
@@ -1149,6 +1347,9 @@ if ValidTarget(minion, 525+250) then
 			CastSpell(_W)
 		end
 	end
+  if GotBuff(myHero,"goldcardpreattack") == 1 and GetCurrentHP(minion) < ycard then --GetCastName(myHero,_W) == "goldcardlock"
+		AttackUnit(minion)	
+	end   
   if self.MonTourMenu.Farm2.prio:Value() == 2 and curdmax > ManaValue and GetTickCount() > self.tick then
     if CanUseSpell(myHero,_W) == READY and GetCastName(myHero,_W) == "PickACard" then   
 			self.selectedcard = "bluecardlock"
@@ -1156,6 +1357,9 @@ if ValidTarget(minion, 525+250) then
 			CastSpell(_W) 
 		end
 	end
+  if GotBuff(myHero,"bluecardpreattack") == 1  and GetCurrentHP(minion) < bcard then --GetCastName(myHero,_W) == "bluecardlock"
+		AttackUnit(minion) 	
+	end    
 	if self.MonTourMenu.Farm2.prio:Value() == 3 and curdmax > ManaValue and GetTickCount() > self.tick then --and MinionAround(minion, 250) > 3
 		if CanUseSpell(myHero,_W) == READY and GetCastName(myHero,_W) == "PickACard" then
 			self.selectedcard = "redcardlock"
@@ -1163,6 +1367,9 @@ if ValidTarget(minion, 525+250) then
 			CastSpell(_W)
 		end
 	end	
+  if GotBuff(myHero,"redcardpreattack") == 1 and GetCurrentHP(minion) < rcard then
+		AttackUnit(minion)
+  end  
   if (self.MonTourMenu.Farm2.prio:Value() == 1 or self.MonTourMenu.Farm2.prio:Value() == 3) and curdmax < ManaValue and GetTickCount() > self.tick then
 		if CanUseSpell(myHero,_W) == READY and GetCastName(myHero,_W) == "PickACard" then
 			self.selectedcard = "bluecardlock"
@@ -1170,13 +1377,24 @@ if ValidTarget(minion, 525+250) then
 			CastSpell(_W)
 		end
 	end
- 
+  if GotBuff(myHero, "cardmasterstackparticle") == 1 and (GotBuff(myHero,"redcardpreattack") == 0 or GotBuff(myHero,"bluecardpreattack") == 0 or GotBuff(myHero,"goldcardpreattack") == 0) and GetCurrentHP(minion) < ncardpassive then
+		AttackUnit(minion)  
+	end 
 end
 end
 end
 
+function TwistedFate:Igniteit()  
+  for i,enemy in pairs(GetEnemyHeroes()) do
+  	if Ignite and self.MonTourMenu.Items.Ignite:Value() and CanUseSpell(myHero,_Q) ~= READY and CanUseSpell(myHero,_W) ~= READY and (GotBuff(myHero,"redcardpreattack") == 0 or GotBuff(myHero,"bluecardpreattack") == 0 or GotBuff(myHero,"goldcardpreattack") == 0) and GetDistance(enemy) > 525 then
+          if CanUseSpell(myHero, Ignite) == READY and 20*GetLevel(myHero)+50 > GetCurrentHP(enemy)+GetHPRegen(enemy)*2.5 and GetDistanceSqr(GetOrigin(enemy)) < 600*600 then
+          CastTargetSpell(enemy, Ignite)
+          end
+    end
+  end          
+end
 
-function Items()
+function TwistedFate:Items()
 if GetItemSlot(myHero,3140) > 0 and self.MonTourMenu.Items.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < self.MonTourMenu.Items.QSSHP:Value() then
         CastTargetSpell(myHero, GetItemSlot(myHero,3140))
         end
@@ -1184,11 +1402,48 @@ if GetItemSlot(myHero,3140) > 0 and self.MonTourMenu.Items.QSS:Value() and GotBu
         if GetItemSlot(myHero,3139) > 0 and self.MonTourMenu.Items.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < self.MonTourMenu.Items.QSSHP:Value() then
         CastTargetSpell(myHero, GetItemSlot(myHero,3139))
       end
-if self.MonTourMenu.Items.Zhonya:Value() and GetItemSlot(myHero,3157) > 0 and ValidTarget(target, 900) and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) <= self.MonTourMenu.Items.ZhonyaHP:Value()  then
+if self.MonTourMenu.Items.Zhonya:Value() and GetItemSlot(myHero,3157) > 0 and ValidTarget(self.target, 900) and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) <= self.MonTourMenu.Items.ZhonyaHP:Value()  then
                     CastTargetSpell(myHero, GetItemSlot(myHero,3157))
                     end      
 end
 
+function TwistedFate:ProcessSpell(Object,spellProc)
+	if not self.MonTourMenu.Combo.R:Value() then
+		return
+	end
+	if Object and Object == myHero then
+		local name = spellProc.name:lower()		    
+		if name == "destiny" then
+			self.ultimateused = true
+		end
+		if name == "gate" then 
+			self.ultimateused = false
+			self.selectedcard = "goldcardlock"			
+			if CanUseSpell(myHero,_W) == READY and GetCastName(myHero,_W) == "PickACard" then					
+				CastSpell(_W)
+			end
+		end      
+	end	
+end
+
+function TwistedFate:ProcessSpell2(unit, spell)
+  for _,unit in pairs(GetEnemyHeroes()) do
+    if GetObjectType(unit) == Obj_AI_Hero and GetTeam(unit) ~= GetTeam(myHero) and GetCastLevel(myHero,_W) > 0 then
+      if self.CHANELLING_SPELLS[spell.name] and ValidTarget(unit,600) then
+        if IsInDistance(unit, 525) and GetObjectName(unit) == self.CHANELLING_SPELLS[spell.name].Name and self.MonTourMenu.Interrupter[GetObjectName(unit).."Interrupting"]:Value() then 
+          		if CanUseSpell(myHero,_W) == READY and GetCastName(myHero,_W) == "PickACard" then
+                self.selectedcard = "goldcardlock"
+                self.tick = GetTickCount() + 3000
+                CastSpell(_W)
+              end
+              if GetCastName(myHero,_W) == "goldcardlock" then
+                AttackUnit(unit)
+              end  
+        end  
+      end
+    end
+  end  
+end
 
 if _G[GetObjectName(myHero)] then
 	_G[GetObjectName(myHero)]()
