@@ -23,6 +23,9 @@ self.MonTourMenu.Combo:Boolean("E","Use E",true)
 self.MonTourMenu.Combo:Boolean("ES","E only with Debuff?",true)
 self.MonTourMenu.Combo:Boolean("R","Use R ",true)
 self.MonTourMenu.Combo:Boolean("RS","Auto Turn off R if no Enemy inside? ",true)
+self.MonTourMenu.Combo:Info("AniviaMoT14", "Delay for Turn Off R")
+self.MonTourMenu.Combo:Slider("Imin", "Delay min.", 632, 10, 3500, 1)
+self.MonTourMenu.Combo:Slider("Imax", "Delay max.", 1055, 100, 3500, 1) 
 self.MonTourMenu:SubMenu("LastHit", "LastHit")
 self.MonTourMenu.LastHit:Boolean("E","Use E",true)
 self.MonTourMenu.LastHit:Boolean("R","Use R",true)
@@ -601,7 +604,7 @@ if self.MonTourMenu.Combo.RS:Value() then
 if IOW:Mode() == "Combo" then  
   if GotBuff(myHero,"GlacialStorm") == 1 and self.Rattack ~= myHero then
     if EnemiesAround(GetOrigin(self.Rattack), 420) <= 0 then
-    DelayAction(function() CastSpell(_R) end, math.random(632,1155))
+    DelayAction(function() CastSpell(_R) end, math.random(self.MonTourMenu.Combo.Imin:Value(),self.MonTourMenu.Combo.Imax:Value()))
     end
   end  
 end
