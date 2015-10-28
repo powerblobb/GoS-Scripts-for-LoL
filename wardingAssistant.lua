@@ -19,7 +19,7 @@ if GetMapID() == SUMMONERS_RIFT then
   WardingAssistantTritto = Menu("WardingAssistant", "WardingAssistant")
   WardingAssistantTritto:Key("PlaceWard", "Place Ward", string.byte("Z"))
   WardingAssistantTritto:Key("WardModifier", "Ward Modifier", 17)
---  WardingAssistantTritto:Slider("CicleRange", "Ward Cast Range(2xF6)", 2500, 1000, 20000, 1)
+  WardingAssistantTritto:Boolean("ETS","Show Enemy Team Spots?(2xF6)",false)
   WardingAssistantTritto:Slider("CicleRange", "Ward Circle Range(2xF6)", 2500, 1000, 20000, 1)
 	------------------------------------[ SCRIPT DATA ]------------------------------------
 	
@@ -46,7 +46,7 @@ if GetMapID() == SUMMONERS_RIFT then
 	local showEnemyTeamSpots = false;
 	local spotCircleSize = 30;
 	local wardCastRange = 600;
-	
+	   
 	--# Constants #--
 	local playerTeam = GetTeam(GetMyHero())/100;
 	
@@ -377,7 +377,7 @@ if GetMapID() == SUMMONERS_RIFT then
 	for i=1, #wardingSpots, 1 do
 		if not(wardingSpots[i][4])
 		or playerTeam == wardingSpots[i][4]
-		or showEnemyTeamSpots then
+		or WardingAssistantTritto.ETS:Value() then
 			table.insert(classicWardSpot, Circle(wardingSpots[i][1],wardingSpots[i][2],wardingSpots[i][3]));
 		end;
 	end;
