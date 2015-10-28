@@ -1,11 +1,11 @@
 require("Inspired")
-local MoTBaseVersion = "MoTBase: v1.0 by MarCiii"
+local MoTBaseVersion = "MoTBase: v1.1 by MarCiii"
 -------------Anivia----------------
 
 class "Anivia"
 function Anivia:__init()
 print(MoTBaseVersion)  
-self.Version = "1.0"
+self.Version = "1.1"
 self.Qattack = myHero
 self.Rattack = myHero  
 self.Qattack = myHero
@@ -349,7 +349,7 @@ end
 
 function Anivia:DMGCALCnKS() 
 self.OverAllDmgAnivia = 0
-local Qdmg = 30 + 30*GetCastLevel(myHero,_Q)+GetBonusAP(myHero)--60 + 60*GetCastLevel(myHero,_Q)+GetBonusAP(myHero) --120 / 180 / 240 / 300 / 360 (+ 100% AP) or 60 / 90 / 120 / 150 / 180 (+ 50% AP)
+local Qdmg = 60 + 60*GetCastLevel(myHero,_Q)+GetBonusAP(myHero) --30 + 30*GetCastLevel(myHero,_Q)+GetBonusAP(myHero)120 / 180 / 240 / 300 / 360 (+ 100% AP) or 60 / 90 / 120 / 150 / 180 (+ 50% AP)
 local EdmgNoDebuff = 25 + 30*GetCastLevel(myHero,_E)+GetBonusAP(myHero) --55 / 85 / 115 / 145 / 175 (+ 50% AP)
 local Edmg = 50 + 60*GetCastLevel(myHero,_E)+GetBonusAP(myHero) --110 / 170 / 230 / 290 / 350 (+ 100% AP)
 local Rdmg =  40 + 40*GetCastLevel(myHero,_R)+0.25*GetBonusAP(myHero) --80 / 120 / 160 (+ 25% AP)
@@ -455,8 +455,7 @@ elseif CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_E) ~= READY and (
 elseif CanUseSpell(myHero,_Q) ~= READY and CanUseSpell(myHero,_E) == READY and (CanUseSpell(myHero,_R) ~= READY or GotBuff(myHero,"GlacialStorm") == 0) then
   if GotBuff(unit,"chilled") == 1 then
   self.OverAllDmgAnivia = CalcDamage(myHero, unit,0,Edmg)
-  end
-  if GotBuff(unit,"chilled") == 0 then
+  elseif GotBuff(unit,"chilled") == 0 then
   self.OverAllDmgAnivia = CalcDamage(myHero, unit,0,EdmgNoDebuff)
   end
   if self.MonTourMenu.KS.E:Value() then
