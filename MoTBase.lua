@@ -1,41 +1,69 @@
 require("Inspired")
-local MoTBaseVersion = "MoTBase: v1.1 by MarCiii"
+local MoTBaseVersion = "MoTBase: v1.2 by MarCiii"
 -------------Anivia----------------
 
 class "Anivia"
 function Anivia:__init()
 print(MoTBaseVersion)  
-self.Version = "1.1"
+self.Version = "1.2"
 self.Qattack = myHero
 self.Rattack = myHero  
-self.Qattack = myHero
---self.RLastHit = false
---self.RLaneClear = false
---self.RJungleClear = false
+self.Eattack = myHero
+self.Wattack = myHero
+self.unitname = myHero
+self.minW = 1
+self.maxW = 2
+self.gametimeQ = 0
+self.gametimeW = 0
+self.gametimeE = 0
+self.gametimeR = 0
 self.OverAllDmgAnivia = 0
-self.MonTourMenu = Menu("MoTAnivia", "MoTAnivia")
+self.MonTourMenu = MenuConfig("MoTAnivia", "MoTAnivia")
 self.MonTourMenu:SubMenu("Combo", "Combo")
 self.MonTourMenu.Combo:Boolean("Q","Use Q",true)
 self.MonTourMenu.Combo:Boolean("QS","Use Q AutoStun in Combo?",true)
 self.MonTourMenu.Combo:Boolean("QS2","Always AutoStun if possible?",true)
 self.MonTourMenu.Combo:Boolean("W","Use W Auto Wall",false)
+self.MonTourMenu.Combo:Slider("minW", "Delay W min.", 800, 10, 3500, 1)
+self.MonTourMenu.Combo:Slider("maxW", "Delay W max.", 1100, 100, 3500, 1) 
 self.MonTourMenu.Combo:Boolean("E","Use E",true)
 self.MonTourMenu.Combo:Boolean("ES","E only with Debuff?",true)
 self.MonTourMenu.Combo:Boolean("R","Use R ",true)
 self.MonTourMenu.Combo:Boolean("RS","Auto Turn off R if no Enemy inside? ",true)
-self.MonTourMenu.Combo:Info("AniviaMoT14", "Delay for Turn Off R")
+self.MonTourMenu.Combo:Info("AniviaMoT141", "Delay for Turn Off R")
 self.MonTourMenu.Combo:Slider("Imin", "Delay min.", 632, 10, 3500, 1)
 self.MonTourMenu.Combo:Slider("Imax", "Delay max.", 1055, 100, 3500, 1) 
+self.MonTourMenu:SubMenu("Harass", "Harass")
+self.MonTourMenu.Harass:Boolean("Q","Use Q",false)
+self.MonTourMenu.Harass:Boolean("QS","Use Q AutoStun in Combo?",true)
+self.MonTourMenu.Harass:Boolean("QS2","Always AutoStun if possible?",true)
+self.MonTourMenu.Harass:Boolean("W","Use W Auto Wall",false)
+self.MonTourMenu.Harass:Slider("minW", "Delay W min.", 800, 10, 3500, 1)
+self.MonTourMenu.Harass:Slider("maxW", "Delay W max.", 1100, 100, 3500, 1) 
+self.MonTourMenu.Harass:Boolean("E","Use E",true)
+self.MonTourMenu.Harass:Boolean("ES","E only with Debuff?",true)
+self.MonTourMenu.Harass:Boolean("R","Use R ",true)
+self.MonTourMenu.Harass:Boolean("RS","Auto Turn off R if no Enemy inside? ",true)
+self.MonTourMenu.Harass:Info("AniviaMoT142", "Delay for Turn Off R")
+self.MonTourMenu.Harass:Slider("Imin", "Delay min.", 632, 10, 3500, 1)
+self.MonTourMenu.Harass:Slider("Imax", "Delay max.", 1055, 100, 3500, 1)
 self.MonTourMenu:SubMenu("LastHit", "LastHit")
 self.MonTourMenu.LastHit:Boolean("E","Use E",true)
 self.MonTourMenu.LastHit:Boolean("R","Use R",true)
+self.MonTourMenu.LastHit:Info("AniviaMoT142", "Delay for Turn Off R")
+self.MonTourMenu.LastHit:Slider("Imin", "Delay min.", 1000, 10, 3500, 1)
+self.MonTourMenu.LastHit:Slider("Imax", "Delay max.", 1250, 100, 3500, 1)
 self.MonTourMenu.LastHit:Slider("Mana", "if Mana > x%", 30, 0, 80, 1)
 self.MonTourMenu:SubMenu("LaneClear", "LaneClear")
 self.MonTourMenu.LaneClear:Boolean("E","Use E",true)
 self.MonTourMenu.LaneClear:Boolean("R","Use R",true)
+self.MonTourMenu.LaneClear:Info("AniviaMoT142", "Delay for Turn Off R")
+self.MonTourMenu.LaneClear:Slider("Imin", "Delay min.", 120, 10, 3500, 1) 
+self.MonTourMenu.LaneClear:Slider("Imax", "Delay max.", 1147, 100, 3500, 1)
 self.MonTourMenu.LaneClear:Slider("RM", "Enable if > x Minion Around MousePos", 5, 1, 20, 1)
 self.MonTourMenu.LaneClear:Slider("RP", "Disable if < x Minion Around RPos", 1, 1, 10, 1)
 self.MonTourMenu.LaneClear:Slider("Mana", "if Mana > x%", 30, 0, 80, 1)
+--will come soon
 --self.MonTourMenu:SubMenu("JungleClear", "JungleClear")
 --self.MonTourMenu.JungleClear:Key("JC", "JungleClear", string.byte("A"))
 --self.MonTourMenu.JungleClear:Boolean("E","Use E",true)
@@ -60,6 +88,7 @@ self.MonTourMenu.Interrupter:Info("AniviaMoT14", "Delay for Interrupts min/max")
 self.MonTourMenu.Interrupter:Slider("Imin", "Delay min.", 632, 10, 3500, 1)
 self.MonTourMenu.Interrupter:Slider("Imax", "Delay max.", 1055, 100, 3500, 1) 
 self.MonTourMenu:SubMenu("Misc", "Drawings")
+self.MonTourMenu.Misc:Boolean("Wall","Draw Wall Circle",true)
 self.MonTourMenu.Misc:Boolean("DOH","Draw Damage Over HpBar",true)
 self.MonTourMenu.Misc:Boolean("DCC","Draw Casted Circles",true)
 self.MonTourMenu.Misc:Boolean("CTS","Draw Current Target",true)
@@ -108,23 +137,25 @@ OnDeleteObj(function(Object) self:DeleteObj(Object) end)
 OnProcessSpell(function(unit, spell) self:ProcessSpell2(unit, spell) end)
 end
  
-function Anivia:Draw(myHero)
+function Anivia:Draw(myHero) 
 if self.MonTourMenu.Misc.CTS:Value() then  
 self:DrawENEMY()
 end
 self:Checks() 
 --self:CheckForSelection()
-if IOW:Mode() == "Combo" then
   self:Combo()
-end 
 if self.MonTourMenu.Misc.DCC:Value() then
 self:CirclesbyCast()
 end
 if self.MonTourMenu.Misc.DOH:Value() then
 self:DMGoverHpDraw()
 end
---local mymouse = GetMousePos()
---DrawCircle(mymouse,175,0.9,100,0xff0000ff)
+
+if (self.gametimeQ+(1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q)))-GetGameTimer() > (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_E,GetCastLevel(myHero,_E)) then
+  DrawText("E AVAILABLE",20,200,420,0xff00ff00);
+elseif (self.gametimeQ+(1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q)))-GetGameTimer() < (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_E,GetCastLevel(myHero,_E)) then
+  DrawText("E NOT AVAILABLE",20,200,420,0xff00ff00);
+end
 end
 
 function Anivia:Tick(myHero)
@@ -141,28 +172,26 @@ end
 if IOW:Mode() == "LaneClear" then
 self:LaneClear()
 end
---if self.MonTourMenu.JungleClear.JC:Value() then
---self:JungleClear()
---end
 end
 
 function Anivia:DrawENEMY()
 	local hpbar = GetHPBarPos(myHero)
+      if hpbar.x > 0 then
+			if hpbar.y > 0 then 
 		FillRect(hpbar.x, hpbar.y+13, 107, 11,self.MonTourMenu.Misc.CTSC2:Value())
     FillRect(hpbar.x, hpbar.y+22, 107, 2,ARGB(255,0,0,0))
 --    FillRect(hpbar.x, hpbar.y+10, 107, 12,ARGB(255,74,73,74))
 	if self.target ~= nil then
---		DrawText(GetObjectName(self.target),14,hpbar.x+110-GetTextArea(GetObjectName(self.target),14)/2, hpbar.y+9,ARGB(255,52,210,35))
---    DrawText(GetObjectName(myHero),14,hpbar.x+113-GetTextArea(GetObjectName(myHero),14)/2, hpbar.y+11,ARGB(255,52,210,35))
---        DrawText("MonkeyKing",14,hpbar.x+113-GetTextArea("MonkeyKing",14)/2, hpbar.y+10,ARGB(255,255,0,0))
         DrawText(GetObjectName(self.target),14,hpbar.x+113-GetTextArea(GetObjectName(self.target).."  ",14)/2, hpbar.y+10,self.MonTourMenu.Misc.CTSC:Value())
 	else
     DrawText("No Target found!",14,hpbar.x+113-GetTextArea("No Target found",14)/2, hpbar.y+10,self.MonTourMenu.Misc.CTSC:Value())
   end
+end
+end
 	end
 
 function Anivia:Combo()
-if self.MonTourMenu.Combo.Q:Value() then
+if (self.MonTourMenu.Combo.Q:Value() and IOW:Mode() == "Combo") or (self.MonTourMenu.Harass.Q:Value() and IOW:Mode() == "Harass") then
 if ValidTarget(self.target,1200) then 
   local QPred = GetPredictionForPlayer(GetOrigin(myHero),self.target,GetMoveSpeed(self.target),1000,120,1175,75,false,true) 
   if GotBuff(myHero,"FlashFrost") == 0 and CanUseSpell(myHero,_Q) == READY and QPred.HitChance == 1 then 
@@ -170,7 +199,7 @@ if ValidTarget(self.target,1200) then
   end 
 end 
 end
-if self.MonTourMenu.Combo.R:Value() then
+if (self.MonTourMenu.Combo.R:Value() and IOW:Mode() == "Combo") or (self.MonTourMenu.Harass.R:Value() and IOW:Mode() == "Harass") then
 if ValidTarget(self.target,615) then
 local RPred = GetPredictionForPlayer(GetOrigin(myHero),self.target,GetMoveSpeed(self.target),2500,0,615,400,false,false)  
   if GotBuff(myHero,"GlacialStorm") == 0 and CanUseSpell(myHero,_R) == READY and RPred.HitChance == 1 then  
@@ -179,31 +208,6 @@ local RPred = GetPredictionForPlayer(GetOrigin(myHero),self.target,GetMoveSpeed(
 end  
 end
 end
-
---function Anivia:CheckForSelection()
---if IOW:Mode() == "LastHit" then
---self.RLastHit = true
---else
---self.RLastHit = false
---end
---for i=1, IOW.mobs.maxObjects do
---local minion = IOW.mobs.objects[i]
---if IOW:Mode() == "LaneClear" and ValidTarget(minion, 615) then
---self.RLaneClear = true
---else
---self.RLaneClear = false
---end
---end
---for _,mob in pairs(minionManager.objects) do
---if GetTeam(mob) == MINION_JUNGLE then
---if self.MonTourMenu.JungleClear.JC:Value() and ValidTarget(mob, 615) then
---self.RJungleClear = true
---else
---self.RJungleClear = false
---end
---end
---end
---end
 
 function Anivia:LastHit()
 for i=1, IOW.mobs.maxObjects do
@@ -218,14 +222,14 @@ for i=1, IOW.mobs.maxObjects do
             CastSkillShot(_R, MousePos.x, MousePos.y, MousePos.z)
         end  
         if GotBuff(myHero,"GlacialStorm") == 1 and self.Rattack ~= myHero then --and self.RLastHit == true
-            DelayAction(function() CastSpell(_R) end, math.random(1000,1255))
+            DelayAction(function() CastSpell(_R) end, math.random(self.MonTourMenu.LastHit.Imin:Value(),self.MonTourMenu.LastHit.Imax:Value()))
         end
       end  
       if self.MonTourMenu.LastHit.E:Value() and ValidTarget(minion, 650) and ValidTarget(minion, 650)  then
         if GotBuff(minion,"chilled") == 1 and GetCurrentHP(minion) < CalcDamage(myHero, minion, 0, Edmg) and GetCurrentHP(minion) > CalcDamage(myHero, minion, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
           CastTargetSpell(minion, _E)
         end
-        if GotBuff(minion,"chilled") == 0 and GetCastLevel(myHero,_R) < 1 and GetCurrentHP(minion) < CalcDamage(myHero, minion, 0, EdmgNoDebuff) and GetCurrentHP(minion) > CalcDamage(myHero, minion, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
+        if GotBuff(minion,"chilled") == 0 and ((GetCastLevel(myHero,_R) < 1) or (GetCastLevel(myHero,_Q) < 1)) and GetCurrentHP(minion) < CalcDamage(myHero, minion, 0, EdmgNoDebuff) and GetCurrentHP(minion) > CalcDamage(myHero, minion, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) and ManaCheck then  
           CastTargetSpell(minion, _E)
         end        
       end
@@ -249,7 +253,7 @@ for i=1, IOW.mobs.maxObjects do
         end  
         if GotBuff(myHero,"GlacialStorm") == 1 and self.Rattack ~= myHero then -- and RLaneClear == true
           if MinionsAround(GetOrigin(self.Rattack), 420, MINION_ENEMY) < self.MonTourMenu.LaneClear.RP:Value()  then --and RLaneClear == false
-            DelayAction(function() CastSpell(_R) end, math.random(120,1147)) 
+            DelayAction(function() CastSpell(_R) end, math.random(self.MonTourMenu.LaneClear.Imin:Value(),self.MonTourMenu.LaneClear.Imax:Value()))
           end
         end
       end  
@@ -257,7 +261,7 @@ for i=1, IOW.mobs.maxObjects do
         if GotBuff(minion,"chilled") == 1 and GetCurrentHP(minion) < CalcDamage(myHero, minion, 0, Edmg) and GetCurrentHP(minion) > CalcDamage(myHero, minion, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
           CastTargetSpell(minion, _E)
         end
-        if GotBuff(minion,"chilled") == 0 and GetCastLevel(myHero,_R) < 1 and GetCurrentHP(minion) < CalcDamage(myHero, minion, 0, EdmgNoDebuff) and GetCurrentHP(minion) > CalcDamage(myHero, minion, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
+        if GotBuff(minion,"chilled") == 0 and ((GetCastLevel(myHero,_R) < 1) or (GetCastLevel(myHero,_Q) < 1)) and GetCurrentHP(minion) < CalcDamage(myHero, minion, 0, EdmgNoDebuff) and GetCurrentHP(minion) > CalcDamage(myHero, minion, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) and ManaCheck then  
           CastTargetSpell(minion, _E)
         end         
       end
@@ -265,66 +269,22 @@ for i=1, IOW.mobs.maxObjects do
 end
 end
 
---function Anivia:JungleClear()
---	for _,mob in pairs(minionManager.objects) do
---	if GetObjectName(mob) == "SRU_Blue" or GetObjectName(mob) == "SRU_Red" or GetObjectName(mob) == "SRU_Krug" or GetObjectName(mob) == "SRU_Murkwolf" or GetObjectName(mob) == "SRU_Razorbeak" or GetObjectName(mob) == "SRU_Gromp" or GetObjectName(mob) == "Sru_Crab" or GetObjectName(mob) == "SRU_Dragon" or GetObjectName(mob) == "SRU_Baron" or GetTeam(mob) == MINION_JUNGLE then
---  local MousePos = GetMousePos()
---  local hpbar = GetHPBarPos(myHero)
---  local Edmg = 50 + 60*GetCastLevel(myHero,_E)+GetBonusAP(myHero)
---  local EdmgNoDebuff = 25 + 30*GetCastLevel(myHero,_E)+GetBonusAP(myHero)
---  local ManaCheck = 100*GetCurrentMana(myHero)/GetMaxMana(myHero) >= self.MonTourMenu.JungleClear.Mana:Value()
---  local mobPos = GetOrigin(mob)
---    if self.MonTourMenu.JungleClear.JC:Value() then
---      if GotBuff(myHero,"FlashFrost") == 0 and CanUseSpell(myHero,_Q) == READY and ValidTarget(mob, 615) and ManaCheck then  
---        CastSkillShot(_Q,mobPos.x, mobPos.y, mobPos.z)
---      elseif GotBuff(myHero,"FlashFrost") == 1 and self.Qattack ~= myHero and ValidTarget(mob, 615) then
-----        if GetDistanceSqr(GetOrigin(self.Qattack),mobPos) <= 150*150 then
---          if GetOrigin(self.Qattack) == mobPos then
---            CastSpell(_Q) 
---          end
---      end
---      if self.MonTourMenu.JungleClear.R:Value() then
---        if GotBuff(myHero,"GlacialStorm") == 0 and CanUseSpell(myHero,_R) == READY and self.Rattack == myHero and ValidTarget(mob, 615) and ManaCheck then 
---          DrawCircle(MousePos,420,0.9,100,0xff0000ff)
-----          if GetDistanceSqr(GetOrigin(self.Qattack),mobPos) <= 420*420 then
---            CastSkillShot(_R, mobPos.x, mobPos.y, mobPos.z)
-----          end 
---        elseif GotBuff(myHero,"GlacialStorm") == 1 and self.Rattack ~= myHero and not ValidTarget(mob, 680) and not (ValidTarget(mob, 680) or GetObjectName(mob) == "SRU_Blue" or GetObjectName(mob) == "SRU_Red" or GetObjectName(mob) == "SRU_Krug" or GetObjectName(mob) == "SRU_Murkwolf" or GetObjectName(mob) == "SRU_Razorbeak" or GetObjectName(mob) == "SRU_Gromp" or GetObjectName(mob) == "Sru_Crab" or GetObjectName(mob) == "SRU_Dragon" or GetObjectName(mob) == "SRU_Baron") then
-----          if MinionsAround(GetOrigin(self.Rattack), 420, mobPos) < 1 then
-----            if GetDistanceSqr(GetOrigin(self.Qattack),mobPos) <= 420*420 then
---                CastSpell(_R) 
---        end
---      end  
---      if self.MonTourMenu.JungleClear.E:Value() and ValidTarget(mob, 650) and ManaCheck then
---        if GotBuff(mob,"chilled") == 1 and GetCurrentHP(mob) < CalcDamage(myHero, mob, 0, Edmg) and GetCurrentHP(mob) > CalcDamage(myHero, mob, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
---          CastTargetSpell(mob, _E)
---        end
---      end
---        if GotBuff(mob,"chilled") == 0 and GetCastLevel(myHero,_Q) < 1 and GetCastLevel(myHero,_R) < 1 and GetCurrentHP(mob) < CalcDamage(myHero, mob, 0, EdmgNoDebuff) and GetCurrentHP(mob) > CalcDamage(myHero, mob, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
---          CastTargetSpell(mob, _E)
---        end
---        if GotBuff(mob,"chilled") == 0 and (CanUseSpell(myHero,_R) ~= READY or GotBuff(myHero,"GlacialStorm") == 0) and CanUseSpell(myHero,_Q) ~= READY and GetCurrentHP(mob) < CalcDamage(myHero, mob, 0, EdmgNoDebuff) and GetCurrentHP(mob) > CalcDamage(myHero, mob, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
---          CastTargetSpell(mob, _E)
---        end
---        if GotBuff(mob,"chilled") == 1 and (CanUseSpell(myHero,_R) ~= READY or GotBuff(myHero,"GlacialStorm") == 0) and GetCurrentHP(mob) < CalcDamage(myHero, mob, 0, EdmgNoDebuff) and GetCurrentHP(mob) > CalcDamage(myHero, mob, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
---          CastTargetSpell(mob, _E)
---        end    
---      if ValidTarget(mob, 600) then
---      AttackUnit(mob)
---      end
---    	if mob ~= nil and ValidTarget(mob, 600) then
---		DrawText(GetObjectName(mob),14,hpbar.x+110-GetTextArea(GetObjectName(mob),14)/2, hpbar.y+9,ARGB(255,52,210,35))
---	end
---    end    
---end
---end
---end
-
-
 function Anivia:Checks()
 self.MonTourMenu.ts.range = 1200
 self.target = self.MonTourMenu.ts:GetTarget()--IOW:GetTarget()
-self.unit = self.MonTourMenu.ts:GetTarget()--IOW:GetTarget()  
+self.unit = self.MonTourMenu.ts:GetTarget()--IOW:GetTarget()
+if IOW:Mode() == "Combo" then
+self.minW = self.MonTourMenu.Combo.minW:Value()
+self.maxW = self.MonTourMenu.Combo.maxW:Value()
+elseif IOW:Mode() == "Harass" then
+self.minW = self.MonTourMenu.Harass.minW:Value()
+self.maxW = self.MonTourMenu.Harass.maxW:Value()
+end
+if self.target ~= nil then
+self.unitname = GetObjectName(self.target)
+else
+self.unitname = GetObjectName(myHero)
+end
 end
 
 function Anivia:CirclesbyCast()
@@ -490,30 +450,35 @@ end
 end
 
 function Anivia:EnemyChilledUseE() 
-if IOW:Mode() == "Combo" then
-  if self.MonTourMenu.Combo.E:Value() and self.MonTourMenu.Combo.ES:Value() then
-  if ValidTarget(self.target,650) then
+--if IOW:Mode() == "Combo" or IOW:Mode() == "Harass" then
+  if (self.MonTourMenu.Combo.E:Value() and self.MonTourMenu.Combo.ES:Value() and IOW:Mode() == "Combo") or (self.MonTourMenu.Harass.E:Value() and self.MonTourMenu.Harass.ES:Value() and IOW:Mode() == "Harass") then
+  if ValidTarget(self.target,650) and CanUseSpell(myHero,_E) == READY then
     for i,unit in pairs(GetEnemyHeroes()) do 
       if GotBuff(unit,"chilled") == 1 and GetObjectName(self.target) == GetObjectName(unit) then
         CastTargetSpell(unit, _E)
-      elseif
-        GotBuff(unit,"chilled") == 1 and GetObjectName(self.target) ~= GetObjectName(unit) then
+      elseif (self.gametimeQ+(1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q)))-GetGameTimer() > (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_E,GetCastLevel(myHero,_E)) and GetObjectName(self.target) == GetObjectName(unit) and ((CanUseSpell(myHero,_R) ~= READY and GotBuff(myHero,"GlacialStorm") == 0) or (GetCastLevel(myHero,_R) == 0)) then
         CastTargetSpell(unit, _E)
+      elseif GetCastLevel(myHero,_Q) == 0 and GetObjectName(self.target) == GetObjectName(unit) then 
+        CastTargetSpell(unit, _E)
+      elseif GetCastLevel(myHero,_R) == 0 and GetObjectName(self.target) == GetObjectName(unit) then 
+        CastTargetSpell(unit, _E)  
+      elseif GotBuff(unit,"chilled") == 1 and GetObjectName(self.target) ~= GetObjectName(unit) then
+        CastTargetSpell(unit, _E)  
       end
     end
   end
-  end
+--  end
 end 
 end
 
 function Anivia:EnemyNoneChilledUseE() 
-if IOW:Mode() == "Combo" then
-  if self.MonTourMenu.Combo.E:Value() and self.MonTourMenu.Combo.ES:Value() == false then
-  if ValidTarget(self.target,650) then
+--if IOW:Mode() == "Combo"  or IOW:Mode() == "Harass" then
+if (self.MonTourMenu.Combo.E:Value() and self.MonTourMenu.Combo.ES:Value() == false and IOW:Mode() == "Combo") or (self.MonTourMenu.Harass.E:Value() and self.MonTourMenu.Harass.ES:Value() == false and IOW:Mode() == "Harass") then
+  if ValidTarget(self.target,650) and CanUseSpell(myHero,_E) == READY then
         CastTargetSpell(self.target, _E)
   end
   end
-end 
+--end 
 end
 
 --Thanks to Deftsu for QSS Code :)
@@ -547,18 +512,23 @@ end
 end                  
 
 function Anivia:MakeWall()
---local unit = self.target
 local distance = 0
+local unitname = self.unitname
+local minW = self.minW --= self.MonTourMenu.Combo.minW:Value()
+local maxW = self.maxW --= self.MonTourMenu.Combo.maxW:Value() 
+local target = self.MonTourMenu.ts:GetTarget()
+      
       if EnemiesAround(GetOrigin(myHero), 1200) <= 1 then
         distance = 155  
       elseif EnemiesAround(GetOrigin(myHero), 1200) > 1 then
         distance = 230
       end 
- if self.MonTourMenu.Combo.W:Value() then
+-- if ValidTarget(self.target,1200) then     
+ if (self.MonTourMenu.Combo.W:Value() and IOW:Mode() == "Combo") or (self.MonTourMenu.Harass.W:Value() and IOW:Mode() == "Harass") then
   if CanUseSpell(myHero,_W) == READY then  
     for _,unit in pairs(GetEnemyHeroes()) do
       if ValidTarget(unit,1200) then    
-			local enemyposx,enemyposy,enemypoz,selfx,selfy,selfz    
+			local enemyposx,enemyposy,enemyposz,selfx,selfy,selfz    
 			local enemyposition = GetOrigin(unit)
 			local enemyposx=enemyposition.x
 			local enemyposy=enemyposition.y
@@ -569,19 +539,63 @@ local distance = 0
 			local selfy = self.y
     	local selfz = self.z
 			local HeroPos = Vector(selfx, selfy, selfz)
-			local wPos = TargetPos-(TargetPos-HeroPos)*(-distance/GetDistance(unit)) 
-        if CanUseSpell(myHero,_Q) ~= READY and CanUseSpell(myHero,_E) ~= READY then   
-        DelayAction(function() CastSkillShot(_W,wPos.x, wPos.y, wPos.z) end, math.random(800,1100))
+			local wPos = TargetPos-(TargetPos-HeroPos)*(-distance/GetDistance(unit))
+--DrawText(""..unitname,12,200,20,0xff00ff00);
+      DrawText(GetObjectName(unit),12,200,20,0xff00ff00);
+        if CanUseSpell(myHero,_Q) ~= READY and CanUseSpell(myHero,_E) ~= READY and GetObjectName(unit) == unitname then
+        DelayAction(function() CastSkillShot(_W,wPos.x, wPos.y, wPos.z) end, math.random(minW,maxW))
         end  
       end
     end
   end
  end
+--end
+end
+
+function Anivia:DrawWall()
+local distance = 0
+local unitname = self.unitname
+local target = self.MonTourMenu.ts:GetTarget()
+if EnemiesAround(GetOrigin(myHero), 1200) <= 1 then
+        distance = 155  
+      elseif EnemiesAround(GetOrigin(myHero), 1200) > 1 then
+        distance = 230
+end 
+-- if ValidTarget(self.target,1200) then     
+ if self.MonTourMenu.Misc.Wall:Value() then
+  if CanUseSpell(myHero,_W) == READY then  
+    for _,unit in pairs(GetEnemyHeroes()) do
+      if ValidTarget(unit,1250) then    
+			local enemyposx,enemyposy,enemyposz,selfx,selfy,selfz    
+			local enemyposition = GetOrigin(unit)
+			local enemyposx=enemyposition.x
+			local enemyposy=enemyposition.y
+			local enemyposz=enemyposition.z
+			local TargetPos = Vector(enemyposx,enemyposy,enemyposz)
+      local TargetPos2 = Vector(enemyposx+150,enemyposy,enemyposz)
+      local TargetPos3 = Vector(enemyposx-150,enemyposy,enemyposz)
+			local self=GetOrigin(myHero)
+			local selfx = self.x
+			local selfy = self.y
+    	local selfz = self.z
+			local HeroPos = Vector(selfx, selfy, selfz)
+      local HeroPos2 = Vector(selfx+150, selfy+150, selfz+150)
+      local HeroPos3 = Vector(selfx-150, selfy-150, selfz-150)
+			local wPos = TargetPos-(TargetPos-HeroPos)*(-distance/GetDistance(unit))
+      local wPos2 = TargetPos2-(TargetPos2-HeroPos2)*(-distance/GetDistance(unit))
+      local wPos3 = TargetPos3-(TargetPos3-HeroPos3)*(-distance/GetDistance(unit))
+      if GetObjectName(unit) == unitname then 
+      DrawCircle(wPos.x,wPos.y,wPos.z,6,6,100,0xffff0000)
+end
+end
+end
+end
+end
 end
 
 function Anivia:ProcessSpell(unit, spell)
 for i,unit in pairs(GetEnemyHeroes()) do
-if self.MonTourMenu.Combo.QS:Value() and IOW:Mode() == "Combo" and self.MonTourMenu.Combo.QS2:Value() == false then  
+if (self.MonTourMenu.Combo.QS:Value() and IOW:Mode() == "Combo" and self.MonTourMenu.Combo.QS2:Value() == false) or (self.MonTourMenu.Harass.QS:Value() and IOW:Mode() == "Harass" and self.MonTourMenu.Harass.QS2:Value() == false) then  
   if GotBuff(myHero,"FlashFrost") == 1 and self.Qattack ~= myHero then
     if EnemiesAround(GetOrigin(self.Qattack), 175) >= 1 and GetObjectName(self.target) == GetObjectName(unit) then
     CastSpell(_Q) 
@@ -590,7 +604,7 @@ if self.MonTourMenu.Combo.QS:Value() and IOW:Mode() == "Combo" and self.MonTourM
     end    
   end
 end 
-if self.MonTourMenu.Combo.QS2:Value() then  
+if self.MonTourMenu.Combo.QS2:Value() or self.MonTourMenu.Harass.QS2:Value() then  
   if GotBuff(myHero,"FlashFrost") == 1 and self.Qattack ~= myHero  then
     if EnemiesAround(GetOrigin(self.Qattack), 175) >= 1 and GetObjectName(self.target) == GetObjectName(unit) then
     CastSpell(_Q) 
@@ -599,16 +613,21 @@ if self.MonTourMenu.Combo.QS2:Value() then
     end 
   end
 end 
-if self.MonTourMenu.Combo.RS:Value() then
-if IOW:Mode() == "Combo" then  
+if (IOW:Mode() == "Combo" and self.MonTourMenu.Combo.RS:Value()) or (IOW:Mode() == "Harass" and self.MonTourMenu.Harass.RS:Value()) then  
   if GotBuff(myHero,"GlacialStorm") == 1 and self.Rattack ~= myHero then
     if EnemiesAround(GetOrigin(self.Rattack), 420) <= 0 then
+    if IOW:Mode() == "Combo" then  
     DelayAction(function() CastSpell(_R) end, math.random(self.MonTourMenu.Combo.Imin:Value(),self.MonTourMenu.Combo.Imax:Value()))
+    elseif IOW:Mode() == "Harass" then 
+    DelayAction(function() CastSpell(_R) end, math.random(self.MonTourMenu.Harass.Imin:Value(),self.MonTourMenu.Harass.Imax:Value()))
     end
   end  
 end
 end
 end
+if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_E) == READY then
+  self.gametimeQ = GetGameTimer()+1
+  end
 end
 
 function Anivia:ProcessSpell2(unit, spell)
@@ -658,18 +677,30 @@ end
 function Anivia:CreateObj(Object) 
 if GetObjectBaseName(Object) == "cryo_FlashFrost_Player_mis.troy" then
 self.Qattack = Object
+self.gametimeQ = 0
 end
 if GetObjectBaseName(Object) == "cryo_storm_green_team.troy" then
 self.Rattack = Object
+self.gametimeR = 0
+end
+if GetObjectBaseName(Object) == "cryo_FrostBite_mis.troy" then
+self.Eattack = Object
+self.gametimeE = 0
 end
 end
 
 function Anivia:DeleteObj(Object)
 if GetObjectBaseName(Object) == "cryo_FlashFrost_Player_mis.troy" then
 self.Qattack = myHero
+self.gametimeQ = GetGameTimer()
 end
 if GetObjectBaseName(Object) == "cryo_storm_green_team.troy" then
 self.Rattack = myHero
+self.gametimeR = GetGameTimer()
+end
+if GetObjectBaseName(Object) == "cryo_FrostBite_mis.troy" then
+self.Eattack = myHero
+self.gametimeE = GetGameTimer()
 end
 end
 
@@ -782,7 +813,6 @@ end
     self:LastHit()
 	end 
 	if self.MonTourMenu.Farm2.Card:Value() and IOW:Mode() == "LaneClear" and GetTickCount() > self.tick then
---    IOW:EnableAutoAttacks()
 		self:LaneClear()
 	end
 	if IOW:Mode() == "Combo" then
@@ -814,7 +844,6 @@ function TwistedFate:DrawENEMY()
       FillRect(hpbar.x, hpbar.y+13, 107, 11,self.MonTourMenu.Misc.CTSC2:Value())
       FillRect(hpbar.x, hpbar.y+22, 107, 2,ARGB(255,0,0,0))
       FillRect(hpbar.x+106, hpbar.y-2, 1, 24,ARGB(255,0,0,0))
---    FillRect(hpbar.x, hpbar.y+10, 107, 12,ARGB(255,74,73,74))
       end
     end
 	if self.target ~= nil then
@@ -830,14 +859,6 @@ function TwistedFate:DrawENEMY()
       end
     end  
   end
---  FillRect(hpbar.x, hpbar.y+24, 107, 11,self.MonTourMenu.Misc.CTSC2:Value())
---  FillRect(hpbar.x, hpbar.y+33, 107, 2,ARGB(255,0,0,0))
---  FillRect(hpbar.x, hpbar.y+25, 25, 8,ARGB(255,255,255,0))
---  FillRect(hpbar.x+106, hpbar.y+24, 1, 11,ARGB(255,0,0,0))
---  FillRect(hpbar.x, hpbar.y+24, 1, 11,ARGB(255,0,0,0))
---  DrawText(" Q",10,hpbar.x+6, hpbar.y+23,ARGB(255,255,0,255))
-----  DrawText(GetObjectName(myHero),12,hpbar.x+113-GetTextArea(GetObjectName(myHero),14)/2, hpbar.y+22,self.MonTourMenu.Misc.CTSC:Value())
---  DrawText("Lux",12,hpbar.x+107-GetTextArea("Lux",14)/2, hpbar.y+22,self.MonTourMenu.Misc.CTSC:Value())
 	end
 
 function TwistedFate:Checks()
@@ -900,19 +921,9 @@ function TwistedFate:DMGCalcnKS()
   end    
 	for _,unit in pairs(GetEnemyHeroes()) do 
 			local hp = GetCurrentHP(unit) + GetMagicShield(unit) + GetDmgShield(unit)
---			local Qdmg = CalcDamage(myHero, unit, sheendmg, qdmg + Ludens) or 0      
---			local Ydmg = CalcDamage(myHero, unit, sheendmg, ycard + qdmg + lichbane + EPassive + Ludens) or 0
---      local ALLdmg = CalcDamage(myHero, unit, ad, EPassive) or 0
---			local Bdmg = CalcDamage(myHero, unit, sheendmg, bcard + qdmg + lichbane + EPassive + Ludens) or 0
---			local Rdmg = CalcDamage(myHero, unit, sheendmg, rcard + qdmg + lichbane + EPassive + Ludens) or 0	
---      local YBRdmg = CalcDamage(myHero, unit, sheendmg, ((rcard + bcard + ycard)/3) + qdmg + lichbane + EPassive + Ludens) or 0	
---      local YdmgmQ = CalcDamage(myHero, unit, sheendmg, ycard + lichbane + EPassive + Ludens) or 0
---			local BdmgmQ = CalcDamage(myHero, unit, sheendmg, bcard + lichbane + EPassive + Ludens) or 0
---			local RdmgmQ = CalcDamage(myHero, unit, sheendmg, rcard + lichbane + EPassive + Ludens) or 0	
---			local YBRdmgmQ = CalcDamage(myHero, unit, sheendmg, ((rcard + bcard + ycard)/3) + lichbane + EPassive + Ludens) or 0	
       local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),1000,250,1450,40,false,true)    
 	if CanUseSpell(myHero,_Q) == READY and GetCastName(myHero,_W) == "goldcardlock" then
-		self.OverAllDmgTwisted = CalcDamage(myHero, unit, sheendmg, ycard + qdmg + lichbane + EPassive + Ludens)	--and GotBuff(myHero,"goldcardpreattack") == 1
+		self.OverAllDmgTwisted = CalcDamage(myHero, unit, sheendmg, ycard + qdmg + lichbane + EPassive + Ludens)	
     if hp < self.OverAllDmgTwisted then
         if ValidTarget(unit,550) then
           CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)	
@@ -922,7 +933,7 @@ function TwistedFate:DMGCalcnKS()
         end         
     end
   elseif CanUseSpell(myHero,_Q) == READY  and GetCastName(myHero,_W) == "redcardlock" and GetCastLevel(myHero,_W) > 0 then
-		self.OverAllDmgTwisted = CalcDamage(myHero, unit, sheendmg, rcard + qdmg + lichbane + EPassive + Ludens)	--and GotBuff(myHero,"redcardpreattack") == 1
+		self.OverAllDmgTwisted = CalcDamage(myHero, unit, sheendmg, rcard + qdmg + lichbane + EPassive + Ludens)	
     if hp < self.OverAllDmgTwisted then
         if ValidTarget(unit,550) then
           CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)	
@@ -932,7 +943,7 @@ function TwistedFate:DMGCalcnKS()
         end 
     end    
   elseif CanUseSpell(myHero,_Q) == READY  and GetCastName(myHero,_W) == "bluecardlock" and GetCastLevel(myHero,_W) > 0 then
-		self.OverAllDmgTwisted = CalcDamage(myHero, unit, sheendmg, bcard + qdmg + lichbane + EPassive + Ludens)	--and GotBuff(myHero,"bluecardpreattack") == 1
+		self.OverAllDmgTwisted = CalcDamage(myHero, unit, sheendmg, bcard + qdmg + lichbane + EPassive + Ludens)	
     if hp < self.OverAllDmgTwisted then
         if ValidTarget(unit,550) then
           CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)	
@@ -1101,9 +1112,6 @@ function TwistedFate:Killable()
 			end
 		end
 	end
---  DrawText(string.format("EPassive= %f", EPassive),25,478,256,0xffffffff);
---  DrawText(string.format("lichbane= %f", lichbane),25,478,286,0xffffffff);
---  DrawText(string.format("sheendmg= %f", sheendmg),25,478,316,0xffffffff);
 end
 
 function TwistedFate:SelectCard()
@@ -1239,7 +1247,7 @@ end
 
 function TwistedFate:LastHit()
 for i=1, IOW.mobs.maxObjects do
-  local minion = IOW.mobs.objects[i] --MINION_ENEMY 
+  local minion = IOW.mobs.objects[i] 
 	local currentmana = GetCurrentMana(myHero)
 	local maxmana = GetMaxMana(myHero)
   local curdmax = currentmana/maxmana*100
@@ -1274,9 +1282,6 @@ for i=1, IOW.mobs.maxObjects do
   local ncardpassive = CalcDamage(myHero, minion, sheendmg + ad ,lichbane + EPassive + Ludens)
   local ncard = CalcDamage(myHero, minion, sheendmg + ad ,lichbane + Ludens)
   local addmg = CalcDamage(myHero, minion, ad ,0)
---  DrawText(string.format("EPassive= %f", EPassive),25,478,356,0xffffffff);
---  DrawText(string.format("lichbane= %f", lichbane),25,478,386,0xffffffff);
---  DrawText(string.format("sheendmg= %f", sheendmg),25,478,416,0xffffffff);
 if ValidTarget(minion, 525+250) then
   if self.MonTourMenu.Farm.prio:Value() == 1 and curdmax > ManaValue and GetTickCount() > self.tick then
 		if CanUseSpell(myHero,_W) == READY and GetCastName(myHero,_W) == "PickACard" then
@@ -1285,7 +1290,7 @@ if ValidTarget(minion, 525+250) then
 			CastSpell(_W)
 		end
 	end
-  if GotBuff(myHero,"goldcardpreattack") == 1 and GetCurrentHP(minion) < ycard then --GetCastName(myHero,_W) == "goldcardlock"
+  if GotBuff(myHero,"goldcardpreattack") == 1 and GetCurrentHP(minion) < ycard then 
 		AttackUnit(minion)	
 	end  
   if self.MonTourMenu.Farm.prio:Value() == 2 and GetTickCount() > self.tick then
@@ -1295,7 +1300,7 @@ if ValidTarget(minion, 525+250) then
 			CastSpell(_W) 
 		end
 	end
-  if GotBuff(myHero,"bluecardpreattack") == 1  and GetCurrentHP(minion) < bcard then --GetCastName(myHero,_W) == "bluecardlock"
+  if GotBuff(myHero,"bluecardpreattack") == 1  and GetCurrentHP(minion) < bcard then 
 		AttackUnit(minion) 	
 	end  
 	if self.MonTourMenu.Farm.prio:Value() == 3 and curdmax > ManaValue and GetTickCount() > self.tick then
@@ -1324,7 +1329,7 @@ end
 
 function TwistedFate:LaneClear()
 for i=1, IOW.mobs.maxObjects do
-  local minion = IOW.mobs.objects[i] --MINION_ENEMY
+  local minion = IOW.mobs.objects[i] 
 	local currentmana = GetCurrentMana(myHero)
 	local maxmana = GetMaxMana(myHero)
   local curdmax = currentmana/maxmana*100
@@ -1368,7 +1373,7 @@ if ValidTarget(minion, 525+250) then
 			CastSpell(_W)
 		end
 	end
-  if GotBuff(myHero,"goldcardpreattack") == 1 and GetCurrentHP(minion) < ycard then --GetCastName(myHero,_W) == "goldcardlock"
+  if GotBuff(myHero,"goldcardpreattack") == 1 and GetCurrentHP(minion) < ycard then 
 		AttackUnit(minion)	
 	end   
   if self.MonTourMenu.Farm2.prio:Value() == 2 and curdmax > ManaValue and GetTickCount() > self.tick then
@@ -1378,10 +1383,10 @@ if ValidTarget(minion, 525+250) then
 			CastSpell(_W) 
 		end
 	end
-  if GotBuff(myHero,"bluecardpreattack") == 1  and GetCurrentHP(minion) < bcard then --GetCastName(myHero,_W) == "bluecardlock"
+  if GotBuff(myHero,"bluecardpreattack") == 1  and GetCurrentHP(minion) < bcard then 
 		AttackUnit(minion) 	
 	end    
-	if self.MonTourMenu.Farm2.prio:Value() == 3 and curdmax > ManaValue and GetTickCount() > self.tick then --and MinionAround(minion, 250) > 3
+	if self.MonTourMenu.Farm2.prio:Value() == 3 and curdmax > ManaValue and GetTickCount() > self.tick then 
 		if CanUseSpell(myHero,_W) == READY and GetCastName(myHero,_W) == "PickACard" then
 			self.selectedcard = "redcardlock"
 			self.tick = GetTickCount() + 3000
