@@ -1,5 +1,10 @@
 require("Inspired")
-local MoTBaseVersion = "MoTBase: v1.2 by MarCiii"
+local MoTreleaseversion = 1
+local MoTAnivia = 3 - MoTreleaseversion       --3 == 1.2
+local MoTTwistedFate = 1 - MoTreleaseversion  --1 == 1.0
+local MoTDraven = 1                           --1 == 1.0
+local MoTFULLVERSION = MoTAnivia+MoTDraven+MoTTwistedFate
+MoTBaseVersion = "MoTBase: v1."..MoTFULLVERSION.." by MarCiii"
 -------------Anivia----------------
 
 class "Anivia"
@@ -1470,6 +1475,615 @@ function TwistedFate:ProcessSpell2(unit, spell)
     end
   end  
 end
+
+--------------Draven--------------
+class "Draven"
+function Draven:__init()
+print(MoTBaseVersion)  
+self.Version = "1.0"
+self.mapID = GetMapID()  
+self.reticles = {}
+self.tick = 0
+self.tick2 = 0
+self.MonTourMenu = MenuConfig("MoTDraven", "MoTDraven")
+self.MonTourMenu:SubMenu("Info2", "Info about Auto Q Walk")
+self.MonTourMenu.Info2:Info("Draven1234", "Info: Use Catch Q AutoWalk")
+self.MonTourMenu.Info2:Info("Draven2345", "for Catching the Axes of Q by")
+self.MonTourMenu.Info2:Info("Draven3456", "Single Pressing the Button. ")
+self.MonTourMenu.Info2:Info("Draven4566", "Do not HOLD the Catch Q AutoWalk")
+self.MonTourMenu.Info2:Info("Draven4775", "Button, cause of Forcing Movement!")
+self.MonTourMenu.Info2:Info("Draven4747", "You need to train, before jump into ranked!")
+self.MonTourMenu:SubMenu("Combo", "Combo")
+self.MonTourMenu.Combo:Key("CQ", "Catch Q AutoWalk", string.byte("A"))
+self.MonTourMenu.Combo:Info("Draven", "Pickup Q if Range")
+self.MonTourMenu.Combo:Slider("CQPR", " Axe/MyMouse < X (def: 400)", 400, 50, 1000, 1)
+self.MonTourMenu.Combo:Boolean("CM", "Draw Q Catch Circle", true)
+self.MonTourMenu.Combo:Boolean("QC", "Draw Q Mouse Circle", true)
+self.MonTourMenu.Combo:Boolean("CWS", "Use W to Catch", true)
+self.MonTourMenu.Combo:Boolean("Q", "Use Q", true)
+self.MonTourMenu.Combo:Boolean("W", "Use W", true)
+self.MonTourMenu.Combo:Slider("WMANA", "Use W Only if Mana > x%", 60, 1, 90, 1)
+self.MonTourMenu.Combo:Boolean("E", "Use E OOR", true)
+self.MonTourMenu.Combo:Boolean("EB", "Use E if Banshees", true)
+self.MonTourMenu.Combo:Boolean("R", "Use R", false)
+self.MonTourMenu:SubMenu("Items", "Items")
+self.MonTourMenu.Items:Info("Draven", "Only in Combo and Harass")
+self.MonTourMenu.Items:Boolean("Ignite", "Use Ignite", true)
+self.MonTourMenu.Items:Boolean("CutBlade", "Bilgewater Cutlass", true)  
+self.MonTourMenu.Items:Slider("CutBlademyhp", "if My Health < x%", 50, 5, 100, 1)
+self.MonTourMenu.Items:Slider("CutBladeehp", "if Enemy Health < x%", 20, 5, 100, 1)
+self.MonTourMenu.Items:Info("Draven", " ")
+self.MonTourMenu.Items:Boolean("bork", "Blade of the Ruined King", true)
+self.MonTourMenu.Items:Slider("borkmyhp", "if My Health < x%", 50, 5, 100, 1)
+self.MonTourMenu.Items:Slider("borkehp", "if Enemy Health < x%", 20, 5, 100, 1)
+self.MonTourMenu.Items:Info("Draven", " ")
+self.MonTourMenu.Items:Boolean("ghostblade", "Youmuu's Ghostblade", true)
+self.MonTourMenu.Items:Slider("ghostbladeR", "If Enemy in Range (def: 600)", 600, 100, 2000, 1)
+self.MonTourMenu.Items:Info("Draven", " ")
+self.MonTourMenu.Items:Boolean("useRedPot", "Elixir of Wrath(REDPOT)", true)
+self.MonTourMenu.Items:Slider("useRedPotR", "If Enemy in Range (def: 600)", 600, 100, 2000, 1)
+self.MonTourMenu.Items:Info("Draven", " ")
+self.MonTourMenu.Items:Boolean("QSS", "Always Use QSS", true)
+self.MonTourMenu.Items:Slider("QSSHP", "if My Health < x%", 75, 0, 100, 1)
+self.MonTourMenu:SubMenu("Harass", "Harass")
+self.MonTourMenu.Harass:Boolean("QH", "Use Q", true)
+self.MonTourMenu.Harass:Boolean("WH", "Use W", true)
+self.MonTourMenu.Harass:Slider("WMANA", "Use Only W if Mana > x%", 60, 1, 90, 1)
+self.MonTourMenu.Harass:Boolean("EH", "Use E OOR", true)
+self.MonTourMenu.Harass:Boolean("EHB", "Use E if Banshees", true)
+self.MonTourMenu.Harass:Boolean("RH", "Use R", false)
+self.MonTourMenu:SubMenu("Clear", "Farming/Jungle")
+self.MonTourMenu.Clear:Boolean("LHQ", "Use Q LastHit", true)
+self.MonTourMenu.Clear:Boolean("LCQ", "Use Q LaneClear", true)
+self.MonTourMenu.Clear:Boolean("LCJQ", "Use Q Jungle", true)
+self.MonTourMenu:SubMenu("Killsteal", "Killsteal")
+self.MonTourMenu.Killsteal:Boolean("KSQE", "KillSteal with Q/E", true)
+self.MonTourMenu.Killsteal:Boolean("KSR", "Killsteal with R", true)
+self.MonTourMenu:SubMenu("Misc", "Misc")
+self.MonTourMenu.Misc:Boolean("AL","AutoLevelSkills", true)
+self.MonTourMenu.Misc:Boolean("QAA","Draw QAA Text", true)
+self.MonTourMenu.Misc:Boolean("DOH","Draw DMG over HP", true)
+self.MonTourMenu.Misc:Boolean("MGUN","Ultimate Notifier", true)
+self.MonTourMenu.Misc:Boolean("MGUNDEB","TEXT DEBUG", false)
+self.MonTourMenu.Misc:Slider("MGUNSIZE", "UN Text Size", 25, 5, 60, 1)
+self.MonTourMenu.Misc:Slider("MGUNX", "UN X POS", 35, 0, 1600, 1)
+self.MonTourMenu.Misc:Slider("MGUNY", "UN Y POS", 394, 0, 1055, 1)
+self.MonTourMenu.Misc:Boolean("CTS","Draw Current Target",true)
+self.MonTourMenu.Misc:ColorPick("CTSC", "Current Target Color", {255,23,255,120})
+self.MonTourMenu.Misc:ColorPick("CTSC2", "Underground Target Color", {197,109,65,74})
+self.MonTourMenu:SubMenu("Interrupter", "Interrupter")
+self.MonTourMenu.Interrupter:Info("Draven", "Delay for Interrupts min/max")
+self.MonTourMenu.Interrupter:Slider("Imin", "Delay min.", 632, 10, 3500, 1)
+self.MonTourMenu.Interrupter:Slider("Imax", "Delay max.", 1055, 100, 3500, 1) 
+self.targetsselect = TargetSelector(1250, TARGET_LESS_CAST, DAMAGE_PHYSICAL)
+self.MonTourMenu:TargetSelector("ts", "TargetSelector", self.targetsselect)
+self.MonTourMenu:Info("DravenMoT3535", " ")
+self.MonTourMenu:Info("DravenMoT2789", MoTBaseVersion)
+self.MonTourMenu:Info("DravenMoT3787", "MoTBase "..GetObjectName(myHero)..": v"..self.Version)
+--Thanks to Deftsu for Interrupter :)
+self.spellData = 
+	{
+	[_Q] = {dmg = function () return (GetBonusDmg(myHero)+GetBaseDamage(myHero))*(0.35 + GetCastLevel(myHero,_Q)*0.1) end,  
+			CDR = function () return GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q)) end,
+			mana = 45,
+			range = 550},  
+	[_W] = {dmg = function () return 0 end,  
+			mana = 40,
+			range = 600},
+	[_E] = {dmg = function () return 35 + 35*GetCastLevel(myHero,_E) + 0.5*GetBonusDmg(myHero) end, 
+			mana = 70,			
+			speed = 1600,
+			delay = 250,			 			
+			range = 1050, 
+			width = 70},
+	[_R] = {dmg = function () return 75 + 100*GetCastLevel(myHero,_R) + 1.1*GetBonusDmg(myHero) end, 
+			mana = 120,			
+			speed = 2000,
+			delay = 1000,			 			
+			range = 20000, 
+			width = 80},					
+	}
+
+DelayAction(function()
+  local QWERSLOT = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
+  for i, spell in pairs(self.CHANELLING_SPELLS) do
+    for _,unit in pairs(GetEnemyHeroes()) do
+        if spell["Name"] == GetObjectName(unit) then
+        self.MonTourMenu.Interrupter:Boolean(GetObjectName(unit).."Interrupting", "On "..GetObjectName(unit).." "..(type(spell.Spellslot) == 'number' and QWERSLOT[spell.Spellslot]), true)
+        end
+    end
+  end	
+end, 20)
+
+OnTick(function(myHero) self:Tick(myHero) end)
+OnDraw(function(myHero) self:Draw(myHero) end)
+OnProcessSpell(function(unit, spell) self:ProcessSpell(unit, spell) end)
+OnCreateObj(function(Object) self:CreateObj(Object) end)
+OnDeleteObj(function(Object) self:DeleteObj(Object) end)
+--OnProcessSpell(function(unit, spell) self:ProcessSpell2(unit, spell) end)
+
+
+ self.CHANELLING_SPELLS = {
+    ["CaitlynAceintheHole"]         = {Name = "Caitlyn",      Spellslot = _R},
+    ["Drain"]                       = {Name = "FiddleSticks", Spellslot = _W},
+    ["Crowstorm"]                   = {Name = "FiddleSticks", Spellslot = _R},
+    ["GalioIdolOfDurand"]           = {Name = "Galio",        Spellslot = _R},
+    ["FallenOne"]                   = {Name = "Karthus",      Spellslot = _R},
+    ["KatarinaR"]                   = {Name = "Katarina",     Spellslot = _R},
+    ["LucianR"]                     = {Name = "Lucian",       Spellslot = _R},
+    ["AlZaharNetherGrasp"]          = {Name = "Malzahar",     Spellslot = _R},
+    ["MissFortuneBulletTime"]       = {Name = "MissFortune",  Spellslot = _R},
+    ["AbsoluteZero"]                = {Name = "Nunu",         Spellslot = _R},                        
+    ["Pantheon_GrandSkyfall_Jump"]  = {Name = "Pantheon",     Spellslot = _R},
+    ["ShenStandUnited"]             = {Name = "Shen",         Spellslot = _R},
+    ["UrgotSwap2"]                  = {Name = "Urgot",        Spellslot = _R},
+    ["VarusQ"]                      = {Name = "Varus",        Spellslot = _Q},
+    ["InfiniteDuress"]              = {Name = "Warwick",      Spellslot = _R} 
+} 
+ 
+end
+
+
+function Draven:CreateObj(Object)
+  if GetObjectBaseName(Object) == "Draven_Base_Q_reticle_self.troy" then
+    table.insert(self.reticles, Object)
+    self.tick = GetGameTimer() + 1.8
+    self.tick2 = GetGameTimer() + 1.8
+  end
+end
+
+function Draven:DeleteObj(Object)
+if GetObjectBaseName(Object) == "Draven_Base_Q_reticle_self.troy" then
+  table.remove(self.reticles, 1)
+end
+end
+
+function Draven:Tick(myHero)
+	self:Checks()
+   self:ItemUse()
+   self:Killsteal()  
+   self:Igniteit()
+	if IOW:Mode() == "LastHit" then 
+    	self:LastHit()
+    end	  
+	if IOW:Mode() == "LaneClear" then
+    IOW.movementEnabled = true
+    	self:LaneClear()
+      self:JungleClear()
+    end	
+	if IOW:Mode() == "Combo" then
+    IOW.movementEnabled = true
+		self:Combo()
+	end
+	if IOW:Mode() == "Harass" then
+    IOW.movementEnabled = true
+		self:Harass()
+	end	
+	if self.MonTourMenu.Misc.AL:Value() then --and mapID == SUMMONERS_RIFT
+		self:AutoLvL()
+	end	
+end
+ 
+function Draven:Draw(myHero) 
+	if self.MonTourMenu.Misc.MGUN:Value() then
+		self:GLOBALULTNOTICE()
+	end	
+  if self.MonTourMenu.Misc.MGUNDEB:Value() then
+    self:GLOBALULTNOTICEDEBUG()
+  end
+	if self.MonTourMenu.Misc.DOH:Value() then 
+		self:Draws()
+	end 
+	if self.MonTourMenu.Misc.QAA:Value() then
+		self:QAA()
+	end	  
+if self.MonTourMenu.Misc.CTS:Value() then  
+self:DrawENEMY()
+end
+   self:CatchQ() 
+end  
+
+function Draven:AutoLvL()
+local leveltable = {_Q, _E, _W, _Q, _Q, _R, _Q, _W, _Q, _W, _R, _W, _W, _E, _E, _R, _E, _E} 
+		if GetLevel(myHero) == 3 then
+			DelayAction(function() LevelSpell(leveltable[3])end, math.random(1000,2948)) 
+			DelayAction(function() LevelSpell(leveltable[2])end, math.random(1000,2948)) 
+			DelayAction(function() LevelSpell(leveltable[1])end, math.random(1000,2948)) 
+		else
+			DelayAction(function() LevelSpell(leveltable[GetLevel(myHero)])end, math.random(962,2948)) 
+		end  
+end
+
+function Draven:DrawENEMY()
+	local hpbar = GetHPBarPos(myHero)
+      if hpbar.x > 0 then
+			if hpbar.y > 0 then 
+		FillRect(hpbar.x, hpbar.y+13, 107, 11,self.MonTourMenu.Misc.CTSC2:Value())
+    FillRect(hpbar.x, hpbar.y+22, 107, 2,ARGB(255,0,0,0))
+--    FillRect(hpbar.x, hpbar.y+10, 107, 12,ARGB(255,74,73,74))
+	if self.target ~= nil then
+        DrawText(GetObjectName(self.target),14,hpbar.x+113-GetTextArea(GetObjectName(self.target).."  ",14)/2, hpbar.y+10,self.MonTourMenu.Misc.CTSC:Value())
+	else
+    DrawText("No Target found!",14,hpbar.x+113-GetTextArea("No Target found",14)/2, hpbar.y+10,self.MonTourMenu.Misc.CTSC:Value())
+  end
+end
+end
+	end
+
+function Draven:ProcessSpell(unit, spell)
+  for _,unit in pairs(GetEnemyHeroes()) do
+    if GetObjectType(unit) == Obj_AI_Hero and GetTeam(unit) ~= GetTeam(myHero) and self.EREADY then
+      if self.CHANELLING_SPELLS[spell.name] and ValidTarget(unit,self.spellData[_E].range+30) then
+        local EPred = GetPredictionForPlayer(GetOrigin(myHero), unit, GetMoveSpeed(unit), self.spellData[_E].speed, self.spellData[_E].delay, self.spellData[_E].range, self.spellData[_E].width, false, true)
+          if EPred.HitChance == 1 then
+            if ValidTarget(unit, self.spellData[_E].range) then 			
+              DelayAction(function() CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z) end,math.random(self.MonTourMenu.Interrupter.Imin:Value(),self.MonTourMenu.Interrupter.Imax:Value()))
+            end
+          end		
+      end     
+    end
+  end  
+end
+
+function Draven:QAA()
+	for i,unit in pairs(GetEnemyHeroes()) do
+		local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
+		local unitPos = GetOrigin(unit)
+		local dmgE = self.spellData[_Q].dmg() + TotalDmg	
+		local dmg = CalcDamage(myHero, unit, dmgE)
+		local hp = GetCurrentHP(unit)
+		local hPos = GetHPBarPos(unit)
+    	local drawPos = WorldToScreen(1,unitPos.x,unitPos.y,unitPos.z)
+        if dmg > 0 then 
+          DrawText(math.ceil(hp/dmg).." QAA", 15, hPos.x, hPos.y+20, 0xffffffff)
+	 	end 	
+end
+end
+
+function Draven:Draws()
+  	for _,unit in pairs(GetEnemyHeroes()) do	
+  local Qdmg = self.spellData[_Q].dmg()+GetBonusDmg(myHero)+GetBaseDamage(myHero)
+local QREADY = QREADY or QSpinn1
+	if ValidTarget(unit,20000) and QREADY then
+		DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,CalcDamage(myHero, unit, Qdmg, 0),0xffffffff)	
+  end  
+  end
+end
+
+function Draven:Checks()
+	self.QREADY = CanUseSpell(myHero,_Q) == READY
+	self.WREADY = CanUseSpell(myHero,_W) == READY
+	self.EREADY = CanUseSpell(myHero,_E) == READY
+	self.RREADY = CanUseSpell(myHero,_R) == READY
+	self.Q0 = GotBuff(myHero,"dravenspinningattack") == 0	
+	self.Q1 = GotBuff(myHero,"dravenspinningattack") == 1
+	self.Q2 = GotBuff(myHero,"dravenspinningattack") == 2
+	self.QL0 = GotBuff(myHero,"dravenspinningleft") == 0	
+	self.QL1 = GotBuff(myHero,"dravenspinningleft") == 1		
+	self.QSpinn0 = GotBuff(myHero,"DravenSpinning") == 0	
+	self.QSpinn1 = GotBuff(myHero,"DravenSpinning") == 1
+  self.MonTourMenu.ts.range = 1250
+self.target = self.MonTourMenu.ts:GetTarget()
+self.unit = self.MonTourMenu.ts:GetTarget()
+self.targetPos = GetOrigin(self.target)
+self.myHeroPos = GetOrigin(myHero)
+if self.target ~= nil then
+self.unitname = GetObjectName(self.target)
+else
+self.unitname = GetObjectName(myHero)
+end
+end
+
+function Draven:LastHit()
+    --  Move()
+for i=1, IOW.mobs.maxObjects do
+  local minion = IOW.mobs.objects[i]
+      local QDmg = self.spellData[_Q].dmg()+GetBonusDmg(myHero)+GetBaseDamage(myHero) or 0  
+      local DamageQ = CalcDamage(myHero, minion, QDmg, 0)
+      local  targetPos123 = GetOrigin(minion) 
+    if self.MonTourMenu.Clear.LHQ:Value() and GetCurrentHP(minion) < DamageQ then
+			if self.QREADY and self.QSpinn0 and self.Q0 and IsInDistance(minion, self.spellData[_Q].range) and ValidTarget(minion, self.spellData[_Q].range) then			
+				CastSpell(_Q) DelayAction(function() self:AttackUnitM(minion) end, 100)
+			end
+			if self.QSpinn1 and self.Q1 and self.Q2 and IsInDistance(minion, self.spellData[_Q].range) and ValidTarget(minion, self.spellData[_Q].range) then
+        self:AttackUnitM(minion)
+			end
+			if self.QSpinn1 and self.Q2 and self.QL0 and IsInDistance(minion, self.spellData[_Q].range) and ValidTarget(minion, self.spellData[_Q].range)then	
+        self:AttackUnitM(minion)
+			end
+			if self.QSpinn1 and self.Q2 and self.QL1 and IsInDistance(minion, self.spellData[_Q].range) and ValidTarget(minion, self.spellData[_Q].range)then	
+        self:AttackUnitM(minion)
+      end
+			if self.QSpinn1 and IsInDistance(minion, self.spellData[_Q].range) and ValidTarget(minion, self.spellData[_Q].range)then	
+        self:AttackUnitM(minion)
+      end
+    end
+  end
+end
+
+function Draven:CatchQ()
+      if self.MonTourMenu.Combo.CQ:Value() and self.MonTourMenu.Combo.QC:Value() then
+        local mymouse = GetMousePos()
+        DrawCircle(mymouse,self.MonTourMenu.Combo.CQPR:Value(),0.9,100,0xff0000ff)
+      end    
+      for i, reticle in pairs(self.reticles) do
+        local Reticlepos = GetOrigin(reticle)
+        local myHer0 = GetOrigin(myHero)
+        local mymouse = GetMousePos()
+        if self.MonTourMenu.Combo.CM:Value() then
+        DrawCircle(Reticlepos.x, Reticlepos.y, Reticlepos.z,120,3,100,0xff00ff7f)
+        DrawCircle(Reticlepos.x, Reticlepos.y, Reticlepos.z,60,1,100,0xffff6600)
+        end
+        if self.MonTourMenu.Combo.CQ:Value() then
+          if GetDistance(Reticlepos, mymouse) < self.MonTourMenu.Combo.CQPR:Value() and self.tick > GetGameTimer() then --and GetTickCount() < self.tick
+          IOW.movementEnabled = false DelayAction(function()  DelayAction(function() MoveToXYZ(Reticlepos.x, Reticlepos.y , Reticlepos.z) DelayAction(function() IOW.movementEnabled = true end, 1) end, 1) end, 100) --self.tick = 0
+          end
+        end
+        if self.MonTourMenu.Combo.CWS:Value() and 100*GetCurrentMana(myHero)/GetMaxMana(myHero) > (self.MonTourMenu.Combo.WMANA:Value()) then
+          local catchtime = GetDistance(Reticlepos, myHero)/GetMoveSpeed(myHero)
+          if catchtime > (self.tick2-GetGameTimer()) then 
+          CastSpell(_W)
+          end
+        end
+      end
+end
+
+function Draven:AttackUnitM(minion)
+for i=1, IOW.mobs.maxObjects do
+  local minion = IOW.mobs.objects[i] 
+  if IsInDistance(minion, GetRange(myHero)) and GetDistance(myHero, minion) <= (GetRange(myHero)) and GetDistance(myHero, minion) >= 1 then 
+    AttackUnit(minion)
+  end
+  end
+end
+
+function Draven:LaneClear()
+for i=1, IOW.mobs.maxObjects do
+  local minion = IOW.mobs.objects[i]  
+		if self.QREADY and self.MonTourMenu.Clear.LCQ:Value() then
+			if self.QSpinn0 and self.Q0 and IsInDistance(minion, self.spellData[_Q].range+100) and ValidTarget(minion, self.spellData[_Q].range+100) then			
+				CastSpell(_Q) 
+			end
+			if self.QSpinn1 and self.Q1 and self.Q2 and IsInDistance(minion, self.spellData[_Q].range+100) and ValidTarget(minion, self.spellData[_Q].range+100) then
+			
+			end
+			if self.QSpinn1 and self.Q2 and self.QL0 and IsInDistance(minion, self.spellData[_Q].range+100) and ValidTarget(minion, self.spellData[_Q].range+100)then	
+				
+			end
+			if self.QSpinn1 and self.Q2 and self.QL1 and IsInDistance(minion, self.spellData[_Q].range+100) and ValidTarget(minion, self.spellData[_Q].range+100)then	
+        
+      end
+    end
+	end
+end
+
+function Draven:JungleClear()
+	for _,jminion in pairs(minionManager.objects) do
+      if self.QREADY and self.MonTourMenu.Clear.LCJQ:Value() then
+			if self.QSpinn0 and self.Q0 and IsInDistance(jminion, self.spellData[_Q].range+100) and ValidTarget(jminion, self.spellData[_Q].range+100) then			
+				CastSpell(_Q)
+      end
+			if self.QSpinn1 and self.Q1 and self.Q2 and IsInDistance(jminion, self.spellData[_Q].range+100) and ValidTarget(jminion, self.spellData[_Q].range+100) then
+			-- DelayAction(function() AttackUnit(jminion) end, 100) 
+      end
+			if self.QSpinn1 and self.Q2 and self.QL0 and IsInDistance(jminion, self.spellData[_Q].range+100) and ValidTarget(jminion, self.spellData[_Q].range+100)then	
+		--	DelayAction(function() AttackUnit(jminion) end, 100) 
+      end
+			if self.QSpinn1 and self.Q2 and self.QL1 and IsInDistance(jminion, self.spellData[_Q].range+100) and ValidTarget(jminion, self.spellData[_Q].range+100)then	
+			--	 DelayAction(function() AttackUnit(jminion) end, 100) 
+      end
+    end
+  end
+--  end
+end
+
+function Draven:CastPredE(targeted)
+	local unitPos = GetOrigin(targeted)
+		local EPred = GetPredictionForPlayer(GetOrigin(myHero), targeted, GetMoveSpeed(targeted), self.spellData[_E].speed, self.spellData[_E].delay, self.spellData[_E].range, self.spellData[_E].width, false, true)
+		if self.EREADY and EPred.HitChance == 1 then
+			if GetDistance(myHero, targeted) >= 475 and GetDistance(myHero, targeted) <= self.spellData[_E].range and ValidTarget(unit, self.spellData[_E].range) then 			
+				CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
+			end
+		end		
+end
+
+function Draven:CastPredEBanshe()
+  for _,unit in pairs(GetEnemyHeroes()) do 
+	local unitPos = GetOrigin(unit)
+		local EPred = GetPredictionForPlayer(GetOrigin(myHero), unit, GetMoveSpeed(unit), self.spellData[_E].speed, self.spellData[_E].delay, self.spellData[_E].range-25, self.spellData[_E].width, false, true)
+		if self.EREADY and EPred.HitChance == 1 and GotBuff(unit,"bansheesveil") == 1 then
+			if GetDistance(myHero, unit) > self.spellData[_Q].range and GetDistance(myHero, unit) <= self.spellData[_E].range and ValidTarget(unit, self.spellData[_E].range) then 			
+				CastSkillShot(_E,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
+			end
+		end	
+    end
+end
+
+function Draven:CastQ(targeted)
+  --     	for _,unit in pairs(GetEnemyHeroes()) do
+      if self.QREADY and ValidTarget(targeted, self.spellData[_Q].range+100) then
+			if self.QSpinn0 and self.Q0 and IsInDistance(targeted, self.spellData[_Q].range+100) and ValidTarget(targeted, self.spellData[_Q].range+100) then			
+				CastSpell(_Q)
+			end
+			if self.QSpinn1 and self.Q1 and self.Q2 and IsInDistance(targeted, self.spellData[_Q].range+100) and ValidTarget(targeted, self.spellData[_Q].range+100) then
+			end
+			if self.QSpinn1 and self.Q2 and self.QL0 and IsInDistance(targeted, self.spellData[_Q].range+100) and ValidTarget(targeted, self.spellData[_Q].range+100)then			
+			end
+			if self.QSpinn1 and self.Q2 and self.QL1 and IsInDistance(targeted, self.spellData[_Q].range+100) and ValidTarget(targeted, self.spellData[_Q].range+100)then			
+			end
+		end				
+end
+
+function Draven:CastW(targeted)
+	local igotmana = GetCurrentMana(myHero)
+	local Qmana = self.spellData[_Q].mana
+	local Wmana = self.spellData[_W].mana
+	if self.WREADY and igotmana >= Qmana + Wmana then
+	 	if ValidTarget(targeted, self.spellData[_Q].range*1.7) and GetDistance(myHero, targeted) > self.spellData[_Q].range+50 and  GetDistance(myHero, targeted) < self.spellData[_Q].range*1.7 then 
+			CastSpell(_W)
+	 	end	
+  end
+end
+
+function Draven:CastWnoMana(targeted)
+	local igotmana = GetCurrentMana(myHero)
+	local Qmana = self.spellData[_Q].mana
+	local Wmana = self.spellData[_W].mana
+	if self.WREADY then
+	 	if ValidTarget(targeted, self.spellData[_Q].range*1.7) and GetDistance(myHero, targeted) > self.spellData[_Q].range+50 and  GetDistance(myHero, targeted) < self.spellData[_Q].range*1.7 then 
+			CastSpell(_W)
+	 	end	
+	end
+end
+
+function Draven:CastPredR(targeted)
+	local unitPos = GetOrigin(targeted)
+	local RPred = GetPredictionForPlayer(GetOrigin(myHero),targeted,GetMoveSpeed(targeted), self.spellData[_R].speed, self.spellData[_R].delay, self.spellData[_R].range, self.spellData[_R].width, false, true)
+				if GetDistance(myHero, targeted) > 750 and GetDistance(myHero, targeted) < 4000 and IsObjectAlive(targeted) then		
+			if self.RREADY and ValidTarget(targeted, self.spellData[_R].range) and RPred.HitChance == 1 then
+				CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z)
+				end
+			end	
+end
+
+			
+function Draven:Combo()
+if self.target == nil or GetOrigin(self.target) == nil or IsImmune(self.target,myHero) or IsDead(self.target) or not IsVisible(self.target) or GetTeam(self.target) == GetTeam(myHero) then return false end
+		if self.MonTourMenu.Combo.Q:Value() then
+		self:CastQ(self.target)
+    end
+		if self.MonTourMenu.Combo.W:Value() and 100*GetCurrentMana(myHero)/GetMaxMana(myHero) > self.MonTourMenu.Combo.WMANA:Value() then
+		self:CastW(self.target)
+    end
+    if self.MonTourMenu.Combo.EB:Value() then
+    self:CastPredEBanshe(self.target)
+    end
+    if self.MonTourMenu.Combo.E:Value() then
+    self:CastPredE(self.target)
+    end  
+    if self.MonTourMenu.Combo.R:Value() then
+    self:CastPredR(self.target)
+    end
+end	
+function Draven:Harass()
+    if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) then return false end
+		if self.MonTourMenu.Harass.QH:Value() then
+		self:CastQ(self.target)		
+    end
+		if self.MonTourMenu.Harass.WH:Value() and 100*GetCurrentMana(myHero)/GetMaxMana(myHero) > self.MonTourMenu.Harass.WMANA:Value() then
+		self:CastW(self.target)	 
+    end
+    if self.MonTourMenu.Harass.EHB:Value() then
+    self:CastPredEBanshe(self.target)
+     end
+    if self.MonTourMenu.Harass.EH:Value() then
+    self:CastPredE(self.target)
+    end  
+    if self.MonTourMenu.Harass.RH:Value() then
+    self:CastPredR(self.target)
+    end
+end
+
+function Draven:Killsteal()
+	for i,enemy in pairs(GetEnemyHeroes()) do
+	local QDmg = self.QREADY and self.spellData[_Q].dmg() or 0
+	local QDmg2 = self.spellData[_Q].dmg() or 0	
+    local EDmg = self.EREADY and self.spellData[_E].dmg() or 0
+    local RDmg = self.RREADY and self.spellData[_R].dmg() or 0
+	local enemyhp = GetCurrentHP(enemy) + GetHPRegen(enemy)
+	local Alldmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
+	local unitPos = GetOrigin(enemy)
+--	local MoveToUnit = MoveToXYZ(unitPos.x, unitPos.y, unitPos.z)
+		if self.MonTourMenu.Killsteal.KSQE:Value() and ValidTarget(enemy, self.spellData[_E].range) and enemyhp < CalcDamage(myHero, enemy, EDmg, 0) then
+			self:CastPredE(enemy)
+		elseif ValidTarget(enemy, self.spellData[_Q].range) and enemyhp < CalcDamage(myHero, enemy, QDmg + Alldmg, 0) then
+			self:CastQ(enemy)
+		elseif self.MonTourMenu.Killsteal.KSQE:Value() and ValidTarget(enemy, self.spellData[_Q].range) and enemyhp < CalcDamage(myHero, enemy, QDmg2 + Alldmg, 0) and self.QSpinn1 then 
+      self:AttackUnitKS(enemy)
+		elseif self.MonTourMenu.Killsteal.KSR:Value() and ValidTarget(enemy, self.spellData[_R].range) and enemyhp < CalcDamage(myHero, enemy, RDmg, 0) then
+			self:CastPredR(enemy)
+		elseif self.MonTourMenu.Killsteal.KSQE:Value() and ValidTarget(enemy, self.spellData[_E].range) and GetDistance(myHero, enemy) > 550 and GetDistance(myHero, enemy) < 700 and enemyhp < CalcDamage(myHero, enemy, QDmg + Alldmg + EDmg, 0) then		
+			self:CastPredE(enemy) DelayAction(function() self:CastWnoMana(enemy) DelayAction(function() self:CastPredE(enemy) DelayAction(function() self:AttackUnitKS(enemy) end, 100) end, 200) end, 300)
+		elseif self.MonTourMenu.Killsteal.KSQE:Value() and ValidTarget(enemy, self.spellData[_E].range) and GetDistance(myHero, enemy) > 550 and GetDistance(myHero, enemy) < 700 and enemyhp < CalcDamage(myHero, enemy, QDmg2 + Alldmg + EDmg, 0) and self.QSpinn1 then			
+			self:CastPredE(enemy) DelayAction(function() self:CastWnoMana(enemy) DelayAction(function() self:CastPredE(enemy) DelayAction(function() self:AttackUnitKS(enemy) end, 100) end, 200) end, 300)				
+		end	
+	end	
+end
+
+function Draven:Igniteit()
+  for _, k in pairs(GetEnemyHeroes()) do
+    if ValidTarget(k, 700) and Ignite and self.MonTourMenu.Items.Ignite:Value() and CanUseSpell(myHero,_W) ~= READY and  GetDistance(k) > 500 then 
+            if CanUseSpell(GetMyHero(), Ignite) == READY and (20*GetLevel(GetMyHero())+50) > GetCurrentHP(k)+GetHPRegen(k)*2.5 and GetDistanceSqr(GetOrigin(k)) < 600*600 then
+                CastTargetSpell(k, Ignite)
+            end
+        end
+     end
+end
+
+function Draven:ItemUse()
+  for _,target in pairs(GetEnemyHeroes()) do
+  	if GetItemSlot(myHero,3153) > 0 and self.MonTourMenu.Items.bork:Value() and ValidTarget(target, 550) and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GetCurrentHP(myHero)/GetMaxHP(myHero) < (self.MonTourMenu.Items.borkmyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (self.MonTourMenu.Items.borkehp:Value()/100) then
+        CastTargetSpell(target, GetItemSlot(myHero,3153)) --bork
+        end
+
+        if GetItemSlot(myHero,3144) > 0 and self.MonTourMenu.Items.CutBlade:Value() and ValidTarget(target, 550) and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GetCurrentHP(myHero)/GetMaxHP(myHero) < (self.MonTourMenu.Items.CutBlademyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (self.MonTourMenu.Items.CutBladeehp:Value()/100) then 
+        CastTargetSpell(target, GetItemSlot(myHero,3144)) --CutBlade
+        end
+
+        if GetItemSlot(myHero,3142) > 0 and self.MonTourMenu.Items.ghostblade:Value() and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and ValidTarget(target, self.MonTourMenu.Items.ghostbladeR:Value()) then --ghostblade
+        CastTargetSpell(myHero, GetItemSlot(myHero,3142))
+        end
+		
+	if GetItemSlot(myHero,3140) > 0 and self.MonTourMenu.Items.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < self.MonTourMenu.Items.QSSHP:Value() then
+        CastTargetSpell(myHero, GetItemSlot(myHero,3140))
+        end
+
+        if GetItemSlot(myHero,3139) > 0 and self.MonTourMenu.Items.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < self.MonTourMenu.Items.QSSHP:Value() then
+        CastTargetSpell(myHero, GetItemSlot(myHero,3139))
+      end
+   
+     if self.MonTourMenu.Items.useRedPot:Value() and GetItemSlot(myHero,2140) >= 1 and ValidTarget(target,self.MonTourMenu.Items.useRedPotR:Value()) and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") then --redpot
+        if CanUseSpell(myHero,GetItemSlot(myHero,2140)) == READY then
+          CastSpell(GetItemSlot(myHero,2140))
+        end
+      end
+      end
+end      
+
+function Draven:AttackUnitKS(targeted)  
+  if IsInDistance(targeted, GetRange(myHero)) and GetDistance(myHero, targeted) <= (GetRange(myHero)-10) and GetDistance(myHero, targeted) >= 10 then 
+    AttackUnit(targeted)
+  else
+  end
+end
+
+function Draven:GLOBALULTNOTICE()
+      if not self.RREADY then return end
+        info = ""
+        if self.RREADY then
+       		for _,unit in pairs(GetEnemyHeroes()) do
+                if  IsObjectAlive(unit) then
+                        realdmg = CalcDamage(myHero, unit, self.spellData[_R].dmg())
+                        hp =  GetCurrentHP(unit) + GetHPRegen(unit)
+                        if realdmg > hp then
+                                info = info..GetObjectName(unit)
+                                if not IsVisible(unit) then
+                                        info = info.." not Visible but maybe" 
+                                elseif not ValidTarget(unit, self.spellData[_R].range) then
+                                        info = info.." not in Range but"                                                                               
+                                end
+                                info = info.." killable\n"
+                        end
+        		 end               
+			end
+		end		 
+    DrawText(info,self.MonTourMenu.Misc.MGUNSIZE:Value(),self.MonTourMenu.Misc.MGUNX:Value(),self.MonTourMenu.Misc.MGUNY:Value(),0xffff0000)   
+end
+
+function Draven:GLOBALULTNOTICEDEBUG()	 
+    DrawText("I am in Range but not killable - TESTMODE ON",self.MonTourMenu.Misc.MGUNSIZE:Value(),self.MonTourMenu.Misc.MGUNX:Value(),self.MonTourMenu.Misc.MGUNY:Value(),0xffff0000)   
+end
+
 
 if _G[GetObjectName(myHero)] then
 	_G[GetObjectName(myHero)]()
