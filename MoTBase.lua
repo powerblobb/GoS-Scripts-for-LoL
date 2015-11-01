@@ -1966,7 +1966,7 @@ if self.target == nil or GetOrigin(self.target) == nil or IsImmune(self.target,m
     end
 end	
 function Draven:Harass()
-    if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) then return false end
+if self.target == nil or GetOrigin(self.target) == nil or IsImmune(self.target,myHero) or IsDead(self.target) or not IsVisible(self.target) or GetTeam(self.target) == GetTeam(myHero) then return false end
 		if self.MonTourMenu.Harass.QH:Value() then
 		self:CastQ(self.target)		
     end
