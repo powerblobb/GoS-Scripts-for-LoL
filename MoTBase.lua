@@ -155,12 +155,6 @@ end
 if self.MonTourMenu.Misc.DOH:Value() then
 self:DMGoverHpDraw()
 end
-
-if (self.gametimeQ+(1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q)))-GetGameTimer() > (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_E,GetCastLevel(myHero,_E)) then
-  DrawText("E AVAILABLE",20,200,420,0xff00ff00);
-elseif (self.gametimeQ+(1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q)))-GetGameTimer() < (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_E,GetCastLevel(myHero,_E)) then
-  DrawText("E NOT AVAILABLE",20,200,420,0xff00ff00);
-end
 end
 
 function Anivia:Tick(myHero)
