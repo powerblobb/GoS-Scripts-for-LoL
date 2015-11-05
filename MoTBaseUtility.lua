@@ -5,6 +5,7 @@ function MoT:__init()
 self.recalling = {}
 print(MoTBaseUVersion) 
 self.MonTourMenu = MenuConfig("MoTHeroTracker", "MoTHeroTracker")
+self.MonTourMenu:Boolean("MGUNUSE","Using without Script?", false)
 self.MonTourMenu:Boolean("MGUN","Enemy Notifier", true)
 self.MonTourMenu:Slider("MGUNSIZE", "Kill Text Size", 17, 10, 21, 1)
 self.MonTourMenu:Slider("MGUNX", "Kill X POS", 753, 0, 1920, 1)
@@ -20,12 +21,15 @@ self.MonTourMenu:Key("M2", "MoveBox", string.byte("S"))
 self.MonTourMenu:Info("MoTHeroTracker323", "")
 self.MonTourMenu:Info("MoTHeroTracker22323", ""..MoTBaseUVersion)
 OnTick(function(myHero) self:Tick(myHero) end)
---OnDraw(function(myHero) self:Draw(myHero) end)
+OnDraw(function(myHero) self:Draw(myHero) end)
 --OnProcessRecall(function(Object,recallProc) self:ProcessRecall(Object,recallProc) end)
 end
  
 function MoT:Draw(myHero)
-
+if self.MonTourMenu.MGUNUSE:Value() then  
+self:NoteEnemys(0,0,0,0,0,0,0,0,0,0)
+self:NoteAllys()
+end
 end
 
 function MoT:Tick(myHero)
@@ -35,14 +39,6 @@ end
 function MoT:NoteEnemys(check,overall,adQ,apQ,adW,apW,adE,apE,adR,apR) 
 local herocounter = 0
 local killable = ""
-local adQ = 0
-local adW = 0
-local adE = 0
-local adR = 0
-local apQ = 0
-local apW = 0
-local apE = 0
-local apR = 0
 for _,unit in pairs(GetEnemyHeroes()) do
 if check == false then  
 local adQ = adQ or 0
@@ -94,7 +90,6 @@ if self.MonTourMenu.M:Value() and KeyIsDown(16) then
   ymove = math.min(math.max(self.cpos.y, -5), 1080)
   self.MonTourMenu.MGUNX:Value(xmove)
   self.MonTourMenu.MGUNY:Value(ymove)
-  GetSave("MenuConfig"):Save()
 end
 if check == true or check == false then
 if not IsVisible(unit) then
@@ -181,7 +176,7 @@ local killable = ""
 for _,unit in pairs(GetAllyHeroes()) do
 local percent=math.floor(GetCurrentHP(unit)/GetMaxHP(unit)*100)
 local hp =  GetCurrentHP(unit) + GetHPRegen(unit)
-local killsize = self.MonTourMenu.MGUNSIZE:Value()-17
+local killsize = self.MonTourMenu.MGUNSIZE2:Value()-17
 local unitname = ""
 local textkiller = 0
 local RGB = self:percentToRGB(percent)
@@ -202,7 +197,6 @@ if self.MonTourMenu.M2:Value() and KeyIsDown(16) then
   ymove = math.min(math.max(self.cpos.y, -5), 1080)
   self.MonTourMenu.MGUNX2:Value(xmove)
   self.MonTourMenu.MGUNY2:Value(ymove)
-  GetSave("MenuConfig"):Save()
 end
 if percent <= 4 and IsObjectAlive(unit) then
   killable = "ByeBye!!!"
