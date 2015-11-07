@@ -5,7 +5,7 @@ local MoTAnivia = 4 - MoTreleaseversion       --4 == 1.3
 local MoTTwistedFate = 1 - MoTreleaseversion  --1 == 1.0
 local MoTDraven = 2                           --2 == 1.1
 local MoTOlaf = 1                           --1 == 1.0
-local MoTGnar = 1                           --1 == 1.0
+local MoTGnar = 2                           --2 == 1.1
 local MoTFULLVERSION = MoTAnivia+MoTDraven+MoTTwistedFate+MoTOlaf+MoTGnar
 local MoTBaseVersion = "MoTBase: v1."..MoTFULLVERSION.." by MarCiii"
 
@@ -2673,15 +2673,14 @@ local target = self.MonTourMenu.ts:GetTarget()
 if ValidTarget(targeted, GetCastRange(myHero, _Q))   then 
  if (self.MonTourMenu.Combo.Q:Value() and IOW:Mode() == "Combo") or (self.MonTourMenu.Harass.Q:Value() and IOW:Mode() == "Harass") then
 --  if self.QREADY then  
-    local QPred = GetPredictionForPlayer(GetOrigin(myHero),targeted,GetMoveSpeed(targeted),2200,625,1300,90,false,false)
     local StartPos = Vector(myHero) - 110 * (Vector(myHero) - Vector(targeted)):normalized()
-    local EPred = GetPredictionForPlayer(GetOrigin(myHero),targeted,GetMoveSpeed(targeted),2200,625,1300,90,false,false)
-    local PredPos = Vector(EPred.PredPos)
+    local QPred = GetPredictionForPlayer(GetOrigin(myHero),targeted,GetMoveSpeed(targeted),2200,625,1300,90,false,false)
+    local PredPos = Vector(QPred.PredPos)
     local HeroPos = Vector(myHero)
-    local maxERange = PredPos - (PredPos - HeroPos) * ( - 100 / GetDistance(EPred.PredPos))
-       DrawCircle(maxERange.x,maxERange.y,maxERange.z,70,6,100,ARGB(255, 0, 0, 255)) 
+    local maxQRange = PredPos - (PredPos - HeroPos) * ( - 100 / GetDistance(QPred.PredPos))
+       DrawCircle(maxQRange.x,maxQRange.y,maxQRange.z,70,6,100,ARGB(255, 0, 0, 255)) 
                   if self.QREADY and QPred.HitChance == 1 then
-                  CastSkillShot3(_Q,HeroPos,maxERange)
+                  CastSkillShot3(_Q,HeroPos,maxQRange)
                   end
 end
 end
@@ -2735,10 +2734,10 @@ function Olaf:Killsteal()
 end
 
 function Olaf:Igniteit()
-  for _, k in pairs(GetEnemyHeroes()) do
-    if ValidTarget(k, 700) and Ignite and self.MonTourMenu.Items.Ignite:Value() and CanUseSpell(myHero,_Q) ~= READY and GetDistance(k) > 400 then 
-            if CanUseSpell(GetMyHero(), Ignite) == READY and (20*GetLevel(GetMyHero())+50) > GetCurrentHP(k)+GetHPRegen(k)*2.5 and GetDistanceSqr(GetOrigin(k)) < 600*600 then
-                CastTargetSpell(k, Ignite)
+  for _, unit in pairs(GetEnemyHeroes()) do
+    if ValidTarget(unit, 700) and Ignite and self.MonTourMenu.Items.Ignite:Value() and CanUseSpell(myHero,_Q) ~= READY and GetDistance(unit) > 400 then 
+            if CanUseSpell(GetMyHero(), Ignite) == READY and (20*GetLevel(GetMyHero())+50) > GetCurrentHP(unit)+GetHPRegen(unit)*2.5 and GetDistanceSqr(GetOrigin(unit)) < 600*600 then
+                CastTargetSpell(unit, Ignite)
             end
         end
      end
@@ -2746,11 +2745,11 @@ end
 
 function Olaf:ItemUse()
   for _,target in pairs(GetEnemyHeroes()) do
-  	if GetItemSlot(myHero,3153) > 0 and self.MonTourMenu.Items.bork:Value() and ValidTarget(target, 550) and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GetCurrentHP(myHero)/GetMaxHP(myHero) < (self.MonTourMenu.Items.borkmyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (self.MonTourMenu.Items.borkehp:Value()/100) then
+  	if GetItemSlot(myHero,3153) > 0 and self.MonTourMenu.Items.bork:Value() and ValidTarget(target, 550) and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < (self.MonTourMenu.Items.borkmyhp:Value()) and GetCurrentHP(target)/GetMaxHP(target) > (self.MonTourMenu.Items.borkehp:Value()/100) then
         CastTargetSpell(target, GetItemSlot(myHero,3153)) --bork
         end
 
-        if GetItemSlot(myHero,3144) > 0 and self.MonTourMenu.Items.CutBlade:Value() and ValidTarget(target, 550) and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GetCurrentHP(myHero)/GetMaxHP(myHero) < (self.MonTourMenu.Items.CutBlademyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (self.MonTourMenu.Items.CutBladeehp:Value()/100) then 
+        if GetItemSlot(myHero,3144) > 0 and self.MonTourMenu.Items.CutBlade:Value() and ValidTarget(target, 550) and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < (self.MonTourMenu.Items.CutBlademyhp:Value()) and GetCurrentHP(target)/GetMaxHP(target) > (self.MonTourMenu.Items.CutBladeehp:Value()/100) then 
         CastTargetSpell(target, GetItemSlot(myHero,3144)) --CutBlade
         end
 
@@ -2813,7 +2812,7 @@ class "Gnar"
 function Gnar:__init()
 require("MapPositionGOS")
 print(MoTBaseVersion)  
-self.Version = "1.0"
+self.Version = "1.1"
 self.Qattack = myHero
 self.reticles = {}
 self.tickQ = 0
@@ -2907,7 +2906,7 @@ end
 function Gnar:CirclesbyCast()
 if self.Qattack ~= myHero and self.MonTourMenu.Combo.QCD:Value() then
 DrawCircle(GetOrigin(self.Qattack).x,GetOrigin(self.Qattack).y,GetOrigin(self.Qattack).z,70,6,100,ARGB(255, 0, 0, 255))  
-DrawLine3D(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z, GetOrigin(self.Qattack).x,GetOrigin(self.Qattack).y,GetOrigin(self.Qattack).z, 1, ARGB(255, 0, 0, 255))
+MoTDrawLine3D(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z, GetOrigin(self.Qattack).x,GetOrigin(self.Qattack).y,GetOrigin(self.Qattack).z, 1, ARGB(255, 0, 0, 255))
 end
 end
 
@@ -3012,9 +3011,6 @@ end
 function Gnar:Draw(myHero) 
   self:QProcessSpellDraw()
   self:CirclesbyCast()
---	if self.MonTourMenu.Misc.MGUN:Value() then
---		self:GLOBALULTNOTICE()
---	end	
 	if self.MonTourMenu.Misc.DOH:Value() then 
 		self:Draws()
 	end 
@@ -3293,20 +3289,19 @@ function Gnar:CastR()
 --GetCastName(myHero,_R) == "GnarR" and and (GotBuff(myHero,"gnartransform") == 1 or GotBuff(myHero,"gnartransformsoon") == 1)ValidTarget(unit, 590) and 
  for _,unit in pairs(GetEnemyHeroes()) do 
         local distance=590 - GetDistance(myHero,unit)
-        local RPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),3000,0,590,590,false,false)
-        local EPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),3000,0,590,70,false,true)
-        local PredPos = Vector(EPred.PredPos)
+        local RPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),3000,0,590,590,false,true)
+        local PredPos = Vector(RPred.PredPos)
         local HeroPos = Vector(myHero)
-        local maxERange = PredPos - (PredPos - HeroPos) * ( - distance / GetDistance(EPred.PredPos))
-        local shootLine = Line(Point(PredPos.x, PredPos.y, PredPos.z), Point(maxERange.x, maxERange.y, maxERange.z))
+        local maxRRange = PredPos - (PredPos - HeroPos) * ( - distance / GetDistance(RPred.PredPos))
+        local shootLine = Line(Point(PredPos.x, PredPos.y, PredPos.z), Point(maxRRange.x, maxRRange.y, maxRRange.z))
   for i, Pos in pairs(shootLine:__getPoints()) do
 --    if ValidTarget(unit, 20000) then 
---      DrawCircle(maxERange.x,maxERange.y,maxERange.z,30,10,100,ARGB(255, 0, 0, 255)) 
+--      DrawCircle(maxRRange.x,maxRRange.y,maxRRange.z,30,10,100,ARGB(255, 0, 0, 255)) 
 --      DrawText(" "..EnemiesAround(GetOrigin(myHero), 590).." Thereit is!",30,30,200,ARGB(255, 255, 255, 255))
 --    end  
 	    if MapPosition:inWall(Pos) and self.RREADY and ValidTarget(unit, 590) and GetDistance(myHero, unit) <= 590 then --EnemiesAround(PosAround, 400) >= 0 and
 --        DrawText(" "..EnemiesAround(GetOrigin(myHero), 590).." are Stunable",30,30,230,ARGB(255, 255, 255, 255))
-        CastSkillShot(_R,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
+        CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z)
 	    end
     end
   end
@@ -3373,25 +3368,24 @@ function Gnar:Killsteal()
         self:CastEKS(unit)
       elseif self.RREADY then  
         local distance=590 - GetDistance(myHero,unit)
-        local RPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),3000,0,590,590,false,false)
-        local EPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),3000,0,590,70,false,true)
-        local PredPos = Vector(EPred.PredPos)
+        local RPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),3000,0,590,70,false,true)
+        local PredPos = Vector(RPred.PredPos)
         local HeroPos = Vector(myHero)
-        local maxERange = PredPos - (PredPos - HeroPos) * ( - distance / GetDistance(EPred.PredPos))
-        local shootLine = Line(Point(PredPos.x, PredPos.y, PredPos.z), Point(maxERange.x, maxERange.y, maxERange.z))
+        local maxRRange = PredPos - (PredPos - HeroPos) * ( - distance / GetDistance(RPred.PredPos))
+        local shootLine = Line(Point(PredPos.x, PredPos.y, PredPos.z), Point(maxRRange.x, maxRRange.y, maxRRange.z))
         for i, Pos in pairs(shootLine:__getPoints()) do
           if MapPosition:inWall(Pos) then 
             self.GnarWallDmg = RdmgMegaGnarWall
             if self.MonTourMenu.Killsteal.KSR:Value() and RdmgMegaGnarWall > hp and ValidTarget(unit, 600) then
             if GetDistance(myHero, unit) <= 590 then --EnemiesAround(PosAround, 400) >= 0 and
-              CastSkillShot(_R,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
+              CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z)
             end
             end
           elseif MapPosition:inWall(Pos) == false then
             self.GnarWallDmg = RdmgMegaGnarNoWall
             if self.MonTourMenu.Killsteal.KSR2:Value() and RdmgMegaGnarNoWall > hp and ValidTarget(unit, 600) then
             if GetDistance(myHero, unit) <= 590 then --EnemiesAround(PosAround, 400) >= 0 and
-              CastSkillShot(_R,EPred.PredPos.x,EPred.PredPos.y,EPred.PredPos.z)
+              CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z)
             end
             end
           end
@@ -3809,6 +3803,13 @@ function MoT2:percentToRGB(percent)
     end
 	
     return 0xFF000000+g*0xFFFF+r*0xFF
+end
+
+--Thanks Inspired!
+function MoTDrawLine3D(x,y,z,a,b,c,width,col)
+	local p1 = WorldToScreen(0, Vector(x,y,z))
+	local p2 = WorldToScreen(0, Vector(a,b,c))
+	DrawLine(p1.x, p1.y, p2.x, p2.y, width, col)
 end
 
 if GetObjectName(myHero) == "Anivia" or GetObjectName(myHero) == "Gnar" then
