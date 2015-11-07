@@ -1,5 +1,4 @@
 if GetObjectName(GetMyHero()) ~= "Jayce" then return end
---MonTour Jayce:V1.0.0.2 - updated GoS:myHeroPos() to GetOrigin(myHero)
 PrintChat(string.format("<font color='#80F5F5'>MonTour Jayce:</font> <font color='#EFF0F0'>loaded by MarCiii!</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Reworked Version:</font> <font color='#EFF0F0'>1.0.0.1</font>"))
 PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#EFF0F0'>Platypus Jayce Version</font>"))
@@ -64,68 +63,70 @@ PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#
 	PH ={dmg = function () return 40*GetCastLevel(myHero,_R)-20 end,
 			up = 0}
 	}
-local MonTourMenu = Menu("Jayce", "Jayce")
-MonTourMenu:SubMenu("Combo", "Combo")
-MonTourMenu.Combo:Boolean("QG", "Use Gun-Q", true)
-MonTourMenu.Combo:Boolean("QH", "Use Hammer-Q", true)
-MonTourMenu.Combo:Boolean("WG", "Use Gun-W", true)
-MonTourMenu.Combo:Boolean("WH", "Use Hammer-W", true)
-MonTourMenu.Combo:Boolean("EG", "Use Gun-E", true)
-MonTourMenu.Combo:Boolean("EH", "Use Hammer-E", true)
-MonTourMenu.Combo:Boolean("RG", "Use Gun-R", true)
-MonTourMenu.Combo:Boolean("RH", "Use Hammer-R", true)
-MonTourMenu:SubMenu("Items", "Items")
-MonTourMenu.Items:Info("Jayce", "Only in Combo and Harass")
-MonTourMenu.Items:Boolean("Ignite","AutoIgnite if OOR",true)
-MonTourMenu.Items:Boolean("CutBlade", "Bilgewater Cutlass", true)  
-MonTourMenu.Items:Slider("CutBlademyhp", "if My Health < x%", 50, 5, 100, 1)
-MonTourMenu.Items:Slider("CutBladeehp", "if Enemy Health < x%", 20, 5, 100, 1)
-MonTourMenu.Items:Info("Jayce", " ")
-MonTourMenu.Items:Boolean("bork", "Blade of the Ruined King", true)
-MonTourMenu.Items:Slider("borkmyhp", "if My Health < x%", 50, 5, 100, 1)
-MonTourMenu.Items:Slider("borkehp", "if Enemy Health < x%", 20, 5, 100, 1)
-MonTourMenu.Items:Info("Jayce", " ")
-MonTourMenu.Items:Boolean("ghostblade", "Youmuu's Ghostblade", true)
-MonTourMenu.Items:Slider("ghostbladeR", "If Enemy in Range (def: 600)", 600, 100, 2000, 1)
-MonTourMenu.Items:Info("Jayce", " ")
-MonTourMenu.Items:Boolean("useRedPot", "Elixir of Wrath(REDPOT)", true)
-MonTourMenu.Items:Slider("useRedPotR", "If Enemy in Range (def: 600)", 600, 100, 2000, 1)
-MonTourMenu.Items:Info("Jayce", " ")
-MonTourMenu.Items:Info("Jayce", "Only on Hammertime!")
-MonTourMenu.Items:Boolean("useTiamat", "Tiamat", true)
-MonTourMenu.Items:Boolean("useHydra", "Hydra", true)
-MonTourMenu.Items:Info("Jayce", " ")
-MonTourMenu.Items:Boolean("QSS", "Always Use QSS", true)
-MonTourMenu.Items:Slider("QSSHP", "if My Health < x%", 75, 0, 100, 1)
---MonTourMenu:SubMenu("LH", "LastHit")
---MonTourMenu.LH:Boolean("W", "Use W Gun LastHit", true)
-MonTourMenu:SubMenu("Draw", "Draw")
-MonTourMenu.Draw:Boolean("Draw", "Draw selected", true)
-MonTourMenu.Draw:Boolean("QG", "Draw Gun-Q", true)
-MonTourMenu.Draw:Boolean("QH", "Draw Hammer-Q", true)
-MonTourMenu.Draw:Boolean("WG", "Draw Gun-W", true)
-MonTourMenu.Draw:Boolean("WH", "Draw Hammer-W", true)
-MonTourMenu.Draw:Boolean("EG", "Draw Gun-E", true)
-MonTourMenu.Draw:Boolean("EH", "Draw Hammer-E", true)
-MonTourMenu.Draw:Info("Jayce", " ")
-MonTourMenu.Draw:Boolean("CD", "Draw Cooldowns", true)
-MonTourMenu.Draw:Slider("MGUNSIZE", "CD Text Size", 25, 5, 60, 1)
-MonTourMenu.Draw:Slider("MGUNX", "CD X POS", 10, 0, 1600, 1)
-MonTourMenu.Draw:Slider("MGUNY", "CD Y POS", 400, 0, 1055, 1)
-MonTourMenu:SubMenu("KS", "Killsteal")
-MonTourMenu.KS:Boolean("KS", "Killsteal", true)
+local Jayce = Menu("Jayce", "Jayce")
+Jayce:SubMenu("Combo", "Combo")
+Jayce.Combo:Boolean("QG", "Use Gun-Q", true)
+Jayce.Combo:Boolean("QH", "Use Hammer-Q", true)
+Jayce.Combo:Boolean("WG", "Use Gun-W", true)
+Jayce.Combo:Boolean("WH", "Use Hammer-W", true)
+Jayce.Combo:Boolean("EG", "Use Gun-E", true)
+Jayce.Combo:Boolean("EH", "Use Hammer-E", true)
+Jayce.Combo:Boolean("RG", "Use Gun-R", true)
+Jayce.Combo:Boolean("RH", "Use Hammer-R", true)
+Jayce:SubMenu("Items", "Items")
+Jayce.Items:Info("Jayce", "Only in Combo and Harass")
+Jayce.Items:Boolean("Ignite","AutoIgnite if OOR",true)
+Jayce.Items:Boolean("CutBlade", "Bilgewater Cutlass", true)  
+Jayce.Items:Slider("CutBlademyhp", "if My Health < x%", 50, 5, 100, 1)
+Jayce.Items:Slider("CutBladeehp", "if Enemy Health < x%", 20, 5, 100, 1)
+Jayce.Items:Info("Jayce", " ")
+Jayce.Items:Boolean("bork", "Blade of the Ruined King", true)
+Jayce.Items:Slider("borkmyhp", "if My Health < x%", 50, 5, 100, 1)
+Jayce.Items:Slider("borkehp", "if Enemy Health < x%", 20, 5, 100, 1)
+Jayce.Items:Info("Jayce", " ")
+Jayce.Items:Boolean("ghostblade", "Youmuu's Ghostblade", true)
+Jayce.Items:Slider("ghostbladeR", "If Enemy in Range (def: 600)", 600, 100, 2000, 1)
+Jayce.Items:Info("Jayce", " ")
+Jayce.Items:Boolean("useRedPot", "Elixir of Wrath(REDPOT)", true)
+Jayce.Items:Slider("useRedPotR", "If Enemy in Range (def: 600)", 600, 100, 2000, 1)
+Jayce.Items:Info("Jayce", " ")
+Jayce.Items:Info("Jayce", "Only on Hammertime!")
+Jayce.Items:Boolean("useTiamat", "Tiamat", true)
+Jayce.Items:Boolean("useHydra", "Hydra", true)
+Jayce.Items:Info("Jayce", " ")
+Jayce.Items:Boolean("QSS", "Always Use QSS", true)
+Jayce.Items:Slider("QSSHP", "if My Health < x%", 75, 0, 100, 1)
+--Jayce:SubMenu("LH", "LastHit")
+--Jayce.LH:Boolean("W", "Use W Gun LastHit", true)
+Jayce:SubMenu("Draw", "Draw")
+Jayce.Draw:Boolean("Draw", "Draw selected", true)
+Jayce.Draw:Boolean("QG", "Draw Gun-Q", true)
+Jayce.Draw:Boolean("QH", "Draw Hammer-Q", true)
+Jayce.Draw:Boolean("WG", "Draw Gun-W", true)
+Jayce.Draw:Boolean("WH", "Draw Hammer-W", true)
+Jayce.Draw:Boolean("EG", "Draw Gun-E", true)
+Jayce.Draw:Boolean("EH", "Draw Hammer-E", true)
+Jayce.Draw:Info("Jayce", " ")
+Jayce.Draw:Boolean("CD", "Draw Cooldowns", true)
+Jayce.Draw:Slider("MGUNSIZE", "CD Text Size", 25, 5, 60, 1)
+Jayce.Draw:Slider("MGUNX", "CD X POS", 10, 0, 1600, 1)
+Jayce.Draw:Slider("MGUNY", "CD Y POS", 400, 0, 1055, 1)
+Jayce:SubMenu("KS", "Killsteal")
+Jayce.KS:Boolean("KS", "Killsteal", true)
+targetsselect = TargetSelector(spellData.QG.rangeAcc, TARGET_LESS_CAST, DAMAGE_PHYSICAL)
+Jayce:TargetSelector("ts", "TargetSelector", targetsselect)
 
-OnLoop(function(myHero)
+OnTick(function(myHero)
 	Checks()
   ItemUse()
-  Ignite()
-  if MonTourMenu.Draw.CD:Value() then
+ -- Ignite()
+  if Jayce.Draw.CD:Value() then
     CDs()
   end
-	if MonTourMenu.Draw.Draw:Value() then
+	if Jayce.Draw.Draw:Value() then
 		Draws()
 	end
-	if MonTourMenu.KS.KS:Value() then
+	if Jayce.KS.KS:Value() then
 		Killsteal()
 	end
 	if IOW:Mode() == "Combo" then
@@ -135,57 +136,66 @@ OnLoop(function(myHero)
 		Harass()
 	end
 --  if IOW:Mode() == "LastHit" then
---		LastHit(minion)
+--		LastHit(minion)OnDraw
 --	end
 end)
+
+OnDraw(function(myHero)
+  if Jayce.Draw.CD:Value() then
+    CDs()
+  end
+	if Jayce.Draw.Draw:Value() then
+		Draws()
+	end
+end)
+
 
 function Checks()
 	QREADY = CanUseSpell(myHero,_Q) == READY
 	WREADY = CanUseSpell(myHero,_W) == READY
 	EREADY = CanUseSpell(myHero,_E) == READY
 	RREADY = CanUseSpell(myHero,_R) == READY
-	target = IOW:GetTarget(spellData.QG.rangeAcc, DAMAGE_PHYSICAL)
-  target = IOW:GetTarget(spellData.QG.rangeAcc, DAMAGE_PHYSICAL)
+  target = Jayce.ts:GetTarget()
   --target = GetCurrentTarget()
 	targetPos = GetOrigin(target)
-	myHeroPos = GetOrigin(myHero) --GetOrigin(myHero)
+	--myHeroPos = GetOrigin(myHero)
 	rangedPassive = GotBuff(myHero,"jaycepassiverangedattack")
 	meleePassive = GotBuff(myHero,"jaycepassivemeleeattack")
 	HammerTime = GetCastName(myHero,_R) == "JayceStanceHtG"
+  Jayce.ts.range = spellData.QG.rangeAcc
 end
 
 --function LastHit(minion)
 --    --  Move()
---    for i,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do
+--    for i,minion in pairs(GetAllMinions(MINION_ENEMY)) do
 --      local WGDmg = spellData.WG.dmg() or 0
 --      local Alldmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
---      local DamageWG = GoS:CalcDamage(myHero, minion, WGDmg, 0)
+--      local DamageWG = CalcDamage(myHero, minion, WGDmg, 0)
 --      local  targetPos123 = GetOrigin(minion) 
---      if GetCurrentHP(minion) < DamageWG and MonTourMenu.LH.W:Value() then --and Alldmg > GetCurrentHP(minion)
---        if WREADY and not HammerTime and GoS:IsInDistance(minion, GetRange(myHero)) and GoS:ValidTarget(minion, GetRange(myHero)) then			
---				CastSpell(_W) GoS:DelayAction(function() IOW:DisableAutoAttacks() GoS:DelayAction(function() AttackUnitM(minion) GoS:DelayAction(function() AttackUnitM(minion) GoS:DelayAction(function() AttackUnitM(minion) GoS:DelayAction(function() IOW:EnableAutoAttacks() end, 1) end, 270) end, 270) end, 270) end, 700)
+--      if GetCurrentHP(minion) < DamageWG and Jayce.LH.W:Value() then --and Alldmg > GetCurrentHP(minion)
+--        if WREADY and not HammerTime and IsInDistance(minion, GetRange(myHero)) and ValidTarget(minion, GetRange(myHero)) then			
+--				CastSpell(_W) DelayAction(function() IOW:DisableAutoAttacks() DelayAction(function() AttackUnitM(minion) DelayAction(function() AttackUnitM(minion) DelayAction(function() AttackUnitM(minion) DelayAction(function() IOW:EnableAutoAttacks() end, 1) end, 270) end, 270) end, 270) end, 700)
 --        end
 --      end
 --    end
 --end
 
 --function AttackUnitM(minion)
---	for i,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do  
---  if GoS:IsInDistance(minion, GetRange(myHero)) and GoS:GetDistance(myHero, minion) <= (GetRange(myHero)) and GoS:GetDistance(myHero, minion) >= 1 then 
+--	for i,minion in pairs(GetAllMinions(MINION_ENEMY)) do  
+--  if IsInDistance(minion, GetRange(myHero)) and GetDistance(myHero, minion) <= (GetRange(myHero)) and GetDistance(myHero, minion) >= 1 then 
 --    AttackUnit(minion)
 --  end
 --  end
 --end
 
 function Ignite()
-      local Ignite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerdot") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerdot") and SUMMONER_2 or nil))
-    if GoS:ValidTarget(unit, 700) and Ignite and MonTourMenu.Items.Ignite:Value() and GoS:GetDistance(unit) > 450 then
-        for _, k in pairs(GoS:GetEnemyHeroes()) do
-            if CanUseSpell(GetMyHero(), Ignite) == READY and (20*GetLevel(GetMyHero())+50) > GetCurrentHP(k)+GetHPRegen(k)*2.5 and GoS:GetDistanceSqr(GetOrigin(k)) < 600*600 then
-                CastTargetSpell(k, Ignite)
+  for _, unit in pairs(GetEnemyHeroes()) do
+    if ValidTarget(unit, 700) and Ignite and Jayce.Items.Ignite:Value() and GetDistance(unit) > 450 then 
+            if CanUseSpell(GetMyHero(), Ignite) == READY and (20*GetLevel(GetMyHero())+50) > GetCurrentHP(unit)+GetHPRegen(unit)*2.5 and GetDistanceSqr(GetOrigin(unit)) < 600*600 then
+                CastTargetSpell(unit, Ignite)
             end
         end
-     end
+     end     
 end
 
 function CDs()
@@ -194,76 +204,76 @@ function CDs()
 	for _, d in pairs(spellData) do
 		local rcd = (d.up-GetTickCount())/1000
 		local rcd = rcd > 0 and rcd or 0
-		DrawText(_..": "..math.ceil(rcd),MonTourMenu.Draw.MGUNSIZE:Value(),MonTourMenu.Draw.MGUNX:Value(),MonTourMenu.Draw.MGUNY:Value()+c*25,0xffff9999)
+		DrawText(_..": "..math.ceil(rcd),Jayce.Draw.MGUNSIZE:Value(),Jayce.Draw.MGUNX:Value(),Jayce.Draw.MGUNY:Value()+c*25,0xffff9999)
 		c = c + 1
 	end
 end  
 
 function Draws()
 	--Q
-	if QREADY and HammerTime and MonTourMenu.Draw.QH:Value() then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,spellData.QH.range,1,150,ARGB(0xff,255,247,0))
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,spellData.QG.range,0,150,ARGB(50,200,200,255))
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,spellData.QG.rangeAcc,0,150,ARGB(50,200,200,255))
-	elseif QREADY and not HammerTime and MonTourMenu.Draw.QG:Value() then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,spellData.QG.range,1,150,ARGB(0xff,200,200,255))
+	if QREADY and HammerTime and Jayce.Draw.QH:Value() then
+		DrawCircle(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z,spellData.QH.range,1,150,ARGB(0xff,255,247,0))
+		DrawCircle(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z,spellData.QG.range,0,150,ARGB(50,200,200,255))
+		DrawCircle(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z,spellData.QG.rangeAcc,0,150,ARGB(50,200,200,255))
+	elseif QREADY and not HammerTime and Jayce.Draw.QG:Value() then
+		DrawCircle(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z,spellData.QG.range,1,150,ARGB(0xff,200,200,255))
 			if EREADY then
-				DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,spellData.QG.rangeAcc,1,150,ARGB(0xff,200,200,255))
+				DrawCircle(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z,spellData.QG.rangeAcc,1,150,ARGB(0xff,200,200,255))
 			end
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,spellData.QH.range,0,150,ARGB(50,255,247,0))
+		DrawCircle(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z,spellData.QH.range,0,150,ARGB(50,255,247,0))
 	end
 	--W
-	if WREADY and HammerTime and MonTourMenu.Draw.WH:Value() then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,spellData.WH.range,1,150,ARGB(0xff,255,247,0))
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,spellData.WG.range,0,150,ARGB(50,200,200,255))
-	elseif WREADY and not HammerTime and MonTourMenu.Draw.WG:Value() then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,spellData.WH.range,1,150,ARGB(50,255,247,0))
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,spellData.WG.range,0,150,ARGB(0xff,200,200,255))
+	if WREADY and HammerTime and Jayce.Draw.WH:Value() then
+		DrawCircle(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z,spellData.WH.range,1,150,ARGB(0xff,255,247,0))
+		DrawCircle(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z,spellData.WG.range,0,150,ARGB(50,200,200,255))
+	elseif WREADY and not HammerTime and Jayce.Draw.WG:Value() then
+		DrawCircle(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z,spellData.WH.range,1,150,ARGB(50,255,247,0))
+		DrawCircle(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z,spellData.WG.range,0,150,ARGB(0xff,200,200,255))
 	end
 	--E
-	if EREADY and HammerTime and MonTourMenu.Draw.EH:Value()then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,spellData.EH.range,1,150,ARGB(0xff,255,247,0))
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,spellData.EG.range,0,150,ARGB(50,200,200,255))
-	elseif EREADY and not HammerTime and MonTourMenu.Draw.EG:Value() then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,spellData.EH.range,0,150,ARGB(50,255,247,0))
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,spellData.EG.range,1,150,ARGB(0xff,200,200,255))
+	if EREADY and HammerTime and Jayce.Draw.EH:Value()then
+		DrawCircle(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z,spellData.EH.range,1,150,ARGB(0xff,255,247,0))
+		DrawCircle(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z,spellData.EG.range,0,150,ARGB(50,200,200,255))
+	elseif EREADY and not HammerTime and Jayce.Draw.EG:Value() then
+		DrawCircle(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z,spellData.EH.range,0,150,ARGB(50,255,247,0))
+		DrawCircle(GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z,spellData.EG.range,1,150,ARGB(0xff,200,200,255))
 	end
 end
 
 function ItemUse()
-  for _,target in pairs(Gos:GetEnemyHeroes()) do
-  	if GetItemSlot(myHero,3153) > 0 and MonTourMenu.Items.bork:Value() and GoS:ValidTarget(target, 550) and HammerTime and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GetCurrentHP(myHero)/GetMaxHP(myHero) < (MonTourMenu.Items.borkmyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (MonTourMenu.Items.borkehp:Value()/100) then
+  for _,target in pairs(GetEnemyHeroes()) do
+  	if GetItemSlot(myHero,3153) > 0 and Jayce.Items.bork:Value() and ValidTarget(target, 550) and HammerTime and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GetCurrentHP(myHero)/GetMaxHP(myHero) < (Jayce.Items.borkmyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (Jayce.Items.borkehp:Value()/100) then
         CastTargetSpell(target, GetItemSlot(myHero,3153)) --bork
         end
 
-        if GetItemSlot(myHero,3144) > 0 and MonTourMenu.Items.CutBlade:Value() and GoS:ValidTarget(target, 550) and HammerTime and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GetCurrentHP(myHero)/GetMaxHP(myHero) < (MonTourMenu.Items.CutBlademyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (MonTourMenu.Items.CutBladeehp:Value()/100) then 
+        if GetItemSlot(myHero,3144) > 0 and Jayce.Items.CutBlade:Value() and ValidTarget(target, 550) and HammerTime and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GetCurrentHP(myHero)/GetMaxHP(myHero) < (Jayce.Items.CutBlademyhp:Value()/100) and GetCurrentHP(target)/GetMaxHP(target) > (Jayce.Items.CutBladeehp:Value()/100) then 
         CastTargetSpell(target, GetItemSlot(myHero,3144)) --CutBlade
         end
 
-        if GetItemSlot(myHero,3142) > 0 and MonTourMenu.Items.ghostblade:Value() and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GoS:ValidTarget(target, MonTourMenu.Items.ghostbladeR:Value()) then --ghostblade
+        if GetItemSlot(myHero,3142) > 0 and Jayce.Items.ghostblade:Value() and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and ValidTarget(target, Jayce.Items.ghostbladeR:Value()) then --ghostblade
         CastTargetSpell(myHero, GetItemSlot(myHero,3142))
         end
 		
-	if GetItemSlot(myHero,3140) > 0 and MonTourMenu.Items.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < MonTourMenu.Items.QSSHP:Value() then
+	if GetItemSlot(myHero,3140) > 0 and Jayce.Items.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < Jayce.Items.QSSHP:Value() then
         CastTargetSpell(myHero, GetItemSlot(myHero,3140))
         end
 
-        if GetItemSlot(myHero,3139) > 0 and MonTourMenu.Items.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < MonTourMenu.Items.QSSHP:Value() then
+        if GetItemSlot(myHero,3139) > 0 and Jayce.Items.QSS:Value() and GotBuff(myHero, "rocketgrab2") > 0 or GotBuff(myHero, "charm") > 0 or GotBuff(myHero, "fear") > 0 or GotBuff(myHero, "flee") > 0 or GotBuff(myHero, "snare") > 0 or GotBuff(myHero, "taunt") > 0 or GotBuff(myHero, "suppression") > 0 or GotBuff(myHero, "stun") > 0 or GotBuff(myHero, "zedultexecute") > 0 or GotBuff(myHero, "summonerexhaust") > 0 and 100*GetCurrentHP(myHero)/GetMaxHP(myHero) < Jayce.Items.QSSHP:Value() then
         CastTargetSpell(myHero, GetItemSlot(myHero,3139))
       end
    
-     if MonTourMenu.Items.useRedPot:Value() and GetItemSlot(myHero,2140) >= 1 and GoS:ValidTarget(target,MonTourMenu.Items.useRedPotR:Value()) and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") then --redpot
+     if Jayce.Items.useRedPot:Value() and GetItemSlot(myHero,2140) >= 1 and ValidTarget(target,Jayce.Items.useRedPotR:Value()) and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") then --redpot
         if CanUseSpell(myHero,GetItemSlot(myHero,2140)) == READY then
           CastSpell(GetItemSlot(myHero,2140))
         end
       end
-         if MonTourMenu.Items.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GoS:ValidTarget(target, 550) and HammerTime then --tiamat
-        if GoS:GetDistance(target) < 400 then
+         if Jayce.Items.useTiamat:Value() and GetItemSlot(myHero, 3077) >= 1 and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and ValidTarget(target, 550) and HammerTime then --tiamat
+        if GetDistance(target) < 400 then
          CastTargetSpell(myHero, GetItemSlot(myHero, 3077))
         end 
         end
-    if MonTourMenu.Items.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and GoS:ValidTarget(target, 550) and HammerTime then --hydra
-      if GoS:GetDistance(target) < 385 then
+    if Jayce.Items.useHydra:Value() and GetItemSlot(myHero, 3074) >= 1 and (IOW:Mode() == "Combo" or IOW:Mode() == "Harass") and ValidTarget(target, 550) and HammerTime then --hydra
+      if GetDistance(target) < 385 then
         CastTargetSpell(myHero, GetItemSlot(myHero, 3074))
       end
     end
@@ -272,16 +282,16 @@ end
   
 
 function CastQH(unit)
-	if HammerTime and QREADY and MonTourMenu.Combo.QH:Value() then
+	if HammerTime and QREADY and Jayce.Combo.QH:Value() then
 		CastTargetSpell(unit,_Q)
 	end
 end
 
 function CastQGAcc(unit)
-	if not HammerTime and QREADY and MonTourMenu.Combo.QG:Value() then
+	if not HammerTime and QREADY and Jayce.Combo.QG:Value() then
 		local unitPos = GetOrigin(unit)
-		if GoS:ValidTarget(unit,spellData.QG.rangeAcc) and EREADY and MonTourMenu.Combo.QG:Value() then
-			local QAccPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit),spellData.QG.speedAcc,spellData.QG.windup,spellData.QG.rangeAcc, spellData.QG.width, true, true)
+		if ValidTarget(unit,spellData.QG.rangeAcc) and EREADY and Jayce.Combo.QG:Value() then
+			local QAccPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),spellData.QG.speedAcc,spellData.QG.windup,spellData.QG.rangeAcc, spellData.QG.width, true, true)
 			if QREADY and QAccPred.HitChance == 1 then
 				CastSkillShot(_Q,QAccPred.PredPos.x,QAccPred.PredPos.y,QAccPred.PredPos.z) 
 				return true
@@ -292,10 +302,10 @@ function CastQGAcc(unit)
 end
 
 function CastQG(unit)
-	if not HammerTime and spellData.QG.up <= GetTickCount() and MonTourMenu.Combo.QG:Value() then
+	if not HammerTime and spellData.QG.up <= GetTickCount() and Jayce.Combo.QG:Value() then
 		local unitPos = GetOrigin(unit)
-		if GoS:ValidTarget(unit,spellData.QG.range) and spellData.EG.up >= GetTickCount() and MonTourMenu.Combo.QG:Value() then
-			local QPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit),spellData.QG.speed,spellData.QG.windup,spellData.QG.range, spellData.QG.width, true, true)
+		if ValidTarget(unit,spellData.QG.range) and spellData.EG.up >= GetTickCount() and Jayce.Combo.QG:Value() then
+			local QPred = GetPredictionForPlayer(GetOrigin(myHero),unit,GetMoveSpeed(unit),spellData.QG.speed,spellData.QG.windup,spellData.QG.range, spellData.QG.width, true, true)
 			if QREADY and QPred.HitChance == 1 then
 				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
 			end
@@ -309,33 +319,33 @@ function CastKnockQ(unit)
 end
 
 function CastQGEG(unit)
-	if GoS:ValidTarget(unit,spellData.QG.rangeAcc) and QREADY and EREADY and not HammerTime then
+	if ValidTarget(unit,spellData.QG.rangeAcc) and QREADY and EREADY and not HammerTime then
 		if CastQGAcc(unit) then
-			GoS:DelayAction(function() CastEG(unit) end,250)
+			DelayAction(function() CastEG(unit) end,250)
 		end
 	end
 end
 
 function CastEHRHQGEG(unit)
-	if GoS:ValidTarget(unit,spellData.EH.range) and QREADY and EREADY and RREADY and HammerTime then
-		CastEH(unit) GoS:DelayAction(function() CastRH() GoS:DelayAction(function() CastEG(unit) GoS:DelayAction(function() CastKnockQ(unit) end, 250) end, 125) end, 125)
+	if ValidTarget(unit,spellData.EH.range) and QREADY and EREADY and RREADY and HammerTime then
+		CastEH(unit) DelayAction(function() CastRH() DelayAction(function() CastEG(unit) DelayAction(function() CastKnockQ(unit) end, 250) end, 125) end, 125)
 	end
 end
 
 function CastWH()
-	if HammerTime and WREADY and MonTourMenu.Combo.WH:Value() then
+	if HammerTime and WREADY and Jayce.Combo.WH:Value() then
 		CastSpell(_W)
 	end
 end
 
 function CastWG()
-	if not HammerTime and WREADY and MonTourMenu.Combo.WG:Value() then
+	if not HammerTime and WREADY and Jayce.Combo.WG:Value() then
 		CastSpell(_W)
 	end
 end
 
 function CastEH(unit)
-	if HammerTime and EREADY and MonTourMenu.Combo.EH:Value() then
+	if HammerTime and EREADY and Jayce.Combo.EH:Value() then
 		CastTargetSpell(unit,_E)
 		return true
 	end
@@ -343,27 +353,27 @@ function CastEH(unit)
 end
 
 function CastEG(unit)
-	if not HammerTime and EREADY and MonTourMenu.Combo.EG:Value() then
+	if not HammerTime and EREADY and Jayce.Combo.EG:Value() then
 		local eVector = Vector(myHero)+Vector(Vector(unit)-Vector(myHero)):normalized()*50+Vector(Vector(unit)-Vector(myHero)):normalized():perpendicular()*100
 		CastSkillShot(_E,eVector.x,eVector.y,eVector.z)
 	end
 end
 
 function CastRH()
-  if MonTourMenu.Combo.RH:Value() then
+  if Jayce.Combo.RH:Value() then
 	CastSpell(_R)
   end
 end
 
 function CastRG()
-  if MonTourMenu.Combo.RG:Value() then
+  if Jayce.Combo.RG:Value() then
 	CastSpell(_R)
   end
 end
 
 function Combo()
-  unit = GetCurrentTarget()
-target = GetCurrentTarget()
+  unit = Jayce.ts:GetTarget()
+target = Jayce.ts:GetTarget()
 	local QHup = spellData.QH.up <= GetTickCount()
 	local WHup = spellData.WH.up <= GetTickCount()
 	local EHup = spellData.EH.up <= GetTickCount()
@@ -374,64 +384,64 @@ target = GetCurrentTarget()
 	local RGup = spellData.RG.up <= GetTickCount()
 	--Guncombos
 	if not HammerTime then
-		if GoS:ValidTarget(target,spellData.QG.rangeAcc) and QGup and EGup then
+		if ValidTarget(target,spellData.QG.rangeAcc) and QGup and EGup then
 			CastQGEG(target)
-		elseif GoS:ValidTarget(target, spellData.QG.range) and QGup and not EGup then
+		elseif ValidTarget(target, spellData.QG.range) and QGup and not EGup then
 			CastQG(target)
-		elseif GoS:ValidTarget(target, spellData.QH.range) and WGup and RGup then
+		elseif ValidTarget(target, spellData.QH.range) and WGup and RGup then
 			CastWG()
-		elseif GoS:ValidTarget(target, spellData.WG.range) and WGup then
+		elseif ValidTarget(target, spellData.WG.range) and WGup then
 			CastWG()
-		elseif GoS:ValidTarget(target, spellData.QH.range) and not QGup and not EGup and not WGup and QHup and EHup then
+		elseif ValidTarget(target, spellData.QH.range) and not QGup and not EGup and not WGup and QHup and EHup then
 			CastRG()
 		end
 	--Hammercombos
 	elseif HammerTime then
-		if GoS:ValidTarget(target, spellData.EH.range) and EHup and QHup then
+		if ValidTarget(target, spellData.EH.range) and EHup and QHup then
 			if CastEH(target) then
-				GoS:DelayAction(function() CastQH(target) end, 250)
+				DelayAction(function() CastQH(target) end, 250)
 			end
-		elseif GoS:ValidTarget(target, spellData.WH.range) and WHup then
+		elseif ValidTarget(target, spellData.WH.range) and WHup then
 			CastWH()
-		elseif GoS:ValidTarget(target, spellData.QH.range) and QHup then
+		elseif ValidTarget(target, spellData.QH.range) and QHup then
 			CastQH(target)
-		elseif GoS:ValidTarget(target, spellData.EH.range) and EHup and RHup then
+		elseif ValidTarget(target, spellData.EH.range) and EHup and RHup then
 			if CastEH(target) then
-				GoS:DelayAction(function() CastRH() end, 250)
+				DelayAction(function() CastRH() end, 250)
 			end
-		elseif GoS:ValidTarget(target, spellData.QH.range) and RHup and not QHup then
+		elseif ValidTarget(target, spellData.QH.range) and RHup and not QHup then
 			CastRH()
 		end
 	end
 end
 
 function Harass()
-  unit = GetCurrentTarget()
-target = GetCurrentTarget()
-	if GoS:ValidTarget(target,spellData.QG.rangeAcc) and spellData.EG.up <= GetTickCount() and spellData.QG.up <= GetTickCount() and not HammerTime then
+  unit = Jayce.ts:GetTarget()
+target = Jayce.ts:GetTarget()
+	if ValidTarget(target,spellData.QG.rangeAcc) and spellData.EG.up <= GetTickCount() and spellData.QG.up <= GetTickCount() and not HammerTime then
 		CastQGEG(target)
-	elseif GoS:ValidTarget(target,spellData.QG.range) and spellData.EG.up >= GetTickCount() and spellData.QG.up <= GetTickCount() and not HammerTime then
+	elseif ValidTarget(target,spellData.QG.range) and spellData.EG.up >= GetTickCount() and spellData.QG.up <= GetTickCount() and not HammerTime then
 		CastQG(target)
 	end
 end
 
 function Killsteal()
-	for i,enemy in pairs(GoS:GetEnemyHeroes()) do
+	for i,enemy in pairs(GetEnemyHeroes()) do
 		local enemyhp = GetCurrentHP(enemy)
 		if HammerTime then
-			if GoS:ValidTarget(enemy,spellData.QH.range) and enemyhp < GoS:CalcDamage(myHero, enemy, spellData.QH.dmg(),0) and QREADY then
+			if ValidTarget(enemy,spellData.QH.range) and enemyhp < CalcDamage(myHero, enemy, spellData.QH.dmg(),0) and QREADY then
 				CastQH(enemy)
-			elseif GoS:ValidTarget(enemy,spellData.EH.range) and enemyhp < GoS:CalcDamage(myHero, enemy, 0, spellData.EH.dmg(enemy)) and EREADY then
+			elseif ValidTarget(enemy,spellData.EH.range) and enemyhp < CalcDamage(myHero, enemy, 0, spellData.EH.dmg(enemy)) and EREADY then
 				CastEH(enemy)
-			elseif GoS:ValidTarget(enemy,spellData.WH.range) and enemyhp < GoS:CalcDamage(myHero, enemy, 0, spellData.WH.dmg()/8) and WREADY then
+			elseif ValidTarget(enemy,spellData.WH.range) and enemyhp < CalcDamage(myHero, enemy, 0, spellData.WH.dmg()/8) and WREADY then
 				CastWH()
-			elseif GoS:ValidTarget(enemy,spellData.QH.range) and enemyhp < GoS:CalcDamage(myHero, enemy, spellData.QH.dmg(), spellData.EH.dmg(enemy)) and QREADY and EREADY then
-				CastQH(enemy) GoS:DelayAction(function() CastEH(enemy)end, 250)
+			elseif ValidTarget(enemy,spellData.QH.range) and enemyhp < CalcDamage(myHero, enemy, spellData.QH.dmg(), spellData.EH.dmg(enemy)) and QREADY and EREADY then
+				CastQH(enemy) DelayAction(function() CastEH(enemy)end, 250)
 			end
 		elseif not HammerTime then
-			if GoS:ValidTarget(enemy,spellData.QG.range) and enemyhp < GoS:CalcDamage(myHero, enemy, spellData.QG.dmg(), 0) and QREADY then
+			if ValidTarget(enemy,spellData.QG.range) and enemyhp < CalcDamage(myHero, enemy, spellData.QG.dmg(), 0) and QREADY then
 				CastQG(target)
-			elseif GoS:ValidTarget(enemy, spellData.QG.rangeAcc) and enemyhp < GoS:CalcDamage(myHero, enemy, spellData.QG.dmg()*1.4, 0) and QREADY and EREADY then
+			elseif ValidTarget(enemy, spellData.QG.rangeAcc) and enemyhp < CalcDamage(myHero, enemy, spellData.QG.dmg()*1.4, 0) and QREADY and EREADY then
 				CastQGEG(target)
 			end
 		end
