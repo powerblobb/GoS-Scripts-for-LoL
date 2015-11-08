@@ -63,7 +63,7 @@ PrintChat(string.format("<font color='#80F5F5'>Credits to:</font> <font color='#
 	PH ={dmg = function () return 40*GetCastLevel(myHero,_R)-20 end,
 			up = 0}
 	}
-local Jayce = Menu("Jayce", "Jayce")
+local Jayce = MenuConfig("Jayce", "Jayce")
 Jayce:SubMenu("Combo", "Combo")
 Jayce.Combo:Boolean("QG", "Use Gun-Q", true)
 Jayce.Combo:Boolean("QH", "Use Hammer-Q", true)
