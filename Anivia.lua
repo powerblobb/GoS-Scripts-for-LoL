@@ -1,23 +1,24 @@
 if GetObjectName(GetMyHero()) ~= "Anivia" then return end
+
 if not pcall( require, "MapPositionGOS" ) then PrintChat("You are missing Walls Library - Go download it and save it Common!") return end
 if not pcall( require, "Inspired" ) then PrintChat("You are missing Inspired.lua - Go download it and save it Common!") return end
 if not pcall( require, "Deftlib" ) then PrintChat("You are missing Deftlib.lua - Go download it and save it in Common!") return end
 if not pcall( require, "DamageLib" ) then PrintChat("You are missing DamageLib.lua - Go download it and save it in Common!") return end
+
+print("Anivia - SingleVersion - MoT Reworked v1.0") 
+
 require("MapPositionGOS")
 require("Inspired")
 require("Deftlib")
 require("DamageLib")
---RLastHit = false
---RLaneClear = false
---RJungleClear = false
+
 local MoTAnivia = MenuConfig("MoTAnivia", "MoTAnivia")
 MoTAnivia:SubMenu("Combo", "Combo")
 MoTAnivia.Combo:Boolean("Q","Use Q",true)
 MoTAnivia.Combo:Boolean("QS","Use Q AutoStun in Combo?",true)
 MoTAnivia.Combo:Boolean("QS2","Always AutoStun if possible?",true)
 MoTAnivia.Combo:Boolean("W","Use W Auto Wall",false)
-MoTAnivia.Combo:Slider("minW", "Delay W min.", 800, 10, 3500, 1)
-MoTAnivia.Combo:Slider("maxW", "Delay W max.", 1100, 100, 3500, 1) 
+MoTAnivia.Combo:Key("CW", "Create Wall", string.byte("T"))
 MoTAnivia.Combo:Boolean("E","Use E",true)
 MoTAnivia.Combo:Boolean("ES","E only with Debuff?",true)
 MoTAnivia.Combo:Boolean("R","Use R ",true)
@@ -30,8 +31,6 @@ MoTAnivia.Harass:Boolean("Q","Use Q",false)
 MoTAnivia.Harass:Boolean("QS","Use Q AutoStun in Combo?",true)
 MoTAnivia.Harass:Boolean("QS2","Always AutoStun if possible?",true)
 MoTAnivia.Harass:Boolean("W","Use W Auto Wall",false)
-MoTAnivia.Harass:Slider("minW", "Delay W min.", 800, 10, 3500, 1)
-MoTAnivia.Harass:Slider("maxW", "Delay W max.", 1100, 100, 3500, 1) 
 MoTAnivia.Harass:Boolean("E","Use E",true)
 MoTAnivia.Harass:Boolean("ES","E only with Debuff?",true)
 MoTAnivia.Harass:Boolean("R","Use R ",true)
@@ -55,13 +54,6 @@ MoTAnivia.LaneClear:Slider("Imax", "Delay max.", 1147, 100, 3500, 1)
 MoTAnivia.LaneClear:Slider("RM", "Enable if > x Minion Around MousePos", 5, 1, 20, 1)
 MoTAnivia.LaneClear:Slider("RP", "Disable if < x Minion Around RPos", 1, 1, 10, 1)
 MoTAnivia.LaneClear:Slider("Mana", "if Mana > x%", 30, 0, 80, 1)
---MoTAnivia:SubMenu("JungleClear", "JungleClear")
---MoTAnivia.JungleClear:Key("JC", "JungleClear", string.byte("A"))
---MoTAnivia.JungleClear:Boolean("E","Use E",true)
---MoTAnivia.JungleClear:Boolean("R","Use R",true)
---MoTAnivia.JungleClear:Slider("RM", "Enable if > x Minion Around MousePos", 5, 1, 20, 1)
---MoTAnivia.JungleClear:Slider("RP", "Disable if < x Minion Around RPos", 1, 1, 10, 1)
---MoTAnivia.JungleClear:Slider("Mana", "if Mana > x%", 30, 0, 80, 1)
 MoTAnivia:SubMenu("Items", "Items & Ignite")
 MoTAnivia.Items:Boolean("Ignite","AutoIgnite if OOR and Q/E NotReady",true)
 MoTAnivia.Items:Boolean("QSS", "Always Use QSS", true)
@@ -77,15 +69,12 @@ MoTAnivia:SubMenu("Interrupter", "Interrupter")
 MoTAnivia.Interrupter:Boolean("Q","Use Q",true)
 MoTAnivia.Interrupter:Boolean("W","Use W",true)
 MoTAnivia.Interrupter:Info("AniviaMoT14", "Delay for Interrupts min/max")
-MoTAnivia.Interrupter:Slider("Imin", "Delay min.", 632, 10, 3500, 1)
-MoTAnivia.Interrupter:Slider("Imax", "Delay max.", 1055, 100, 3500, 1) 
+MoTAnivia.Interrupter:Slider("Imin", "Delay min.", 324, 10, 3500, 1)
+MoTAnivia.Interrupter:Slider("Imax", "Delay max.", 515, 100, 3500, 1) 
+MoTAnivia:SubMenu("Misc2", "Misc")
+MoTAnivia.Misc2:Boolean("ALVL","Auto Level Up Skills", true)
 MoTAnivia:SubMenu("Misc", "Drawings")
---MoTAnivia.Misc:Boolean("MGUN","Killable Notifier", true)
---MoTAnivia.Misc:Slider("MGUNSIZE", "Kill Text Size", 17, 10, 21, 1)
---MoTAnivia.Misc:ColorPick("CTSCKS", "Current Target Color", {255,255,0,0})
---MoTAnivia.Misc:Slider("MGUNX", "Kill X POS", 753, 0, 1700, 1)
---MoTAnivia.Misc:Slider("MGUNY", "Kill Y POS", 809, 0, 1100, 1)
-MoTAnivia.Misc:Boolean("Wall","Draw Wall Circle",true)
+MoTAnivia.Misc:Boolean("Wall","Draw Wall",true)
 MoTAnivia.Misc:Boolean("DOH","Draw Damage Over HpBar",true)
 MoTAnivia.Misc:Boolean("DCC","Draw Casted Circles",true)
 MoTAnivia.Misc:Boolean("CTS","Draw Current Target",true)
@@ -121,12 +110,13 @@ local gametimeE = 0
 local gametimeR = 0
 local OverAllDmgAnivia = 0
 local target = MoTAnivia.ts:GetTarget()--IOW:GetTarget()
+
  
 OnDraw(function(myHero)
---  DrawWall()
---TEST()
-local target = MoTAnivia.ts:GetTarget()
-MakeWall(target)
+if MoTAnivia.Misc.Wall:Value() then
+local target = MoTAnivia.ts:GetTarget() 
+DrawWall(target)
+end
 if MoTAnivia.Misc.CTS:Value() then  
 DrawENEMY()
 end
@@ -137,73 +127,7 @@ end
 if MoTAnivia.Misc.DOH:Value() then
 DMGoverHpDraw()
 end
-DrawText(NameCheck(),20,200,450,0xff00ff00);
 end)
-
-function TEST()
-  local mymouse = GetMousePos()
-DrawCircle(mymouse,175,0.9,100,0xff0000ff)
-local Q = GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q))
-local CDR = GetCDR(myHero)
-local Q3 = (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q))
-local W = GetCastCooldown(myHero,_W,GetCastLevel(myHero,_W))
-local W3 = (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_W,GetCastLevel(myHero,_W))
-local E = GetCastCooldown(myHero,_E,GetCastLevel(myHero,_E))
-local E3 = (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_E,GetCastLevel(myHero,_E))
-local R = GetCastCooldown(myHero,_R,GetCastLevel(myHero,_R))
-local R3 = (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_R,GetCastLevel(myHero,_R))
-
---      DrawText(GetObjectName(unit),12,200,20,0xff00ff00);
---      DrawText("GLOBAL CDR: "..CDR,20,200,20,0xff00ff00);  
---      DrawText("Q CDR: "..Q,20,200,40,0xff00ff00);
---      DrawText("CDR Q: "..Q3,20,200,60,0xff00ff00);      
---      DrawText("W CDR: "..W,20,200,80,0xff00ff00);
---      DrawText("CDR W: "..W3,20,200,100,0xff00ff00);
---      DrawText("E CDR: "..E,20,200,120,0xff00ff00);
---      DrawText("CDR E: "..E3,20,200,140,0xff00ff00);
---      DrawText("R CDR: "..R,20,200,160,0xff00ff00);
---      DrawText("CDR R: "..R3,20,200,180,0xff00ff00);
-if CanUseSpell(myHero,_Q) ~= READY then
-  gametime = GetGameTimer()
-end
-DrawText("Q gametime: "..gametimeQ,20,200,200,0xff00ff00);
-DrawText("Q gametime Ready: "..gametimeQ+Q3,20,200,220,0xff00ff00);
-if gametimeQ+Q3-GetGameTimer() > 0 then
-DrawText("ONCOOLDOWN Q: "..gametimeQ+Q3-GetGameTimer(),20,200,240,0xff00ff00);
-else
-DrawText("READY Q: Yes",20,200,240,0xff00ff00);
-end
-
-DrawText("R gametime: "..gametimeR,20,200,260,0xff00ff00);
-DrawText("R gametime Ready: "..gametimeR+R3,20,200,280,0xff00ff00);
-if gametimeR+R3-GetGameTimer() > 0 then
-DrawText("ONCOOLDOWN R: "..gametimeR+R3-GetGameTimer(),20,200,300,0xff00ff00);
-else
-DrawText("READY R: Yes",20,200,300,0xff00ff00);
-end
-
-DrawText("E gametime: "..gametimeE,20,200,320,0xff00ff00);
-DrawText("E gametime Ready: "..gametimeE+E3,20,200,340,0xff00ff00);
-if gametimeE+E3-GetGameTimer() > 0 then
-DrawText("ONCOOLDOWN E: "..gametimeE+E3-GetGameTimer(),20,200,360,0xff00ff00);
-else
-DrawText("READY R: Yes",20,200,360,0xff00ff00);
-end
-
-DrawText("W gametime: "..gametimeW,20,200,380,0xff00ff00);
-DrawText("W gametime Ready: "..gametimeW+W3,20,200,400,0xff00ff00);
-if gametimeW+W3-GetGameTimer() > 0 then
-DrawText("ONCOOLDOWN W: "..gametimeW+W3-GetGameTimer(),20,200,420,0xff00ff00);
-else
-DrawText("READY W: Yes",20,200,420,0xff00ff00);
-end
-
-if (gametimeQ+(1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q)))-GetGameTimer() > (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_E,GetCastLevel(myHero,_E)) then
-  DrawText("E AVAILABLE",20,200,450,0xff00ff00);
-elseif (gametimeQ+(1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q)))-GetGameTimer() < (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_E,GetCastLevel(myHero,_E)) then
-  DrawText("E NOT AVAILABLE",20,200,450,0xff00ff00);
-end
-end
 
 OnTick(function(myHero)
 if IOW:Mode() == "Combo" then 
@@ -218,12 +142,14 @@ end
 if IOW:Mode() == "LaneClear" then
 DoLaneClear()
 end
---if MoTAnivia.JungleClear.JC:Value() then
---JungleClear()
---end
-
+local target = MoTAnivia.ts:GetTarget()
+if MoTAnivia.Combo.CW:Value() then
+MakeWall(target)
+end
+if MoTAnivia.Misc2.ALVL:Value() then
+AutoLevel()
+end
 QRProcess()
---MakeWall()    
 QSSuse()
 Igniteit()
 DMGCALCnKS()
@@ -237,14 +163,17 @@ if ValidTarget(target,1200) then
   if GotBuff(myHero,"FlashFrost") == 0 and IsReady(_Q) and QPred.HitChance == 1 then 
       CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z) 
   end 
+  if GotBuff(myHero,"FlashFrost") == 1 and GetDistance(target) <= 175 then 
+      CastSpell(_Q)
+  end  
 end 
 end
 
 function Echilled(target)  
   if ValidTarget(target,650) and IsReady(_E) then
     for i,unit in pairs(GetEnemyHeroes()) do 
-      DrawText(NameCheck(),12,200,100,0xff00ff00);
-      DrawText(GetObjectName(unit),12,200,140,0xff00ff00);
+--      DrawText(NameCheck(),12,200,100,0xff00ff00);
+--      DrawText(GetObjectName(unit),12,200,140,0xff00ff00);
       if GotBuff(unit,"chilled") == 1 and NameCheck() == GetObjectName(unit) then
         CastTargetSpell(unit, _E)
       elseif (gametimeQ+(1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q)))-GetGameTimer() > (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_E,GetCastLevel(myHero,_E)) and NameCheck() == GetObjectName(unit) and ((CanUseSpell(myHero,_R) ~= READY and GotBuff(myHero,"GlacialStorm") == 0) or (GetCastLevel(myHero,_R) == 0)) then
@@ -275,13 +204,10 @@ local RPredZ=RPred.PredPos.z+math.random(-55,55)
 local RPredRnDNor = math.random(175,275)
 local MyVectorHero = Vector(GetOrigin(myHero))
 local RPred2 = GetPredictionForPlayer(GetOrigin(myHero),target,GetMoveSpeed(target),2500,0,615,400,false,false) 
---DrawCircle(RPred2.PredPos,420,1,100,0xff00FFff)
 RPred2.PredPos = Vector(RPred2.PredPos)+((MyVectorHero-Vector(RPred2.PredPos)):normalized()*RPredRnDNor)
   if GetDistance(target) < 625 and GotBuff(myHero,"GlacialStorm") == 0 and IsReady(_R) and RPred.HitChance == 1 then  
       CastSkillShot(_R,RPredX,RPredY,RPredZ) 
---print("range")
---DrawCircle(RPred2.PredPos,420,1,100,0xff0000ff)
-  elseif GetDistance(target) > 625 and GotBuff(myHero,"GlacialStorm") == 0 and IsReady(_R) then  --and RPred2.HitChance == 1
+  elseif GetDistance(target) > 625 and GotBuff(myHero,"GlacialStorm") == 0 and IsReady(_R) then
       CastSkillShot(_R,RPred2.PredPos.x,RPred2.PredPos.y,RPred2.PredPos.z) 
   end  
 end
@@ -300,8 +226,10 @@ function DoCombo()
   end
   if MoTAnivia.Combo.R:Value() then
     CastR(target)
-  end   
-  --MakeWall(target)
+  end  
+  if MoTAnivia.Combo.W:Value() then
+    MakeWall(target)
+  end
 end
 
 function DoHarass()
@@ -317,6 +245,9 @@ function DoHarass()
   end
   if MoTAnivia.Harass.R:Value() then
     CastR(target)
+  end
+  if MoTAnivia.Harass.W:Value() then
+    MakeWall(target)
   end  
 end  
 
@@ -337,8 +268,6 @@ function DrawENEMY()
 end
 
 function DoLastHit()
---for i=1, IOW.mobs.maxObjects do
---  local minion = IOW.mobs.objects[i]
 for i,minion in pairs(minionManager.objects) do
   if GetTeam(minion) == MINION_ENEMY then  
   local MousePos = GetMousePos()
@@ -362,14 +291,7 @@ for i,minion in pairs(minionManager.objects) do
         end
         if GotBuff(minion,"chilled") == 0 and ((GetCastLevel(myHero,_R) < 1) or (GetCastLevel(myHero,_Q) < 1)) and GetCurrentHP(minion) < EdmgNoDebuff and GetCurrentHP(minion) > CalcDamage(myHero, minion, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
           CastTargetSpell(minion, _E)
-        end        
---      elseif MoTAnivia.LastHit.E:Value() and ValidTarget(minion, 750) and not ((GetObjectName(minion):find("Siege")) or (GetObjectName(minion):find("super"))) and ManaCheck  then
---        if GotBuff(minion,"chilled") == 1 and GetCurrentHP(minion) < Edmg and GetCurrentHP(minion) > CalcDamage(myHero, minion, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
---          CastTargetSpell(minion, _E)
---        end
---        if GotBuff(minion,"chilled") == 0 and ((GetCastLevel(myHero,_R) < 1) or (GetCastLevel(myHero,_Q) < 1)) and GetCurrentHP(minion) < EdmgNoDebuff and GetCurrentHP(minion) > CalcDamage(myHero, minion, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
---          CastTargetSpell(minion, _E)
---        end        
+        end         
       end      
     end    
 end
@@ -377,8 +299,6 @@ end
 end
 
 function DoLaneClear()
---for i=1, IOW.mobs.maxObjects do
---  local minion = IOW.mobs.objects[i] --MINION_ENEMY
 for i,minion in pairs(minionManager.objects) do
   if GetTeam(minion) == MINION_ENEMY then
   local MousePos = GetMousePos()
@@ -404,14 +324,7 @@ for i,minion in pairs(minionManager.objects) do
         end
         if GotBuff(minion,"chilled") == 0 and ((GetCastLevel(myHero,_R) < 1) or (GetCastLevel(myHero,_Q) < 1)) and GetCurrentHP(minion) < EdmgNoDebuff and GetCurrentHP(minion) > CalcDamage(myHero, minion, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
           CastTargetSpell(minion, _E)
-        end         
---      elseif MoTAnivia.LaneClear.E:Value() and ValidTarget(minion, 750) and not ((GetObjectName(minion):find("Siege")) or (GetObjectName(minion):find("super"))) and ManaCheck then
---        if GotBuff(minion,"chilled") == 1 and GetCurrentHP(minion) < Edmg and GetCurrentHP(minion) > CalcDamage(myHero, minion, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
---          CastTargetSpell(minion, _E)
---        end
---        if GotBuff(minion,"chilled") == 0 and ((GetCastLevel(myHero,_R) < 1) or (GetCastLevel(myHero,_Q) < 1)) and GetCurrentHP(minion) < EdmgNoDebuff and GetCurrentHP(minion) > CalcDamage(myHero, minion, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
---          CastTargetSpell(minion, _E)
---        end         
+        end               
       end      
     end    
 end
@@ -421,13 +334,6 @@ end
 function Checks()
 MoTAnivia.ts.range = 1200 
 local target = MoTAnivia.ts:GetTarget()--IOW:GetTarget()
-if IOW:Mode() == "Combo" then
-minW = MoTAnivia.Combo.minW:Value()
-maxW = MoTAnivia.Combo.maxW:Value()
-elseif IOW:Mode() == "Harass" then
-minW = MoTAnivia.Harass.minW:Value()
-maxW = MoTAnivia.Harass.maxW:Value()
-end
 end
 
 
@@ -482,7 +388,7 @@ if IsReady(_Q) and IsReady(_E) and (IsReady(_R) or GotBuff(myHero,"GlacialStorm"
         if GotBuff(myHero,"FlashFrost") == 0 and IsReady(_Q) and QPred.HitChance == 1 then  
         CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
           if GotBuff(myHero,"FlashFrost") == 1 and Qattack ~= myHero then
-            if EnemiesAround(GetOrigin(Qattack), 175) >= 1 then
+            if EnemiesAround(GetOrigin(Qattack), 180) >= 1 then
             CastSpell(_Q) 
             end
           end
@@ -518,7 +424,7 @@ elseif IsReady(_Q) and CanUseSpell(myHero,_E) ~= READY and (IsReady(_R) or GotBu
         if GotBuff(myHero,"FlashFrost") == 0 and IsReady(_Q) and QPred.HitChance == 1 then  
         CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
           if GotBuff(myHero,"FlashFrost") == 1 and Qattack ~= myHero then
-            if EnemiesAround(GetOrigin(Qattack), 175) >= 1 then
+            if EnemiesAround(GetOrigin(Qattack), 180) >= 1 then
             CastSpell(_Q) 
             end
           end
@@ -537,7 +443,7 @@ elseif IsReady(_Q) and IsReady(_E) and (CanUseSpell(myHero,_R) ~= READY or GotBu
         if GotBuff(myHero,"FlashFrost") == 0 and IsReady(_Q) and QPred.HitChance == 1 then  
         CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
           if GotBuff(myHero,"FlashFrost") == 1 and Qattack ~= myHero then
-            if EnemiesAround(GetOrigin(Qattack), 175) >= 1 then
+            if EnemiesAround(GetOrigin(Qattack), 180) >= 1 then
             CastSpell(_Q) 
             end
           end
@@ -556,7 +462,7 @@ elseif IsReady(_Q) and CanUseSpell(myHero,_E) ~= READY and (CanUseSpell(myHero,_
         if GotBuff(myHero,"FlashFrost") == 0 and IsReady(_Q) and QPred.HitChance == 1 then  
         CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
           if GotBuff(myHero,"FlashFrost") == 1 and Qattack ~= myHero then
-            if EnemiesAround(GetOrigin(Qattack), 175) >= 1 then
+            if EnemiesAround(GetOrigin(Qattack), 180) >= 1 then
             CastSpell(_Q) 
             end
           end
@@ -579,28 +485,31 @@ elseif CanUseSpell(myHero,_Q) ~= READY and IsReady(_E) and (CanUseSpell(myHero,_
       end 
     elseif enemyhp < EdmgNoDebuff then
       if ValidTarget(unit,650) then 
-        if GotBuff(unit,"chilled") == 0 then
-        CastTargetSpell(unit, _E)
-        end
+        ENonechilled(unit)
       end
     end 
   end  
 elseif CanUseSpell(myHero,_Q) ~= READY and CanUseSpell(myHero,_E) ~= READY and (IsReady(_R) or GotBuff(myHero,"GlacialStorm") == 1) then  
   OverAllDmgAnivia = Rdmg
   if MoTAnivia.KS.R:Value() then
-    if enemyhp < OverAllDmgAnivia then
-      if ValidTarget(unit,615) then 
-        if GotBuff(myHero,"GlacialStorm") == 0 and IsReady(_R) and RPred.HitChance == 1 then  
-        CastSkillShot(_R,RPredX,RPredY,RPredZ)  
-        end
-      end
+    CastR(unit)
     end 
   end  
 end
 end
 end
 
-
+function AutoLevel()
+local mapID = GetMapID()
+local LevelUp = {_Q, _E, _E, _Q, _E, _R, _E, _W, _E, _W, _R, _W, _W, _W, _Q, _R, _Q, _Q}
+if GetLevel(myHero) == 3 and (mapID == CRYSTAL_SCAR or mapID == HOWLING_ABYSS) then
+DelayAction(function() LevelSpell(LevelUp[1]) end, math.random(math.random(1000,1500),math.random(2500,3000)))
+DelayAction(function() LevelSpell(LevelUp[2]) end, math.random(math.random(1000,1500),math.random(2500,3000)))
+DelayAction(function() LevelSpell(LevelUp[3]) end, math.random(math.random(1000,1500),math.random(2500,3000)))
+else
+DelayAction(function() LevelSpell(LevelUp[GetLevel(myHero)]) end, math.random(math.random(1000,1500),math.random(2500,3000)))
+end
+end
 
 function QSSuse()
 local itemtable = {3139,3140}
@@ -648,6 +557,7 @@ end
 function MakeWall(target)
 if GetCastLevel(myHero,_W) > 0 then  
 local WallMax = 0
+local WallMaxEC = 0
 local MaxRangeHero = GetHitBox(myHero) + GetRange(myHero)
 local extrarange = 0
 if ValidTarget(target, MaxRangeHero) then 
@@ -655,12 +565,13 @@ local MyVectorHero = Vector(GetOrigin(myHero))
 local MyVectorEnemy = Vector(GetOrigin(target))
 DrawCircle(MyVectorEnemy,100,1,100,0xff00FFff)
 if GetDistance(target) <= MaxRangeHero then
-WallMax = MyVectorEnemy-((MyVectorHero-MyVectorEnemy):normalized()*(910-GetDistance(target)-extrarange))
+WallMax = MyVectorEnemy-((MyVectorHero-MyVectorEnemy):normalized()*(910-GetDistance(target)-(extrarange*2)))
+WallMaxEC = MyVectorEnemy-((MyVectorHero-MyVectorEnemy):normalized()*(910-GetDistance(target)+250))
 else
 WallMax = MyVectorEnemy-((MyVectorHero-MyVectorEnemy):normalized()*(250))
+WallMaxEC = MyVectorEnemy-((MyVectorHero-MyVectorEnemy):normalized()*(250+250))
 end
 local Wall = MyVectorEnemy-((MyVectorHero-MyVectorEnemy):normalized()*(250))
---local WallMax = MyVectorEnemy-((MyVectorHero-MyVectorEnemy):normalized()*(910-GetDistance(target)))
 local WallR = (Wall-((Wall-MyVectorEnemy):normalized()*RangeW()):perpendicular())
 local WallL = (Wall-((Wall-MyVectorEnemy):normalized()*RangeW()):perpendicular2())
 local WallRMax = (WallMax-((WallMax-MyVectorEnemy):normalized()*RangeW()):perpendicular())
@@ -670,39 +581,59 @@ local WallLMax2 = (WallMax-((WallMax-MyVectorEnemy):normalized()*(RangeW()/2)):p
 local LineR = Line(Point(WallRMax.x, WallRMax.y, WallRMax.z), Point(WallRMax2.x, WallRMax2.y, WallRMax2.z))
 local LineL = Line(Point(WallLMax.x, WallLMax.y, WallLMax.z), Point(WallLMax2.x, WallLMax2.y, WallLMax2.z))
 local LineMid = Line(Point(WallLMax2.x, WallLMax2.y, WallLMax2.z), Point(WallRMax2.x, WallRMax2.y, WallRMax2.z))
-DrawCircle(Wall,10,1,100,ARGB(100,0,255,0))
-DrawCircle(WallMax,10,1,100,ARGB(100,0,255,0))
-DrawCircle(WallR,10,1,100,ARGB(100,255,0,0))
-DrawCircle(WallL,10,1,100,ARGB(100,0,0,255))
-DrawCircle(WallRMax,12,4,100,ARGB(200,255,0,0))
-DrawCircle(WallLMax,12,4,100,ARGB(200,0,0,255))
-DrawCircle(WallRMax2,10,1,100,ARGB(100,255,255,255))
-DrawCircle(WallLMax2,10,1,100,ARGB(100,255,255,255))
-DrawLine3D(WallR.x,WallR.y,WallR.z,WallL.x,WallL.y,WallL.z,5,ARGB(100,255,255,0))
-DrawLine3D(WallRMax.x,WallRMax.y,WallRMax.z,WallLMax.x,WallLMax.y,WallLMax.z,5,ARGB(100,255,255,0))
   for i, Rpos in pairs(LineR:__getPoints()) do
     for i, Lpos in pairs(LineL:__getPoints()) do  
-      for i, Mpos in pairs(LineMid:__getPoints()) do
+      for i, Mpos in pairs(LineMid:__getPoints()) do      
         if MapPosition:inWall(Mpos) == true then return end
+        if CountObjectsOnLineSegment(WallMax, WallMaxEC, RangeW()+10, GetEnemyHeroes()) < 1 then  
         if MapPosition:inWall(Lpos) and MapPosition:inWall(Rpos) and MapPosition:inWall(Mpos) == false then
-          DrawText("IT IS OKAY - R AND L",30,200,140,ARGB(100,255,255,0)); 
+--          DrawText("IT IS OKAY - R AND L",30,200,140,ARGB(100,255,255,0)); 
           CastSkillShot(_W,WallMax.x,WallMax.y,WallMax.z) 
         elseif MapPosition:inWall(Lpos) == false and MapPosition:inWall(Rpos) and MapPosition:inWall(Mpos) == false then
-          DrawText("IT IS OKAY - R",30,200,140,ARGB(255,255,0,0));  
+--          DrawText("IT IS OKAY - R",30,200,140,ARGB(255,255,0,0));  
           CastSkillShot(_W,WallMax.x,WallMax.y,WallMax.z) 
         elseif MapPosition:inWall(Lpos) and MapPosition:inWall(Rpos) == false and MapPosition:inWall(Mpos) == false then
-          DrawText("IT IS OKAY - L",30,200,140,ARGB(255,0,0,255));  
+--          DrawText("IT IS OKAY - L",30,200,140,ARGB(255,0,0,255));  
           CastSkillShot(_W,WallMax.x,WallMax.y,WallMax.z) 
-        end      
+        end  
+        end
+      end
       end
     end
-  end
 end
 end
 end
 
-function DrawWall()
-
+function DrawWall(target)
+if GetCastLevel(myHero,_W) > 0 then  
+local WallMax = 0
+local WallMaxEC = 0
+local MaxRangeHero = GetHitBox(myHero) + GetRange(myHero)
+local extrarange = 0
+if ValidTarget(target, MaxRangeHero) then 
+local MyVectorHero = Vector(GetOrigin(myHero))
+local MyVectorEnemy = Vector(GetOrigin(target))
+DrawCircle(MyVectorEnemy,100,1,100,0xff00FFff)
+if GetDistance(target) <= MaxRangeHero then
+WallMax = MyVectorEnemy-((MyVectorHero-MyVectorEnemy):normalized()*(910-GetDistance(target)-(extrarange*2)))
+WallMaxEC = MyVectorEnemy-((MyVectorHero-MyVectorEnemy):normalized()*(910-GetDistance(target)+250))
+else
+WallMax = MyVectorEnemy-((MyVectorHero-MyVectorEnemy):normalized()*(250))
+WallMaxEC = MyVectorEnemy-((MyVectorHero-MyVectorEnemy):normalized()*(250+250))
+end
+local Wall = MyVectorEnemy-((MyVectorHero-MyVectorEnemy):normalized()*(250))
+local WallR = (Wall-((Wall-MyVectorEnemy):normalized()*RangeW()):perpendicular())
+local WallL = (Wall-((Wall-MyVectorEnemy):normalized()*RangeW()):perpendicular2())
+local WallRMax = (WallMax-((WallMax-MyVectorEnemy):normalized()*RangeW()):perpendicular())
+local WallLMax = (WallMax-((WallMax-MyVectorEnemy):normalized()*RangeW()):perpendicular2())
+local WallRMax2 = (WallMax-((WallMax-MyVectorEnemy):normalized()*(RangeW()/2)):perpendicular())
+local WallLMax2 = (WallMax-((WallMax-MyVectorEnemy):normalized()*(RangeW()/2)):perpendicular2())
+local LineR = Line(Point(WallRMax.x, WallRMax.y, WallRMax.z), Point(WallRMax2.x, WallRMax2.y, WallRMax2.z))
+local LineL = Line(Point(WallLMax.x, WallLMax.y, WallLMax.z), Point(WallLMax2.x, WallLMax2.y, WallLMax2.z))
+local LineMid = Line(Point(WallLMax2.x, WallLMax2.y, WallLMax2.z), Point(WallRMax2.x, WallRMax2.y, WallRMax2.z))
+DrawLine3D(WallRMax.x,WallRMax.y,WallRMax.z,WallLMax.x,WallLMax.y,WallLMax.z,5,ARGB(100,255,255,0))
+end
+end
 end
 
 function DrawRectangleOutline(startPos, endPos, width)
@@ -822,10 +753,6 @@ if GetObjectBaseName(Object) == "cryo_FrostBite_mis.troy" then
 Eattack = Object
 gametimeE = 0
 end
---if GetObjectBaseName(Object) == "cryo_Cristalize.troy" then
---Wattack = Object
---gametimeW = 0
---end
 end)
 
 OnDeleteObj(function(Object)
@@ -841,162 +768,4 @@ if GetObjectBaseName(Object) == "cryo_FrostBite_mis.troy" then
 Eattack = myHero
 gametimeE = GetGameTimer()
 end
---if GetObjectBaseName(Object) == "cryo_Cristalize.troy" then
---Wattack = myHero
---gametimeW = GetGameTimer()
---end
 end)
-
-
-
-
---function JungleClear()
---	for _,mob in pairs(minionManager.objects) do
---	if GetObjectName(mob) == "SRU_Blue" or GetObjectName(mob) == "SRU_Red" or GetObjectName(mob) == "SRU_Krug" or GetObjectName(mob) == "SRU_Murkwolf" or GetObjectName(mob) == "SRU_Razorbeak" or GetObjectName(mob) == "SRU_Gromp" or GetObjectName(mob) == "Sru_Crab" or GetObjectName(mob) == "SRU_Dragon" or GetObjectName(mob) == "SRU_Baron" or GetTeam(mob) == MINION_JUNGLE then
---  local MousePos = GetMousePos()
---  local hpbar = GetHPBarPos(myHero)
---  local Edmg = 50 + 60*GetCastLevel(myHero,_E)+GetBonusAP(myHero)
---  local EdmgNoDebuff = 25 + 30*GetCastLevel(myHero,_E)+GetBonusAP(myHero)
---  local ManaCheck = 100*GetCurrentMana(myHero)/GetMaxMana(myHero) >= MoTAnivia.JungleClear.Mana:Value()
---  local mobPos = GetOrigin(mob)
---    if MoTAnivia.JungleClear.JC:Value() then
---      if GotBuff(myHero,"FlashFrost") == 0 and IsReady(_Q) and ValidTarget(mob, 615) and ManaCheck then  
---        CastSkillShot(_Q,mobPos.x, mobPos.y, mobPos.z)
---      elseif GotBuff(myHero,"FlashFrost") == 1 and Qattack ~= myHero and ValidTarget(mob, 615) then
-----        if GetDistanceSqr(GetOrigin(Qattack),mobPos) <= 150*150 then
---          if GetOrigin(Qattack) == mobPos then
---            CastSpell(_Q) 
---          end
---      end
---      if MoTAnivia.JungleClear.R:Value() then
---        if GotBuff(myHero,"GlacialStorm") == 0 and IsReady(_R) and Rattack == myHero and ValidTarget(mob, 615) and ManaCheck then 
---          DrawCircle(MousePos,420,0.9,100,0xff0000ff)
-----          if GetDistanceSqr(GetOrigin(Qattack),mobPos) <= 420*420 then
---            CastSkillShot(_R, mobPos.x, mobPos.y, mobPos.z)
-----          end 
---        elseif GotBuff(myHero,"GlacialStorm") == 1 and Rattack ~= myHero and not ValidTarget(mob, 680) and not (ValidTarget(mob, 680) or GetObjectName(mob) == "SRU_Blue" or GetObjectName(mob) == "SRU_Red" or GetObjectName(mob) == "SRU_Krug" or GetObjectName(mob) == "SRU_Murkwolf" or GetObjectName(mob) == "SRU_Razorbeak" or GetObjectName(mob) == "SRU_Gromp" or GetObjectName(mob) == "Sru_Crab" or GetObjectName(mob) == "SRU_Dragon" or GetObjectName(mob) == "SRU_Baron") then
-----          if MinionsAround(GetOrigin(Rattack), 420, mobPos) < 1 then
-----            if GetDistanceSqr(GetOrigin(Qattack),mobPos) <= 420*420 then
---                CastSpell(_R) 
---        end
---      end  
---      if MoTAnivia.JungleClear.E:Value() and ValidTarget(mob, 650) and ManaCheck then
---        if GotBuff(mob,"chilled") == 1 and GetCurrentHP(mob) < CalcDamage(myHero, mob, 0, Edmg) and GetCurrentHP(mob) > CalcDamage(myHero, mob, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
---          CastTargetSpell(mob, _E)
---        end
---      end
---        if GotBuff(mob,"chilled") == 0 and GetCastLevel(myHero,_Q) < 1 and GetCastLevel(myHero,_R) < 1 and GetCurrentHP(mob) < CalcDamage(myHero, mob, 0, EdmgNoDebuff) and GetCurrentHP(mob) > CalcDamage(myHero, mob, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
---          CastTargetSpell(mob, _E)
---        end
---        if GotBuff(mob,"chilled") == 0 and (CanUseSpell(myHero,_R) ~= READY or GotBuff(myHero,"GlacialStorm") == 0) and CanUseSpell(myHero,_Q) ~= READY and GetCurrentHP(mob) < CalcDamage(myHero, mob, 0, EdmgNoDebuff) and GetCurrentHP(mob) > CalcDamage(myHero, mob, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
---          CastTargetSpell(mob, _E)
---        end
---        if GotBuff(mob,"chilled") == 1 and (CanUseSpell(myHero,_R) ~= READY or GotBuff(myHero,"GlacialStorm") == 0) and GetCurrentHP(mob) < CalcDamage(myHero, mob, 0, EdmgNoDebuff) and GetCurrentHP(mob) > CalcDamage(myHero, mob, GetBonusDmg(myHero)+GetBaseDamage(myHero), 0) then  
---          CastTargetSpell(mob, _E)
---        end    
---      if ValidTarget(mob, 600) then
---      AttackUnit(mob)
---      end
---    	if mob ~= nil and ValidTarget(mob, 600) then
---		DrawText(GetObjectName(mob),14,hpbar.x+110-GetTextArea(GetObjectName(mob),14)/2, hpbar.y+9,ARGB(255,52,210,35))
---	end
---    end    
---end
---end
---end
-
-
-
---	if MoTAnivia.Misc.MGUN:Value() then
---		GLOBALULTNOTICE()
---	end	
---local mymouse = GetMousePos()
---DrawCircle(mymouse,175,0.9,100,0xff0000ff)
---local Q = GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q))
---local CDR = GetCDR(myHero)
---local Q3 = (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q))
---local W = GetCastCooldown(myHero,_W,GetCastLevel(myHero,_W))
---local W3 = (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_W,GetCastLevel(myHero,_W))
---local E = GetCastCooldown(myHero,_E,GetCastLevel(myHero,_E))
---local E3 = (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_E,GetCastLevel(myHero,_E))
---local R = GetCastCooldown(myHero,_R,GetCastLevel(myHero,_R))
---local R3 = (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_R,GetCastLevel(myHero,_R))
-
-----      DrawText(GetObjectName(unit),12,200,20,0xff00ff00);
-----      DrawText("GLOBAL CDR: "..CDR,20,200,20,0xff00ff00);  
-----      DrawText("Q CDR: "..Q,20,200,40,0xff00ff00);
-----      DrawText("CDR Q: "..Q3,20,200,60,0xff00ff00);      
-----      DrawText("W CDR: "..W,20,200,80,0xff00ff00);
-----      DrawText("CDR W: "..W3,20,200,100,0xff00ff00);
-----      DrawText("E CDR: "..E,20,200,120,0xff00ff00);
-----      DrawText("CDR E: "..E3,20,200,140,0xff00ff00);
-----      DrawText("R CDR: "..R,20,200,160,0xff00ff00);
-----      DrawText("CDR R: "..R3,20,200,180,0xff00ff00);
-----if CanUseSpell(myHero,_Q) ~= READY then
-----  gametime = GetGameTimer()
-----end
---DrawText("Q gametime: "..gametimeQ,20,200,200,0xff00ff00);
---DrawText("Q gametime Ready: "..gametimeQ+Q3,20,200,220,0xff00ff00);
---if gametimeQ+Q3-GetGameTimer() > 0 then
---DrawText("ONCOOLDOWN Q: "..gametimeQ+Q3-GetGameTimer(),20,200,240,0xff00ff00);
---else
---DrawText("READY Q: Yes",20,200,240,0xff00ff00);
---end
-
---DrawText("R gametime: "..gametimeR,20,200,260,0xff00ff00);
---DrawText("R gametime Ready: "..gametimeR+R3,20,200,280,0xff00ff00);
---if gametimeR+R3-GetGameTimer() > 0 then
---DrawText("ONCOOLDOWN R: "..gametimeR+R3-GetGameTimer(),20,200,300,0xff00ff00);
---else
---DrawText("READY R: Yes",20,200,300,0xff00ff00);
---end
-
---DrawText("E gametime: "..gametimeE,20,200,320,0xff00ff00);
---DrawText("E gametime Ready: "..gametimeE+E3,20,200,340,0xff00ff00);
---if gametimeE+E3-GetGameTimer() > 0 then
---DrawText("ONCOOLDOWN E: "..gametimeE+E3-GetGameTimer(),20,200,360,0xff00ff00);
---else
---DrawText("READY R: Yes",20,200,360,0xff00ff00);
---end
-
---DrawText("W gametime: "..gametimeW,20,200,380,0xff00ff00);
---DrawText("W gametime Ready: "..gametimeW+W3,20,200,400,0xff00ff00);
---if gametimeW+W3-GetGameTimer() > 0 then
---DrawText("ONCOOLDOWN W: "..gametimeW+W3-GetGameTimer(),20,200,420,0xff00ff00);
---else
---DrawText("READY W: Yes",20,200,420,0xff00ff00);
---end
-
---if (gametimeQ+(1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q)))-GetGameTimer() > (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_E,GetCastLevel(myHero,_E)) then
---  DrawText("E AVAILABLE",20,200,420,0xff00ff00);
---elseif (gametimeQ+(1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_Q,GetCastLevel(myHero,_Q)))-GetGameTimer() < (1-(GetCDR(myHero)*-1))*GetCastCooldown(myHero,_E,GetCastLevel(myHero,_E)) then
---  DrawText("E NOT AVAILABLE",20,200,420,0xff00ff00);
---end
---MoT2:NoteEnemys(false,OverAllDmgAnivia,0,0,0,0,0,0,0,0)
---MoT2:NoteAllys()
-
-
---function CheckForSelection()
---if IOW:Mode() == "LastHit" then
---RLastHit = true
---else
---RLastHit = false
---end
---for i=1, IOW.mobs.maxObjects do
---local minion = IOW.mobs.objects[i]
---if IOW:Mode() == "LaneClear" and ValidTarget(minion, 615) then
---RLaneClear = true
---else
---RLaneClear = false
---end
---end
---for _,mob in pairs(minionManager.objects) do
---if GetTeam(mob) == MINION_JUNGLE then
---if MoTAnivia.JungleClear.JC:Value() and ValidTarget(mob, 615) then
---RJungleClear = true
---else
---RJungleClear = false
---end
---end
---end
---end
