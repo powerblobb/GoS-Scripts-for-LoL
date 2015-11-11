@@ -5,7 +5,7 @@ if not pcall( require, "Inspired" ) then PrintChat("You are missing Inspired.lua
 if not pcall( require, "Deftlib" ) then PrintChat("You are missing Deftlib.lua - Go download it and save it in Common!") return end
 if not pcall( require, "DamageLib" ) then PrintChat("You are missing DamageLib.lua - Go download it and save it in Common!") return end
 
-print("Anivia - SingleVersion - MoT Reworked v1.0") 
+print("Anivia - SingleVersion - MoT Reworked v1.01") 
 
 require("MapPositionGOS")
 require("Inspired")
