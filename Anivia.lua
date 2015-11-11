@@ -497,7 +497,6 @@ elseif CanUseSpell(myHero,_Q) ~= READY and CanUseSpell(myHero,_E) ~= READY and (
   end  
 end
 end
-end
 
 function AutoLevel()
 local mapID = GetMapID()
