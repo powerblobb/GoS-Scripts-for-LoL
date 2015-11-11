@@ -127,10 +127,10 @@ if percent < 4 and IsObjectAlive(unit) then
 elseif percent <= 10 and IsObjectAlive(unit) then
   killable = "Health CITICAL!"
   killsize = killsize + 5
-elseif percent > 10 and percent < 35 and IsObjectAlive(unit) then
+elseif percent >= 10 and percent < 35 and IsObjectAlive(unit) then
   killable = "Low Life++!"
   killsize = killsize + 4
-elseif percent > 35 and percent < 50 and IsObjectAlive(unit) then
+elseif percent >= 35 and percent < 50 and IsObjectAlive(unit) then
   killable = "Low Life+!"
   killsize = killsize + 4  
 elseif percent >= 50 and percent < 70 and IsObjectAlive(unit) then
