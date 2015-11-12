@@ -8,7 +8,14 @@
 	- New display system for Safe Warding spots.
 	- Increased performance while drawing Safe Spots.
   - Added Menu for KeyChanging
-
+  
+	Changes by MarCiii:
+  - 12.11.2015
+	- Fixed bug with 2Dgeometry
+	- added 2 more SafewardPlaces
+  
+  Version:	1.2
+  
 	Thread link:	http://gamingonsteroids.com/topic/4136-topic
 	GitHub link:	https://github.com/tiritto/GamingOnSteroids/blob/master/wardingAssistant.lua
 	
@@ -21,8 +28,7 @@ if GetMapID() == SUMMONERS_RIFT then
   WardingAssistantTritto:Key("WardModifier", "Ward Modifier", 17)
   WardingAssistantTritto:Boolean("ETS","Show Enemy Team Spots?(2xF6)",false)
   WardingAssistantTritto:Slider("CicleRange", "Ward Circle Range(2xF6)", 2500, 1000, 20000, 1)
-	------------------------------------[ SCRIPT DATA ]------------------------------------
-	
+	------------------------------------[ SCRIPT DATA ]------------------------------------	
 	--# Global Variables #--
 	local myHeroDestination = nil;	-- waypointProc.position;
 	local playerPosition = nil;		-- GetOrigin(myHero);
@@ -309,8 +315,8 @@ if GetMapID() == SUMMONERS_RIFT then
 	end;
 	
 	-- Coordinates container
-	class "Point"
-		function Point:__init(x, y, z)
+	class "WardPointer"
+		function WardPointer:__init(x, y, z)
 			local pos = GetOrigin(x) or type(x) ~= "number" and x or nil;
 			self.x = pos and pos.x or x;
 			self.y = pos and pos.y or y;
@@ -318,8 +324,8 @@ if GetMapID() == SUMMONERS_RIFT then
 		end;
 	
 	-- Circle object
-	class "Circle"
-		function Circle:__init(x, y, z, r, c)
+	class "WardCircle"
+		function WardCircle:__init(x, y, z, r, c)
 			self.x = x;
 			self.y = y;
 			self.z = z;
@@ -327,11 +333,11 @@ if GetMapID() == SUMMONERS_RIFT then
 			self.r = r or 30;
 		end;
 		
-		function Circle:setColor(c) self.c = c or 0xffffffff; end;
-		function Circle:setRange(r) self.r = r or 30; end;
-		function Circle:getDistance(pos) return GetDistance(Point(self.x,self.y,self.z),pos); end;
-		function Circle:mouseOver(range) return range < self.r;	end; 
-		function Circle:draw() DrawCircle(self.x,self.y,self.z,self.r,0,0,self.c); end;
+		function WardCircle:setColor(c) self.c = c or 0xffffffff; end;
+		function WardCircle:setRange(r) self.r = r or 30; end;
+		function WardCircle:getDistance(pos) return GetDistance(WardPointer(self.x,self.y,self.z),pos); end;
+		function WardCircle:mouseOver(range) return range < self.r;	end; 
+		function WardCircle:draw() DrawCircle(self.x,self.y,self.z,self.r,0,0,self.c); end;
 	
 	-- Warding mechanics
 	local function putWard(wardSlot,clickPos,heroPos)
@@ -378,7 +384,7 @@ if GetMapID() == SUMMONERS_RIFT then
 		if not(wardingSpots[i][4])
 		or playerTeam == wardingSpots[i][4]
 		or WardingAssistantTritto.ETS:Value() then
-			table.insert(classicWardSpot, Circle(wardingSpots[i][1],wardingSpots[i][2],wardingSpots[i][3]));
+			table.insert(classicWardSpot, WardCircle(wardingSpots[i][1],wardingSpots[i][2],wardingSpots[i][3]));
 		end;
 	end;
 
@@ -387,11 +393,11 @@ if GetMapID() == SUMMONERS_RIFT then
 	local safeWardHero = {};
 	local safeWardSpot = {};
 	for i=1, #safeWardingSpots, 1 do
-		--safeWardClick[i] = Circle(safeWardingSpots[i][1][1],safeWardingSpots[i][1][2],safeWardingSpots[i][1][3],5,0xff000000);	-- Circle object [Click Position]	-- No longer required
-		--safeWardSpot[i] = Circle(safeWardingSpots[i][2][1],safeWardingSpots[i][2][2],safeWardingSpots[i][2][3],15,0xffff0000);	-- Circle object [Spot Position]	-- No longer required
-		safeWardHero[i] = Circle(safeWardingSpots[i][3][1],safeWardingSpots[i][3][2],safeWardingSpots[i][3][3],50,0xffffff00);		-- Circle object [Hero Position]
-		safeWardClick[i] = Point(safeWardingSpots[i][1][1],safeWardingSpots[i][1][2],safeWardingSpots[i][1][3]);					-- Point object [Click Position]
-		safeWardSpot[i] = Point(safeWardingSpots[i][2][1],safeWardingSpots[i][2][2],safeWardingSpots[i][2][3]);						-- Point object [Spot Position]
+		--safeWardClick[i] = WardCircle(safeWardingSpots[i][1][1],safeWardingSpots[i][1][2],safeWardingSpots[i][1][3],5,0xff000000);	-- WardCircle object [Click Position]	-- No longer required
+		--safeWardSpot[i] = WardCircle(safeWardingSpots[i][2][1],safeWardingSpots[i][2][2],safeWardingSpots[i][2][3],15,0xffff0000);	-- WardCircle object [Spot Position]	-- No longer required
+		safeWardHero[i] = WardCircle(safeWardingSpots[i][3][1],safeWardingSpots[i][3][2],safeWardingSpots[i][3][3],50,0xffffff00);		-- Circle object [Hero Position]
+		safeWardClick[i] = WardPointer(safeWardingSpots[i][1][1],safeWardingSpots[i][1][2],safeWardingSpots[i][1][3]);					-- Point object [Click Position]
+		safeWardSpot[i] = WardPointer(safeWardingSpots[i][2][1],safeWardingSpots[i][2][2],safeWardingSpots[i][2][3]);						-- Point object [Spot Position]
 	end;
 
 	-- Since all circles are already initialized we dont need those coordinates anymore...
