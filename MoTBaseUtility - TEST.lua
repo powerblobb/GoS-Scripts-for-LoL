@@ -34,7 +34,7 @@ end
 end
 
 function MoT:Tick(myHero)
-self:Missing() 
+--self:Missing() 
 end
 
 function MoT:OnTick2()
@@ -75,31 +75,46 @@ end
 --end
 
 function MoT:Missing()
-for i,unit in pairs(GetEnemyHeroes()) do
 local Heroes = {}
 local visible = ""
-local hpPercent = math.floor((GetBonusDmg(myHero)+GetBaseDamage(myHero))/GetCurrentHP(unit)*100)
-Heroes = {name=GetObjectName(unit),visible=false,hpPercent=0}
-if not IsVisible(unit) and IsObjectAlive(unit)  then
-  Heroes.visible = true 
-  visible = "true" 
+for i,unit in pairs(GetEnemyHeroes()) do
+--local hpPercent = math.floor((GetBonusDmg(myHero)+GetBaseDamage(myHero))/GetCurrentHP(unit)*100)
+Heroes[i] ={name=GetObjectName(unit),visible=false,object=unit}
+end
+for i=1,5 do 
+ if IsVisible(Heroes[i].object) then
+  Heroes[i].visible=true
   return true
-elseif IsVisible(unit) and IsObjectAlive(unit) then  
-  Heroes.visible = false
-  visible = "false"
+ else
+  Heroes[i].visible=false
   return false
-elseif IsDead(unit) then  
-  Heroes.visible = false
-  visible = "false"
-  return  
---elseif not IsObjectAlive(unit) and IsObjectAlive(unit) then
---  Heroes.visible = false
---  visible = "false"  
---  hpPercent = 0
+end
+end
+--if not IsVisible(unit) and IsObjectAlive(unit)  then
+--  Heroes[i].visible = true 
+--  visible = "true"
+----  print("not IsVisible(unit) and IsObjectAlive(unit) = true")
+--  return true
+--elseif IsVisible(unit) and IsObjectAlive(unit) then  
+--  Heroes[i].visible = false
+--  visible = "false"
+----  print("IsVisible(unit) and IsObjectAlive(unit) = false")
 --  return false
-end
+--elseif IsDead(unit) then  
+--  Heroes[i].visible = false
+--  visible = "false"
+----  print("test")
+--  return false 
+----elseif not IsObjectAlive(unit) and IsObjectAlive(unit) then
+----  Heroes.visible = false
+----  visible = "false"  
+----  hpPercent = 0
+----  return false
+--end
+--return Heroes[i].visible
+--print("test")
 --print(Heroes.name.." = "..GetObjectName(unit).." - Missing? = "..visible.." - Life: = "..hpPercent.."%")
-end
+--end
 end
 
 function MoT:Tick(myHero)
@@ -170,7 +185,7 @@ if overalldmg >= hp and IsObjectAlive(unit) and IsObjectAlive(myHero) and percen
     killsize = killsize - 4
   elseif not IsVisible(unit) and self:Missing() then
     killable = "is Missing!"
-    killsize = killsize - 4    
+    killsize = killsize - 4   
   end
 elseif overalldmg < hp and IsObjectAlive(unit) and IsObjectAlive(myHero) and percent > 10 then
   killable = "is "..DMGpercent.."% killable!"
